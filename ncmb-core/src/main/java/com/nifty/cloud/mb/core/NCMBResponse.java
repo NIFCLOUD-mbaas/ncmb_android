@@ -11,6 +11,9 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * NCMBResponse contains response data from NIFTY Cloud mobile backend
+ */
 public class NCMBResponse {
     /** http status for success */
     public static final int HTTP_STATUS_OK = 200;
