@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 /**
- * Service for "Installation" API
+ * Service class for installation api
  */
 public class NCMBInstallationService extends NCMBService {
 

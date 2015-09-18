@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * Interface for getting user information
+ * Interface for callback after push notification retrieve
  */
 public interface UserCallback extends CallbackBase {
     /**

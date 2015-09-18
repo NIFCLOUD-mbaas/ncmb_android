@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import org.json.JSONObject;
 
 /**
- * Serivce abstract class
+ * Abstract class for Service class
  */
 public abstract class NCMBService {
     /**

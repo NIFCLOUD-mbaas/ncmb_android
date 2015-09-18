@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import java.util.ArrayList;
 
 /**
- * SearchPushCallback interface
+ * Interface for callback after installation search
  */
 public interface SearchInstallationCallback extends CallbackBase{
     /**

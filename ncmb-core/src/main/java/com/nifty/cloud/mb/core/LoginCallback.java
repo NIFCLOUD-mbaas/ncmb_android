@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * Interface for login callback
+ * Interface for callback after user login
  */
 public interface LoginCallback extends CallbackBase {
     /**

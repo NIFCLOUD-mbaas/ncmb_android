@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * NCMBObjectService class
+ * Service class for data store api
  */
 public class NCMBObjectService extends NCMBService{
 

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * User entity
+ *  NCMBUser is used to sign up and login/logout the user
  */
 public class NCMBUser extends NCMBObject{
 
