@@ -5,7 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 /**
- * Core class for NCMB API
+ * The NCMB Class contains sdk inilialize method and factory method for Service class
  */
 public class NCMB {
     /** Version of this SDK */

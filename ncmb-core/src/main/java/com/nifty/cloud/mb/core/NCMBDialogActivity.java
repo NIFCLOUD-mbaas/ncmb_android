@@ -35,6 +35,9 @@ import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Default Activity for dialaog push notification
+ */
 @SuppressLint({"InlinedApi", "NewApi", "Wakelock"})
 public class NCMBDialogActivity extends Activity {
     private static final String TAG = "NCMBDialogActivity";

@@ -16,6 +16,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * NCMBConnection is a class that communicates with NIFTY Cloud mobile backend
+ */
 public class NCMBConnection {
 
     //time out millisecond from NIFTY Cloud mobile backend

@@ -1,33 +1,33 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * 　プッシュ通知におけるダイアログ設定を管理するクラス
+ * NCMBDialogPushConfiguration is used to setting of dialog push notification
  * 
  */
 public class NCMBDialogPushConfiguration {
 	/**
-	 * 表示形式　表示しない
+	 * display format nothing to display
 	 */
 	public static final int DIALOG_DISPLAY_NONE = 0x00;
 	/**
-	 * 表示形式　ダイアログ形式
+	 * display format that display dialog
 	 */
 	public static final int DIALOG_DISPLAY_DIALOG = 0x01;
 	/**
-	 * 表示形式　背景付ダイアログ
+	 * display format that display dialog with original background image
 	 */
 	public static final int DIALOG_DISPLAY_BACKGROUND = 0x02;
 	/**
-	 * 表示形式　オリジナルレイアウトダイアログ
+	 * display format that display original layout dialog
 	 */
 	public static final int DIALOG_DISPLAY_ORIGINAL = 0x04;
 
-	// 表示形式
+	// display format
 	private int displayType;
 
 	/**
-	 * コンストラクタ<br>
-	 * 表示形式に非表示を設定し、背景画像ファイルパスにnullを設定する
+	 * Costructor<br>
+	 * default display formati is DIALOG_DISPLAY_NONE <br/>
 	 *
 	 */
 	public NCMBDialogPushConfiguration(){
@@ -36,33 +36,28 @@ public class NCMBDialogPushConfiguration {
 	}
 
 	/**
-	 * コンストラクタ<br>
-	 * 以下の表示形式を引数として設定することが可能<br>
-	 *   ・DIALOG_DISPLAY_NONE<br>
-	 *   ・DIALOG_DISPLAY_DIALOG<br>
-	 *   ・DIALOG_DISPLAY_BACKGROUND<br>
-	 *   ・DIALOG_DISPLAY_ORIGINAL
+	 * Constructor <br>
 	 *
-	 * @param displayType 表示形式
-	 * @param filePath 背景画像ファイルパス
+	 * @param displayType display format
+	 * @param filePath path of background image
 	 */
 	public NCMBDialogPushConfiguration(int displayType, String filePath){
 		this.displayType = displayType;
 	}
 
 	/**
-	 * 表示形式を設定
+	 * set the display format
 	 *
-	 * @param displayType 表示形式
+	 * @param displayType setting of display format
 	 */
 	public void setDisplayType(int displayType){
 		this.displayType = displayType;
 	}
 
 	/**
-	 * 表示形式を取得
+	 * get the dislay format setting
 	 *
-	 * @return 表示形式
+	 * @return curernt display format
 	 */
 	public int getDisplayType(){
 		return this.displayType;
