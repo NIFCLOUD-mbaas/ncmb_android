@@ -1,0 +1,14 @@
+{
+  "objectId":"dummyRoleId",
+  "roleName":"role_test1",
+  "belongRole":null,
+  "belongUser":null,
+  "createDate":"2013-08-30T05:04:19.045Z",
+  "updateDate":"2013-08-30T05:04:19.045Z",
+  "acl":{
+    "*":{
+      "read":true,
+      "write":true
+    }
+  }
+}

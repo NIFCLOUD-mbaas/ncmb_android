@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="#A0000000"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:minHeight="240dp"
+		android:background="@drawable/fr_dialog_image_shape_dialog_corners"
+		android:layout_gravity = "center_vertical|center_horizontal"
+		android:id="@+id/fr_dialog_id">
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:padding="4dp">
+
+			<Button
+				android:id="@+id/ncmb_button_close"
+				android:layout_width="0dip"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:background="@drawable/fr_dialog_shape_button_corners"
+				android:height="40dp"
+				android:text="いなくなる"
+				android:textColor="#0000ff"
+				android:textSize="16sp" />
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:gravity="center"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="4dp"
+				android:id="@+id/fr_dialog_appicon_id"
+				android:src="@drawable/comment_icon" />
+
+			<TextView
+				android:padding="8dp"
+				android:textSize="22dp"
+				android:textColor="#404040"
+				android:layout_width="fill_parent"
+				android:layout_height="50dp"
+				android:id="@+id/ncmb_dialog_subject_id"/>
+		</LinearLayout>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="2dp"
+			android:background="#ff00bfff"
+			android:layout_marginLeft="6dp"
+			android:layout_marginRight="6dp"
+		/>
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="140dp"
+			android:layout_weight="1"
+			android:padding="8dp"
+			android:textSize="20sp"
+			android:textColor="#404040"
+			android:id="@+id/ncmb_dialog_message_id"/>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:padding="4dp" >
+
+			<Button android:id="@+id/ncmb_button_open"
+				android:textColor="#ff0000"
+				android:height="40dp"
+				android:textSize="16sp"
+				android:layout_height="wrap_content"
+				android:layout_width="0dip"
+				android:layout_weight="1"
+				android:text="あらわれる"
+				android:background="@drawable/fr_dialog_shape_button_corners"
+			/>
+		</LinearLayout>
+	</LinearLayout>
+</FrameLayout>

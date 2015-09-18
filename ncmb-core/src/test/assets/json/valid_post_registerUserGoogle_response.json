@@ -1,0 +1,16 @@
+{
+  "createDate":"2015-01-01T00:00:00.000Z",
+  "objectId":"dummyObjectId",
+  "userName":"Nifty Tarou",
+  "authData":{
+    "google":{
+      "id":"googleDummyId",
+      "access_token": "googleDummyAccessToken"
+    }
+  },
+  "mailAddress":null,
+  "mailAddressConfirm":false,
+  "sessionToken":"dummySessionToken",
+  "updateDate": "2015-06-07T01:02:03.004Z"
+}
+

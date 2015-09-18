@@ -1,0 +1,535 @@
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+     key: value
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+     key: value
+     acl: {"*":{"read":true,"write":true}}
+  response:
+    status: 201
+    file: valid_post_with_acl_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: PUT
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/updateTestObjectId
+    method: PUT
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/updateTestObjectId
+    method: PUT
+    body:
+      updateKey: "updateValue"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/updateWithAclTestObjectId
+    method: PUT
+    body:
+      updateKey: "updateValue"
+      acl: {"*":{"read":true,"write":true}}
+  response:
+    status: 200
+    file: valid_put_with_acl_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/testObjectId
+    method: PUT
+    body:
+      key: null
+  response:
+    status: 200
+    file: valid_put_with_remove_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/testObjectId
+    method: PUT
+    body:
+      incrementKey: {"__op":"Increment","amount":1}
+  response:
+    status: 200
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: GET
+  response:
+    status: 200
+    file: valid_get_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/NonExistObject
+    method: GET
+  response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/getTestObjectId
+    method: GET
+  response:
+    status: 200
+    file: valid_get_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/nonExistId
+    method: DELETE
+  response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/deleteTestObjectId
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/classes/SaveObjectTest
+    method: POST
+  response:
+    status: 201
+    file: valid_save_object.json
+---
+  request:
+    url: /2013-09-01/classes/user
+    method: POST
+  response:
+    status: 403
+    file: save_object_given_class.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      error: "test"
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.0.0"
+      timeZone: "Asia/Tokyo"
+  response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Asia/Tokyo"
+      sdkVersion: "2.0.0"
+      applicationName: "ncmb-core"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Asia/Tokyo"
+      sdkVersion: "2.0.0"
+      applicationName: "ncmb-core"
+      key: "value_update"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: GET
+  response:
+    status: 200
+    file: valid_get_installation_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
+      limit: 2
+  response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+  request:
+    url: /2013-09-01/installations/errorObjectId
+    method: PUT
+  response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+  request:
+    url: /2013-09-01/installations/errorObjectId
+    method: DELETE
+  response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+  request:
+    url: /2013-09-01/push
+    method: POST
+    body:
+      searchCondition:
+        score:
+          $gt: 80
+      immediateDeliveryFlag: true
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/push
+    method: POST
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/push/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      title: "title_update"
+      message: "message_update"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/push/7FrmPTBKSNtVjajm
+    method: GET
+  response:
+    status: 200
+    file: valid_get_push_response.json
+---
+  request:
+    url: /2013-09-01/push
+    method: GET
+    query:
+      where: '{"target":["android"]}'
+      limit: 2
+  response:
+    status: 200
+    file: valid_get_searchPush_response.json
+---
+  request:
+    url: /2013-09-01/push/7FrmPTBKSNtVjajm
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/push/7FrmPTBKSNtVjajm/openNumber
+    method: POST
+  response:
+    status: 200
+    file: valid_post_trackAppOpened_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"key":"value"}'
+      limit: 1
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      userName: "Nifty Tarou"
+      password: "niftytarou"
+  response:
+    status: 201
+    file: valid_post_registerUser_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        facebook:
+          id: facebookDummyId
+          access_token: facebookDummyAccessToken
+          expiration_date:
+            __type: Date
+            iso: "2016-06-07T01:02:03.004Z"
+  response:
+    status: 200
+    file: valid_post_registerUserFacebook_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        twitter:
+          id: twitterDummyId
+          screen_name: twitterDummyScreenName
+          oauth_consumer_key: twitterDummyConsumerKey
+          consumer_secret: twitterDummyConsumerSecret
+          oauth_token: twitterDummyOauthToken
+          oauth_token_secret: twitterDummyOauthSecret
+  response:
+    status: 200
+    file: valid_post_registerUserTwitter_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        google:
+          id: googleDummyId
+          access_token: googleDummyAccessToken
+  response:
+    status: 200
+    file: valid_post_registerUserGoogle_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        anonymous:
+          id: anonymousDummyId
+  response:
+    status: 200
+    file: valid_post_registerUserAnonymous_response.json
+---
+  request:
+    url: /2013-09-01/requestMailAddressUserEntry
+    method: POST
+    body:
+      mailAddress: "sample@example.com"
+  response:
+    status: 201
+    file: valid_post_inviteByMail_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: GET
+  response:
+    status: 200
+    file: valid_get_getUser_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      userName: "NCMB Tarou"
+      mailAddress: "mobilebackend@example.com"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      key: "value"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      key: "value2"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      userName: "Nifty Tarou"
+      password: dummyPassword
+    method: GET
+  response:
+    status: 200
+    file: valid_get_login_response.json
+---
+  request:
+    url: /2013-09-01/logout
+    method: GET
+  response:
+    status: 200
+    file: valid_get_logout_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: GET
+  response:
+    status: 200
+    file: valid_get_searchUserAll_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: GET
+    query:
+      where: '{"userName":"Nifty Tarou"}'
+  response:
+    status: 200
+    file: valid_get_searchUser_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/users/notCurrentUserId
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: PUT
+    body:
+      error: "test"
+  response:
+    status: 401
+    file: valid_error_header_incorrect_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: PUT
+    body:
+      key: "value"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles
+    method: POST
+    body:
+      roleName: dummyRoleName
+  response:
+    status: 201
+    file: valid_post_createRole_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: DELETE
+  response:
+    status: 200
+    file: valid_delete_deleteRole_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: GET
+  response:
+    status: 200
+    file: valid_get_getRole_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      belongUser:
+        __op: AddRelation
+        objects:
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId1
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      belongRole:
+        __op: AddRelation
+        objects:
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId1
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      acl:
+        dummyRwUserId:
+          read: true
+          write: true
+        "role:dummyRwRoleId":
+          read: true
+          write: true
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles
+    method: GET
+  response:
+    status: 200
+    file: valid_get_searchRole_response.json

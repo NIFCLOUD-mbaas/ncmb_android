@@ -1,0 +1,71 @@
+{
+  "results": [
+    {
+      "objectId": "dummyObjectId01",
+      "deliveryTime": {
+        "iso": "2014-12-18T08:59:05.351Z",
+        "__type": "Date"
+      },
+      "deliveryExpirationDate": null,
+      "richUrl": null,
+      "searchCondition": null,
+      "badgeIncrementFlag": true,
+      "sound": null,
+      "userSettingValue": null,
+      "message": "message1",
+      "deliveryExpirationTime": null,
+      "title": "title1",
+      "error": null,
+      "target": [
+        "android"
+      ],
+      "dialog": true,
+      "action": "nifty.com.push.unity.RECEIVE_PUSH",
+      "category": null,
+      "contentAvailable": false,
+      "badgeSetting": null,
+      "deliveryNumber": 1,
+      "deliveryPlanNumber": 1,
+      "status": 2,
+      "createDate": "2014-12-18T08:59:05.354Z",
+      "updateDate": "2014-12-18T08:59:15.987Z",
+      "acl": {
+        "*": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "objectId":"dummyObjectId02",
+      "deliveryTime":{"iso":"2014-12-18T08:59:05.351Z","__type":"Date"},
+      "deliveryExpirationDate":null,
+      "richUrl":null,
+      "searchCondition":null,
+      "badgeIncrementFlag":true,
+      "sound":null,
+      "userSettingValue":null,
+      "message":"message2",
+      "deliveryExpirationTime":null,
+      "title":"title2",
+      "error":null,
+      "target":["android"],
+      "dialog":true,
+      "action":"nifty.com.push.unity.RECEIVE_PUSH",
+      "category":null,
+      "contentAvailable":false,
+      "badgeSetting":null,
+      "deliveryNumber":2,
+      "deliveryPlanNumber":2,
+      "status":2,
+      "createDate":"2014-12-19T08:59:05.354Z",
+      "updateDate":"2014-12-19T08:59:15.987Z",
+      "acl":{
+        "*":{
+          "read":true,
+          "write":true
+        }
+      }
+    }
+  ]
+}

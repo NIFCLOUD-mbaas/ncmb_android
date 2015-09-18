@@ -1,0 +1,18 @@
+{
+  "results":[
+    {
+      "objectId":"dummyObjectId01",
+      "userName":"Nifty Tarou",
+      "mailAddress":null,
+      "mailAddressConfirm":null,
+      "createDate":"2013-08-28T07:46:09.801Z",
+      "updateDate":"2013-08-30T05:32:03.868Z",
+      "acl":{
+         "*":{
+           "read":true,
+           "write":true
+         }
+      }
+    }
+  ]
+}

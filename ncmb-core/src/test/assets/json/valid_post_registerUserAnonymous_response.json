@@ -1,0 +1,15 @@
+{
+  "createDate":"2015-01-01T00:00:00.000Z",
+  "objectId":"dummyObjectId",
+  "userName":"Nifty Tarou",
+  "authData":{
+    "anonymous":{
+      "id": "anonymousDummyId"
+    }
+  },
+  "mailAddress":null,
+  "mailAddressConfirm":false,
+  "sessionToken":"dummySessionToken",
+  "updateDate": "2015-06-07T01:02:03.004Z"
+}
+
