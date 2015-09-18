@@ -27,7 +27,7 @@ public class NCMBDialogPushConfiguration {
 
 	/**
 	 * Costructor<br>
-	 * default display formati is DIALOG_DISPLAY_NONE <br/>
+	 * default display formati is DIALOG_DISPLAY_NONE <br>
 	 *
 	 */
 	public NCMBDialogPushConfiguration(){
