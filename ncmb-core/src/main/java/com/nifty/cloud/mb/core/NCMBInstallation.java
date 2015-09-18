@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Installation entity
+ * NCMBInstallation is used to retrieve and upload the installation data
  */
 public class NCMBInstallation extends NCMBObject {
 

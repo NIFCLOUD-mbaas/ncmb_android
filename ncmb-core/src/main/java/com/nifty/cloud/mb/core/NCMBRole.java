@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Role class
+ *  NCMBRole is used to retrieve and upload the role data
  */
 public class NCMBRole extends NCMBBase{
 

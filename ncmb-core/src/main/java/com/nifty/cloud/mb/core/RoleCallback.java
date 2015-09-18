@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * Interface for getting role information
+ * Interface for callback after role retrieve
  */
 public interface RoleCallback extends CallbackBase {
     /**

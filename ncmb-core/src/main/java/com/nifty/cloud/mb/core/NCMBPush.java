@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * push class
+ *  NCMBPush is used to retrieve and send the push notification
  */
 public class NCMBPush extends NCMBBase {
 

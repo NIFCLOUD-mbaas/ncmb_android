@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * JSON Utility for relation of ojbjects
+ * Utility for relation of ojbjects
  */
 public class NCMBRelation {
     /** key ob operation */

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * NCMBObject class
+ *  NCMBObject is used to retrieve and upload the data in data store
  */
 public class NCMBObject extends NCMBBase{
 

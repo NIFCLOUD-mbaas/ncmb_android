@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * ACL classs
+ * NCMBAcl class contains acl setting for datastore , user , role
  */
 public class NCMBAcl {
     /**

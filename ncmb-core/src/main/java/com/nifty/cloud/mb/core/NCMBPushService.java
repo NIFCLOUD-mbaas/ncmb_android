@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Service for 'push' API
+ * Service class for push notification api
  */
 public class NCMBPushService extends NCMBService {
     /** service path for API category */

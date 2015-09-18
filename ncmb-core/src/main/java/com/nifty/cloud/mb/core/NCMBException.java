@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * NCMBException
+ * NCMBException is a class that defines the error to be returened from NIFTY Cloud mobile backend
  */
 public class NCMBException extends Exception {
 

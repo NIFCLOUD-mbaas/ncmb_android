@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * NCMBBase class
+ * NCMBBase class provide an interface to edit data
  */
 public class NCMBBase {
 

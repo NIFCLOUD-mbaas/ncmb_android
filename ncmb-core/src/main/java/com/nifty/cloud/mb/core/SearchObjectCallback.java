@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import java.util.List;
 
 /**
- * SearchObjectCallback interface
+ * Interface for  callback after object search
  */
 public interface SearchObjectCallback extends CallbackBase {
         /**

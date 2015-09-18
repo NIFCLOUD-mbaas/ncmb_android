@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * Callback class for after request api
+ * Interface for callback after api request
  */
 public interface RequestApiCallback extends CallbackBase {
 

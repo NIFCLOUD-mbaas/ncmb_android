@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Service for "User" API
+ * Service for user api
  */
 public class NCMBUserService extends NCMBService {
     /** service path for API category */

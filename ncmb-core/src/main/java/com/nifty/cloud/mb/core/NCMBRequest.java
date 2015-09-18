@@ -23,6 +23,9 @@ import java.util.SimpleTimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * NCMBRequest class is used to config api request
+ */
 public class NCMBRequest {
 
     // region Constant
