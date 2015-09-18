@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import java.util.ArrayList;
 
 /**
- * SearchRoleCallback interface
+ * Interface for callback after role search
  */
 public interface SearchRoleCallback extends CallbackBase{
     /**

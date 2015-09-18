@@ -1,7 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * Interface for generic action callback
+ * Interface for callback after call entity class method in background thread
  */
 public interface DoneCallback extends CallbackBase {
     /**

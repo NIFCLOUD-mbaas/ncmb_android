@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import java.util.ArrayList;
 
 /**
- * Interface for callback to search users
+ * Interface for callback after user search
  */
 public interface SearchUserCallback extends CallbackBase {
     /**

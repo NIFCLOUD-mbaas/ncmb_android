@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * NCMBQuery class
+ * NCMBQuery is used to search data from NIFTY Cloud mobile backend
  */
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;

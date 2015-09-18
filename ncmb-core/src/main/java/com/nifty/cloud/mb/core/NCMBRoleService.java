@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service for 'roles' API
+ * Service class for role api
  */
 public class NCMBRoleService extends NCMBService {
     /** service path for API category */

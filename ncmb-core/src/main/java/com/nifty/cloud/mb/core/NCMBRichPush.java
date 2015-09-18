@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
- * RichPush class
+ * NCMBRichPush provide dialog for rich push notification
  */
 public class NCMBRichPush extends Dialog {
 

@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import java.util.List;
 
 /**
- * Interface for Find object callback
+ * Interface for callback after call search method in the entity class
  */
 public interface FindCallback<T extends NCMBBase> {
 

@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import org.json.JSONObject;
 
 /**
- * Interface for generic service callback
+ * Interface for callback after call service class method
  */
 public interface ExecuteServiceCallback extends CallbackBase {
     /**
