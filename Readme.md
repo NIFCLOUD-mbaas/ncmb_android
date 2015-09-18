@@ -1,4 +1,4 @@
-# Android SDK for NiftyCloud mobile backend
+## Android SDK for NiftyCloud mobile backend
 
 ## ダウンロード
 
@@ -45,7 +45,7 @@ obj.put("message", "Hello, NCMB!");
 obj.saveInBackground(new DoneCallback() {
     @Override
     public void done(NCMBException e) {
-        if(e != null){
+        if(e == null){
             //保存成功
         }else {
             //保存失敗
@@ -53,6 +53,13 @@ obj.saveInBackground(new DoneCallback() {
     }
 });
 ```
+## 依存ライブラリ（任意）
+
+プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。
+
+| 機能名           | 必要なライブラリ |
+|:---:             | :---:            |
+| プッシュ通知機能 | Google Play Services SDK |
 
 ## 動作環境
 
