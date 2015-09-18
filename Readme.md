@@ -2,10 +2,12 @@
 
 ## ダウンロード
 
-Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください
+Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
 
 
 ## インストール
+
+Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
 1. app/libsフォルダにNCMB.jarをコピーします
 2. app/build.gradleファイルに以下を追加します
@@ -20,7 +22,7 @@ dependencies {
 
 * AndroidManifest.xmlの編集
 
-&lt;application&gt;タグの直前に以下のpermissionを追加します
+&lt;application&gt;タグの直前に以下のpermissionを追加します。
 
 ```
 <uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +31,7 @@ dependencies {
 
 * 初期化
 
-ActivityのonCreateメソッド内に以下を記載します
+ActivityのonCreateメソッド内に以下を記載します。
 
 ```
 NCMB.initialize(this,"APP_KEY","CLIENT_KEY");
@@ -37,7 +39,7 @@ NCMB.initialize(this,"APP_KEY","CLIENT_KEY");
 
 * オブジェクトの保存
 
-NCMB.initializeの下に以下を記載します
+NCMB.initializeの下に以下を記載します。
 
 ```
 NCMBObject obj = new NCMBObject("TestObject");
