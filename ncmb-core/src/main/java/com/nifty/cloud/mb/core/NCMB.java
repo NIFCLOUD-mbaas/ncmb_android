@@ -47,6 +47,11 @@ public class NCMB {
     protected static NCMBContext sCurrentContext;
 
     /**
+     * service pool
+     */
+    protected static NCMBServicePool sServicePool;
+
+    /**
      * Setup SDK internals
      *
      * @param context Application context
@@ -91,6 +96,7 @@ public class NCMB {
 
         String apiBaseUrl = aDomainUrl + aApiVersion + "/";
         sCurrentContext = new NCMBContext(context, applicationKey, clientKey, apiBaseUrl);
+        sServicePool = new NCMBServicePool();
     }
 
     /**
@@ -99,29 +105,8 @@ public class NCMB {
      * @param serviceType identifier for service API
      * @return Object of each service class
      */
-    public static NCMBService factory(ServiceType serviceType) throws IllegalArgumentException {
-        NCMBService service;
-
-        switch (serviceType) {
-            case OBJECT:
-                service = (NCMBService)new NCMBObjectService(sCurrentContext);
-                break;
-            case USER:
-                service = (NCMBService)new NCMBUserService(sCurrentContext);
-                break;
-            case ROLE:
-                service = (NCMBService)new NCMBRoleService(sCurrentContext);
-                break;
-            case INSTALLATION:
-                service = (NCMBInstallationService)new NCMBInstallationService(sCurrentContext);
-                break;
-            case PUSH:
-                service = (NCMBPushService)new NCMBPushService(sCurrentContext);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid serviceType");
-        }
-        return service;
+    public static NCMBService factory(ServiceType serviceType) {
+        return sServicePool.get(serviceType, sCurrentContext);
     }
 
     /**
