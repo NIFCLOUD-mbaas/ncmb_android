@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -22,8 +22,8 @@ import java.util.Arrays;
 /**
  * NCMBRoleTest class
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBRoleTest {
     private MockWebServer mServer;
 
@@ -40,8 +40,8 @@ public class NCMBRoleTest {
                 mServer.getUrl("/").toString(),
                 null);
 
-        Robolectric.getBackgroundScheduler().pause();
-        Robolectric.getUiThreadScheduler().pause();
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -81,8 +81,8 @@ public class NCMBRoleTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("dummyObjectId", role.getObjectId());
     }
@@ -122,8 +122,8 @@ public class NCMBRoleTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
@@ -164,8 +164,8 @@ public class NCMBRoleTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
@@ -200,8 +200,8 @@ public class NCMBRoleTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("role_test1", role.getRoleName());
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -235,8 +235,8 @@ public class NCMBRoleTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(role.getRoleName());
         Assert.assertNull(role.getObjectId());

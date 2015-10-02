@@ -11,18 +11,18 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.text.SimpleDateFormat;
 
 /**
  * NCMBUserTest class
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBUserTest {
     private MockWebServer mServer;
 
@@ -38,8 +38,8 @@ public class NCMBUserTest {
                 "cliKey",
                 mServer.getUrl("/").toString(),
                 null);
-        Robolectric.getBackgroundScheduler().pause();
-        Robolectric.getUiThreadScheduler().pause();
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -81,9 +81,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
@@ -110,8 +109,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         NCMBUser user = NCMBUser.getCurrentUser();
 
@@ -169,8 +168,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
@@ -198,8 +197,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("Nifty Tarou", user.getUserName());
     }
@@ -235,8 +234,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(user.getUserName());
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
@@ -275,8 +274,8 @@ public class NCMBUserTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
