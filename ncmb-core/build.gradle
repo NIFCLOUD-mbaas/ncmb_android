@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.robolectric'
 
 buildscript {
     repositories {
@@ -7,7 +6,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.robolectric:robolectric-gradle-plugin:1.1.0'
     }
 }
 
@@ -41,7 +39,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.android.support:appcompat-v7:22.0.0'
     testCompile 'junit:junit:4.12'
-    testCompile 'org.robolectric:robolectric:2.4'
+    testCompile "org.robolectric:robolectric:3.0"
+    testCompile 'org.robolectric:shadows-httpclient:3.0'
     testCompile 'com.squareup.okhttp:mockwebserver:2.3.0'
     testCompile 'org.mockito:mockito-core:1.+'
     testCompile 'org.powermock:powermock-api-mockito:1.6.2'
