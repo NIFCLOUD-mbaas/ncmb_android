@@ -13,7 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
@@ -28,8 +29,8 @@ import static org.mockito.Mockito.spy;
 /**
  * Test for NCMBInstallationTest
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBInstallationTest {
 
     private MockWebServer mServer;
@@ -38,7 +39,7 @@ public class NCMBInstallationTest {
     public void setup() throws Exception {
 
         //set application information
-        RobolectricPackageManager rpm = (RobolectricPackageManager) Robolectric.application.getPackageManager();
+        RobolectricPackageManager rpm = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.packageName = NCMBInstallationServiceTest.PACKAGE_NAME;
         packageInfo.versionName = NCMBInstallationServiceTest.APP_VERSION;
@@ -54,7 +55,7 @@ public class NCMBInstallationTest {
         String mockServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "applicationKey",
                 "clientKey",
                 mockServerUrl,

@@ -7,7 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.skyscreamer.jsonassert.JSONAssert;
 //import junit.framework.Assert;
@@ -15,8 +15,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 /**
  * Test for NCMBAcl
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = "app/src/main/AndroidManifest.xml", emulateSdk = 18)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBAclTest {
     @Before
     public void setup() {

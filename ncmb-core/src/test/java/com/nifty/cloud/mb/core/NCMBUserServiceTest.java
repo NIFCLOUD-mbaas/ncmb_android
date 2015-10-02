@@ -12,7 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -26,14 +27,13 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBUserServiceTest {
     private MockWebServer mServer;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -42,7 +42,7 @@ public class NCMBUserServiceTest {
         String mocServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application,
                 "appKey",
                 "clientKKey",
                 mocServerUrl,

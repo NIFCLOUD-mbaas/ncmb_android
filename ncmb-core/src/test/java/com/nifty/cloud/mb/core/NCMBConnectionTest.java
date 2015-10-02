@@ -11,23 +11,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 
 /**
  * 主に通信を行う自動化テストクラス
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBConnectionTest {
 
     private MockWebServer mServer;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);

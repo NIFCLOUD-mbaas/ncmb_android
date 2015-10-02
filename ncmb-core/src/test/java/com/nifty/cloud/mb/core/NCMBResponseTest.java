@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
@@ -24,8 +24,8 @@ import java.net.URL;
 /**
  * NCMBResponse自動化テストクラス
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBResponseTest {
     private MockWebServer mServer;
 
@@ -59,7 +59,6 @@ public class NCMBResponseTest {
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         mServer = new MockWebServer();
         mServer.setDispatcher(dispatcher);

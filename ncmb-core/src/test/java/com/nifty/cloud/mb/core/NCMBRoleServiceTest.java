@@ -12,22 +12,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import java.util.ArrayList;
 
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class NCMBRoleServiceTest {
 
     private MockWebServer mServer;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -36,7 +36,7 @@ public class NCMBRoleServiceTest {
         String mocServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application,
                 "appKey",
                 "clientKKey",
                 mocServerUrl,
