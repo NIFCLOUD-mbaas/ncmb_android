@@ -487,7 +487,7 @@ public class NCMBInstallationServiceTest {
         //connect auto delete
         NCMBException error = null;
         try {
-            installationService.updateInstallation(currentInstallation.getObjectId(), null);
+            installationService.updateInstallation("errorObjectId", null);
         } catch (NCMBException e) {
             error = e;
         }
@@ -517,7 +517,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getDeviceToken());
 
         //connect auto delete inBackground
-        installationService.deleteInstallationInBackground(currentInstallation.getObjectId(), new DoneCallback() {
+        installationService.deleteInstallationInBackground("errorObjectId", new DoneCallback() {
 
             @Override
             public void done(NCMBException e) {
@@ -576,7 +576,7 @@ public class NCMBInstallationServiceTest {
         JSONObject localFileData = new JSONObject();
         localFileData.put("appVersion","1.0");
         localFileData.put("deviceToken","dummyDeviceToken");
-        localFileData.put("objectId","7FrmPTBKSNtVjajm");
+        localFileData.put("objectId","non-update-value-id");
         localFileData.put("key","value");
         localFileData.put("applicationName","AndroidSDK_v1");
         localFileData.put("classname","installation");
@@ -599,7 +599,7 @@ public class NCMBInstallationServiceTest {
         //check currentInstallation
         NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
         Assert.assertEquals("1.5.0", currentInstallation.getSDKVersion());
-        Assert.assertEquals("7FrmPTBKSNtVjajm", currentInstallation.getObjectId());
+        Assert.assertEquals("non-update-value-id", currentInstallation.getObjectId());
         Assert.assertEquals("value", currentInstallation.getString("key"));
         Assert.assertEquals("dummyDeviceToken", currentInstallation.getDeviceToken());
         Assert.assertEquals("1.0", currentInstallation.getAppVersion());
@@ -633,7 +633,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
 
         //PUT params check
-        json = installationService.updateInstallation(json.getString("objectId"), null);
+        json = installationService.updateInstallation("non-update-value-id", null);
         Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
     }
 
