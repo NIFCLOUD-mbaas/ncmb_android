@@ -53,9 +53,9 @@ public class NCMBRequest {
     //コンテントタイプの値
     static final String HEADER_CONTENT_TYPE_VALUE = "application/json";
     //SDKVersionのキー
-    static final String HEADER_SDK_VERSION	= "X-NCMB-SDK-Version";
+    static final String HEADER_SDK_VERSION = "X-NCMB-SDK-Version";
     //OSVersionのキー
-    static final String HEADER_OS_VERSION	= "X-NCMB-OS-Version";
+    static final String HEADER_OS_VERSION = "X-NCMB-OS-Version";
     //シグネチャメソッドのキー
     private static final String SIGNATURE_METHOD_KEY = "SignatureMethod";
     //シグネチャメソッドの値
@@ -180,11 +180,11 @@ public class NCMBRequest {
         return this.timestamp;
     }
 
-    public String getRequestProperty(String key){
+    public String getRequestProperty(String key) {
         return this.requestProperties.get(key);
     }
 
-    public HashMap<String, String> getAllRequestProperties(){
+    public HashMap<String, String> getAllRequestProperties() {
         return this.requestProperties;
     }
 
@@ -198,14 +198,14 @@ public class NCMBRequest {
      * @param url            URL
      * @param method         HTTPメソッド
      * @param content        コンテントデータ
-     * @param queryParam    検索条件
+     * @param queryParam     検索条件
      * @param sessionToken   セッショントークン
      * @param applicationKey アプリケーションキー
      * @param clientKey      クライアントキー
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
-        this(url,method,content,queryParam,sessionToken,applicationKey,clientKey,null);
+        this(url, method, content, queryParam, sessionToken, applicationKey, clientKey, null);
     }
 
     /**
@@ -214,14 +214,14 @@ public class NCMBRequest {
      * @param url            URL
      * @param method         HTTPメソッド
      * @param content        コンテントデータ
-     * @param queryParam    検索条件
+     * @param queryParam     検索条件
      * @param sessionToken   セッショントークン
      * @param applicationKey アプリケーションキー
      * @param clientKey      クライアントキー
      * @param timestamp      タイムスタンプ
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey,String timestamp) throws NCMBException {
+    public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey, String timestamp) throws NCMBException {
 
         this.method = method;
         this.applicationKey = applicationKey;
@@ -280,7 +280,7 @@ public class NCMBRequest {
 
         try {
             // タイムスタンプ生成/設定
-            if(this.timestamp == null){
+            if (this.timestamp == null) {
                 //timestamp引数なしコンストラクタの場合は現在時刻で生成する
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
                 df.setTimeZone(new SimpleTimeZone(0, "GMT"));
