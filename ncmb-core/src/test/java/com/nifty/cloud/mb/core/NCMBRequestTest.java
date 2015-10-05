@@ -104,5 +104,25 @@ public class NCMBRequestTest {
         Assert.assertEquals("/mQAJJfMHx2XN9mPZ9bDWR9VIeftZ97ntzDIRw0MQ4M=", request.getRequestProperty("X-NCMB-Signature"));
     }
 
+    /**
+     * - 内容：独自UserAgentが正しく設定されているかを確認する
+     * - 結果：独自UserAgentが正しく設定されること
+     */
+    @Test
+    public void userAgentCheck() throws Exception {
+
+        //NCMBRequest作成
+        NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
+                Constants.HTTP_METHOD_POST,
+                "{}",
+                new JSONObject(),
+                null,
+                "applicationKey",
+                "clientKey");
+
+        //独自UserAgentの値を確認
+        Assert.assertEquals("android-" + NCMB.SDK_VERSION, request.getRequestProperty("X-NCMB-SDK-Version"));
+        Assert.assertEquals("android-unknown", request.getRequestProperty("X-NCMB-OS-Version"));
+    }
 }
 

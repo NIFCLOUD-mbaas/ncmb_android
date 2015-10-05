@@ -1,5 +1,6 @@
 package com.nifty.cloud.mb.core;
 
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -51,6 +52,10 @@ public class NCMBRequest {
     static final String HEADER_CONTENT_TYPE = "Content-Type";
     //コンテントタイプの値
     static final String HEADER_CONTENT_TYPE_VALUE = "application/json";
+    //SDKVersionのキー
+    static final String HEADER_SDK_VERSION	= "X-NCMB-SDK-Version";
+    //OSVersionのキー
+    static final String HEADER_OS_VERSION	= "X-NCMB-OS-Version";
     //シグネチャメソッドのキー
     private static final String SIGNATURE_METHOD_KEY = "SignatureMethod";
     //シグネチャメソッドの値
@@ -296,6 +301,11 @@ public class NCMBRequest {
         if (this.sessionToken != null && this.sessionToken.length() > 0) {
             this.requestProperties.put(HEADER_APPS_SESSION_TOKEN, this.sessionToken);
         }
+
+        // 独自UserAgent設定
+        this.requestProperties.put(HEADER_SDK_VERSION, "android-" + NCMB.SDK_VERSION);
+        String osVersion = Build.VERSION.RELEASE;
+        this.requestProperties.put(HEADER_OS_VERSION, "android-" + osVersion);
 
         //createHttpRequestで生成したRequestのコンテント設定
         //addContent();
