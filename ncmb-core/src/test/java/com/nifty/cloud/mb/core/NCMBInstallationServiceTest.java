@@ -42,7 +42,7 @@ import java.util.SimpleTimeZone;
  * Test for NCMBInstallationServiceTest
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationServiceTest {
 
     private MockWebServer mServer;
@@ -64,6 +64,7 @@ public class NCMBInstallationServiceTest {
         packageInfo.applicationInfo.packageName = PACKAGE_NAME;
         packageInfo.applicationInfo.name = APP_NAME;
         rpm.addPackage(packageInfo);
+        RuntimeEnvironment.setRobolectricPackageManager(rpm);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -77,6 +78,12 @@ public class NCMBInstallationServiceTest {
                 "clientKey",
                 mockServerUrl,
                 null);
+
+
+        Assert.assertEquals(
+                NCMB.sCurrentContext.context.getApplicationInfo().name,
+                APP_NAME
+        );
 
         MockitoAnnotations.initMocks(this);
 

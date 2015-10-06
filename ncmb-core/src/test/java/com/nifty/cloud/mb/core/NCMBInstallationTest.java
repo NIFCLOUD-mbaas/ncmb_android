@@ -29,7 +29,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  * Test for NCMBInstallationTest
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = "app/src/main/AndroidManifest.xml")
+@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationTest {
 
     private MockWebServer mServer;
