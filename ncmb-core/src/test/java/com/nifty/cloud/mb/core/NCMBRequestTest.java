@@ -1,11 +1,14 @@
 package com.nifty.cloud.mb.core;
 
+import android.os.Build;
+
 import junit.framework.Assert;
 
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
@@ -111,6 +114,9 @@ public class NCMBRequestTest {
     @Test
     public void userAgentCheck() throws Exception {
 
+        //OSのversionを設定
+        Robolectric.Reflection.setFinalStaticField(Build.VERSION.class, "RELEASE", "4.1");
+
         //NCMBRequest作成
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
                 Constants.HTTP_METHOD_POST,
@@ -122,7 +128,7 @@ public class NCMBRequestTest {
 
         //独自UserAgentの値を確認
         Assert.assertEquals("android-" + NCMB.SDK_VERSION, request.getRequestProperty("X-NCMB-SDK-Version"));
-        Assert.assertEquals("android-unknown", request.getRequestProperty("X-NCMB-OS-Version"));
+        Assert.assertEquals("android-4.1", request.getRequestProperty("X-NCMB-OS-Version"));
     }
 }
 
