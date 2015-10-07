@@ -16,7 +16,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
  * Test for NCMBAcl
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = "app/src/main/AndroidManifest.xml", emulateSdk = 18)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBAclTest {
     @Before
     public void setup() {

@@ -17,10 +17,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.httpclient.FakeHttp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,8 +41,8 @@ import java.util.SimpleTimeZone;
 /**
  * Test for NCMBInstallationServiceTest
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationServiceTest {
 
     private MockWebServer mServer;
@@ -51,8 +53,10 @@ public class NCMBInstallationServiceTest {
     @Before
     public void setup() throws Exception {
 
+        FakeHttp.getFakeHttpLayer().interceptHttpRequests(false);
+
         //set application information
-        RobolectricPackageManager rpm = (RobolectricPackageManager) Robolectric.application.getPackageManager();
+        RobolectricPackageManager rpm = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.packageName = PACKAGE_NAME;
         packageInfo.versionName = APP_VERSION;
@@ -60,6 +64,7 @@ public class NCMBInstallationServiceTest {
         packageInfo.applicationInfo.packageName = PACKAGE_NAME;
         packageInfo.applicationInfo.name = APP_NAME;
         rpm.addPackage(packageInfo);
+        RuntimeEnvironment.setRobolectricPackageManager(rpm);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -68,11 +73,17 @@ public class NCMBInstallationServiceTest {
         String mockServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application,
                 "applicationKey",
                 "clientKey",
                 mockServerUrl,
                 null);
+
+
+        Assert.assertEquals(
+                NCMB.sCurrentContext.context.getApplicationInfo().name,
+                APP_NAME
+        );
 
         MockitoAnnotations.initMocks(this);
 
