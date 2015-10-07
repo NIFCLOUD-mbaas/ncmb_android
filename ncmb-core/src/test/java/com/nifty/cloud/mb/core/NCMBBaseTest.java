@@ -14,8 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -32,20 +32,19 @@ import java.util.SimpleTimeZone;
  * NCMBBaseTest
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = "app/src/main/AndroidManifest.xml", emulateSdk = 18)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBBaseTest {
 
     private MockWebServer mServer;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
 
-        NCMB.initialize(Robolectric.application.getApplicationContext(),
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey",
                 mServer.getUrl("/").toString(),

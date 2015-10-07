@@ -129,6 +129,35 @@
     url: /2013-09-01/installations
     method: POST
     body:
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.0.0"
+      timeZone: "Asia/Tokyo"
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.0.0"
+      timeZone: "Etc/UTC"
+      key: "value"
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
       error: "test"
       deviceToken: "xxxxxxxxxxxxxxxxxxx"
       deviceType: "android"
@@ -143,9 +172,31 @@
   request:
     url: /2013-09-01/installations
     method: POST
+    body:
+      error: "test"
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.0.0"
+      timeZone: "Etc/UTC"
+  response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
   response:
     status: 201
     file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations/non-update-value-id
+    method: PUT
+  response:
+    status: 200
+    file: valid_put_response.json
 ---
   request:
     url: /2013-09-01/installations/7FrmPTBKSNtVjajm
@@ -167,6 +218,33 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
+      sdkVersion: "2.0.0"
+      applicationName: "ncmb-core"
+      key: "value_update"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Etc/UTC"
+      sdkVersion: "2.0.0"
+      applicationName: "ncmb-core"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Etc/UTC"
       sdkVersion: "2.0.0"
       applicationName: "ncmb-core"
       key: "value_update"

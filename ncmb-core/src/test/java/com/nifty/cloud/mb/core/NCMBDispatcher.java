@@ -86,6 +86,8 @@ public class NCMBDispatcher {
                         }
                         Object mockBody = requestMap.get("body");
                         String mockBodyStr = new Gson().toJson(mockBody);
+                        System.out.println("mock:" + mockBodyStr);
+                        System.out.println("req:" + requestBody);
                         if (checkRequestBody(mockBodyStr, requestBody)) {
                             //Responseをreturn
                             return new MockResponse().setResponseCode((int)responseMap.get("status"))
@@ -166,7 +168,7 @@ public class NCMBDispatcher {
             if (mockBody.length() != realBody.length()) {
                 return false;
             }
-            if (!compareJSON(mockBody, realBody, JSONCompareMode.LENIENT).passed()){
+            if (!compareJSON(mockBody, realBody, JSONCompareMode.NON_EXTENSIBLE).passed()){
                 return false;
             }
             /*

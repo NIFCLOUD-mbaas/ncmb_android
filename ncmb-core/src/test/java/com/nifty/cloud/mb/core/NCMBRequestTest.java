@@ -8,15 +8,16 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.util.ReflectionHelpers;
 
 /**
  * NCMBRequest自動化テストクラス
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBRequestTest {
 
     @Before
@@ -115,7 +116,7 @@ public class NCMBRequestTest {
     public void userAgentCheck() throws Exception {
 
         //OSのversionを設定
-        Robolectric.Reflection.setFinalStaticField(Build.VERSION.class, "RELEASE", "4.1");
+        ReflectionHelpers.setStaticField(Build.VERSION.class, "RELEASE", "4.1");
 
         //NCMBRequest作成
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",

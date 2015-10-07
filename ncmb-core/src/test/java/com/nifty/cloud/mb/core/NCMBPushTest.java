@@ -10,7 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
@@ -20,8 +21,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBPushTest {
 
     private MockWebServer mServer;
@@ -32,10 +33,9 @@ public class NCMBPushTest {
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         //initialize
-        NCMB.initialize(Robolectric.application.getApplicationContext(),
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey",
                 mServer.getUrl("/").toString(),
