@@ -1,5 +1,7 @@
 package com.nifty.cloud.mb.core;
 
+import android.os.Build;
+
 import junit.framework.Assert;
 
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.util.ReflectionHelpers;
 
 /**
  * NCMBRequest自動化テストクラス
@@ -29,9 +32,9 @@ public class NCMBRequestTest {
      * - 結果：値が正しく設定されていること
      */
     @Test
-    public void requestPropertyCheck() throws Exception{
+    public void requestPropertyCheck() throws Exception {
         //NCMBRequest作成
-        NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",Constants.HTTP_METHOD_POST,"content",null,"sessionToken","applicationKey","clientKey","2015-06-12T02:59:52.367Z");
+        NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass", Constants.HTTP_METHOD_POST, "content", null, "sessionToken", "applicationKey", "clientKey", "2015-06-12T02:59:52.367Z");
 
         //プロパティ取得
         String url = request.getUrl().toString();
@@ -45,13 +48,13 @@ public class NCMBRequestTest {
 
         //値が正しく設定されているか確認
         Assert.assertEquals("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass", url);
-        Assert.assertEquals(Constants.HTTP_METHOD_POST,type);
-        Assert.assertEquals("content",content);
+        Assert.assertEquals(Constants.HTTP_METHOD_POST, type);
+        Assert.assertEquals("content", content);
         Assert.assertNull(query);
         Assert.assertEquals("sessionToken", sessionToken);
-        Assert.assertEquals("applicationKey",applicationKey);
-        Assert.assertEquals("clientKey",clientKey);
-        Assert.assertEquals("2015-06-12T02:59:52.367Z",timeStamp);
+        Assert.assertEquals("applicationKey", applicationKey);
+        Assert.assertEquals("clientKey", clientKey);
+        Assert.assertEquals("2015-06-12T02:59:52.367Z", timeStamp);
     }
 
     /**
@@ -59,7 +62,7 @@ public class NCMBRequestTest {
      * - 結果：ヘッダーが正しく設定されること
      */
     @Test
-    public void requestHeaderCheck() throws Exception{
+    public void requestHeaderCheck() throws Exception {
 
         //NCMBRequest作成
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
@@ -73,7 +76,7 @@ public class NCMBRequestTest {
 
         //ヘッダーのKeyを確認
         Assert.assertEquals("6145f91061916580c742f806bab67649d10f45920246ff459404c46f00ff3e56",
-                            request.getRequestProperty("X-NCMB-Application-Key"));
+                request.getRequestProperty("X-NCMB-Application-Key"));
 
 //        Assert.assertTrue(request.getRequestProperty("X-NCMB-Signature"));
 //        Assert.assertTrue(headers.containsKey("X-NCMB-Timestamp"));
@@ -86,24 +89,47 @@ public class NCMBRequestTest {
     }
 
     /**
-    * - 内容：シグネチャが正しく生成されているかを確認する
-    * - 結果：ドキュメントのシグネチャと一致すること(http://mb.cloud.nifty.com/doc/rest/common/signature.html)
-    */
+     * - 内容：シグネチャが正しく生成されているかを確認する
+     * - 結果：ドキュメントのシグネチャと一致すること(http://mb.cloud.nifty.com/doc/rest/common/signature.html)
+     */
     @Test
-    public void requestSignatureCheck() throws Exception{
+    public void requestSignatureCheck() throws Exception {
         //NCMBRequest作成
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
-                                              Constants.HTTP_METHOD_GET,
-                                              null,
-                                              new JSONObject("{\"where\":{\"testKey\":\"testValue\"}}"),
-                                              null,
-                                              "6145f91061916580c742f806bab67649d10f45920246ff459404c46f00ff3e56",
-                                              "1343d198b510a0315db1c03f3aa0e32418b7a743f8e4b47cbff670601345cf75",
-                                              "2013-12-02T02:44:35.452Z");
+                Constants.HTTP_METHOD_GET,
+                null,
+                new JSONObject("{\"where\":{\"testKey\":\"testValue\"}}"),
+                null,
+                "6145f91061916580c742f806bab67649d10f45920246ff459404c46f00ff3e56",
+                "1343d198b510a0315db1c03f3aa0e32418b7a743f8e4b47cbff670601345cf75",
+                "2013-12-02T02:44:35.452Z");
 
         //シグネチャが正しく生成されているか確認
         Assert.assertEquals("/mQAJJfMHx2XN9mPZ9bDWR9VIeftZ97ntzDIRw0MQ4M=", request.getRequestProperty("X-NCMB-Signature"));
     }
 
+    /**
+     * - 内容：独自UserAgentが正しく設定されているかを確認する
+     * - 結果：独自UserAgentが正しく設定されること
+     */
+    @Test
+    public void userAgentCheck() throws Exception {
+
+        //OSのversionを設定
+        ReflectionHelpers.setStaticField(Build.VERSION.class, "RELEASE", "4.1");
+
+        //NCMBRequest作成
+        NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
+                Constants.HTTP_METHOD_POST,
+                "{}",
+                new JSONObject(),
+                null,
+                "applicationKey",
+                "clientKey");
+
+        //独自UserAgentの値を確認
+        Assert.assertEquals("android-" + NCMB.SDK_VERSION, request.getRequestProperty("X-NCMB-SDK-Version"));
+        Assert.assertEquals("android-4.1", request.getRequestProperty("X-NCMB-OS-Version"));
+    }
 }
 
