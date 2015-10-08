@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         String result;
         try {
             NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            userService.deleteUser(NCMBUser.getCurrentUser().getUserId());
+            userService.deleteUser(NCMBUser.getCurrentUser().getObjectId());
             NCMBUser user = NCMBUser.getCurrentUser();
             result = createSuccessString(user);
             Toast.makeText(this, "削除成功", Toast.LENGTH_SHORT).show();
@@ -181,16 +181,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     String createSuccessString(NCMBUser user) throws NCMBException {
-        String successString = null;
-        try{
-            successString = "【Success】\n";
-            successString += "ID : " + user.getUserId() + "\n";
-            successString += "UserName : " + user.getUserName() + "\n";
-            successString += "MailAddress : " + user.getMailAddress() + "\n";
-            successString += "SessionToken : " + user.getValue("sessionToken") + "\n";
-        }catch (NCMBException error){
-            successString += "SessionToken : " + null;
-        }
+        String successString;
+
+        successString = "【Success】\n";
+        successString += "ID : " + user.getObjectId() + "\n";
+        successString += "UserName : " + user.getUserName() + "\n";
+        successString += "MailAddress : " + user.getMailAddress() + "\n";
+        successString += "SessionToken : " + user.getString("sessionToken") + "\n";
+
         return successString;
     }
 
