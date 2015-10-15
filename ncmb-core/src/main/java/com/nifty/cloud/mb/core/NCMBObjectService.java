@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Service class for data store api
  */
-public class NCMBObjectService extends NCMBService{
+public class NCMBObjectService extends NCMBService {
 
     public static final String SERVICE_PATH = "classes/";
 
@@ -20,11 +20,11 @@ public class NCMBObjectService extends NCMBService{
     abstract class ObjectServiceCallback extends ServiceCallback {
         /** constructors */
         ObjectServiceCallback(NCMBObjectService service, ExecuteServiceCallback callback) {
-            super(service, (CallbackBase)callback);
+            super(service, (CallbackBase) callback);
         }
 
         ObjectServiceCallback(NCMBObjectService service, SearchObjectCallback callback) {
-            super(service, (CallbackBase)callback);
+            super(service, (CallbackBase) callback);
         }
 
         ObjectServiceCallback(NCMBObjectService service, BatchCallback callback) {
@@ -32,7 +32,7 @@ public class NCMBObjectService extends NCMBService{
         }
 
         protected NCMBObjectService getObjectService() {
-            return (NCMBObjectService)mService;
+            return (NCMBObjectService) mService;
         }
     }
 
@@ -48,13 +48,14 @@ public class NCMBObjectService extends NCMBService{
 
     /**
      * Saving JSONObject data to Nifty cloud mobile backend
+     *
      * @param className Datastore class name which to save the object
-     * @param params Saving Object data
+     * @param params    Saving Object data
      * @return result of save object
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public JSONObject saveObject(String className, JSONObject params) throws NCMBException {
-        if (!validateClassName(className)){
+        if (!validateClassName(className)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty");
         }
         validateClassName(className);
@@ -69,12 +70,13 @@ public class NCMBObjectService extends NCMBService{
 
     /**
      * Saving JSONObject data to Nifty cloud mobile backend in background thread
+     *
      * @param className Datastore class name which to save the object
-     * @param params saving Object data
-     * @param callback callback for after object save
+     * @param params    saving Object data
+     * @param callback  callback for after object save
      */
     public void saveObjectInBackground(String className, JSONObject params, ExecuteServiceCallback callback) {
-        if (!validateClassName(className)){
+        if (!validateClassName(className)) {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
         }
 
@@ -140,7 +142,7 @@ public class NCMBObjectService extends NCMBService{
     /**
      * Saving Objects JSONObject data to Nifty cloud mobile backend in background thread
      *
-     * @param objects   saving Objects data
+     * @param objects  saving Objects data
      * @param callback callback for after Objects save
      */
     public void saveAllObjectInBackground(JSONArray objects, BatchCallback callback) {
@@ -179,8 +181,8 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
-    public JSONObject fetchObject(String className,String objectId) throws NCMBException {
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+    public JSONObject fetchObject(String className, String objectId) throws NCMBException {
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
 
@@ -193,8 +195,8 @@ public class NCMBObjectService extends NCMBService{
         return response.responseData;
     }
 
-    public void fetchObjectInBackground(String className, String objectId, ExecuteServiceCallback callback){
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+    public void fetchObjectInBackground(String className, String objectId, ExecuteServiceCallback callback) {
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
         } else {
 
@@ -235,7 +237,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     public JSONObject updateObject(String className, String objectId, JSONObject params) throws NCMBException {
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
         validateClassName(className);
@@ -249,7 +251,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     public void updateObjectInBackground(String className, String objectId, JSONObject params, ExecuteServiceCallback callback) {
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
         } else {
 
@@ -286,8 +288,8 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
-    public JSONObject deleteObject(String className,String objectId) throws NCMBException {
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+    public JSONObject deleteObject(String className, String objectId) throws NCMBException {
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
 
@@ -300,8 +302,8 @@ public class NCMBObjectService extends NCMBService{
         return response.responseData;
     }
 
-    public void deleteObjectInBackground(String className, String objectId, ExecuteServiceCallback callback){
-        if (!validateClassName(className) || !validateObjectId(objectId)){
+    public void deleteObjectInBackground(String className, String objectId, ExecuteServiceCallback callback) {
+        if (!validateClassName(className) || !validateObjectId(objectId)) {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
         } else {
             String url = mContext.baseUrl + mServicePath + className + "/" + objectId;
@@ -340,8 +342,8 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
-    public List searchObject (String className, JSONObject conditions) throws NCMBException {
-        if (!validateClassName(className)){
+    public List searchObject(String className, JSONObject conditions) throws NCMBException {
+        if (!validateClassName(className)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
 
@@ -356,7 +358,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     public void searchObjectInBackground(final String className, JSONObject conditions, SearchObjectCallback callback) {
-        if (!validateClassName(className)){
+        if (!validateClassName(className)) {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
         }
 
@@ -367,7 +369,7 @@ public class NCMBObjectService extends NCMBService{
         reqParams.type = type;
         reqParams.query = conditions;
         try {
-            sendRequestAsync(reqParams, new ObjectServiceCallback(this, callback){
+            sendRequestAsync(reqParams, new ObjectServiceCallback(this, callback) {
                 @Override
                 public void handleResponse(NCMBResponse response) {
 
@@ -420,15 +422,15 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
-    private boolean validateClassName (String className){
-        if (className == null || className.isEmpty()){
+    private boolean validateClassName(String className) {
+        if (className == null || className.isEmpty()) {
             return false;
         }
         return true;
     }
 
-    private boolean validateObjectId (String objectId){
-        if (objectId == null || objectId.isEmpty()){
+    private boolean validateObjectId(String objectId) {
+        if (objectId == null || objectId.isEmpty()) {
             return false;
         }
         return true;

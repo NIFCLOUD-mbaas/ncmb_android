@@ -32,7 +32,7 @@ public class NCMBObjectServiceTest {
     private ArrayList<NCMBObject> searchResult;
 
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         mServer = new MockWebServer();
@@ -52,13 +52,12 @@ public class NCMBObjectServiceTest {
     }
 
 
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void saveObjectToNcmb_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void saveObjectToNcmb_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         JSONObject response = objServ.saveObject("TestClass", new JSONObject("{\"key\":\"value\"}"));
 
         Assert.assertEquals("7FrmPTBKSNtVjajm", response.getString("objectId"));
@@ -66,8 +65,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void saveObjectToNcmbInBackground_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void saveObjectToNcmbInBackground_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.saveObjectInBackground(
                 "TestClass",
                 new JSONObject("{\"key\":\"value\"}"),
@@ -84,8 +83,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void getObject_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void getObject_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         response = objServ.fetchObject(
                 "TestClass",
                 "getTestObjectId"
@@ -98,8 +97,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void getObjectInBackground_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void getObjectInBackground_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.fetchObjectInBackground(
                 "TestClass",
                 "getTestObjectId",
@@ -118,8 +117,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void updateObject_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void updateObject_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         response = objServ.updateObject(
                 "TestClass",
                 "updateTestObjectId",
@@ -130,8 +129,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void updateObjectInBackground_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void updateObjectInBackground_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.updateObjectInBackground(
                 "TestClass",
                 "updateTestObjectId",
@@ -148,8 +147,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void deleteObject_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void deleteObject_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         response = objServ.deleteObject(
                 "TestClass",
                 "deleteTestObjectId"
@@ -159,8 +158,8 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void deleteObjectInBackground_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void deleteObjectInBackground_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.deleteObjectInBackground(
                 "TestClass",
                 "deleteTestObjectId",
@@ -176,22 +175,22 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void searchObject_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void searchObject_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         JSONObject conditions = new JSONObject("{\"where\":{\"key\":\"value\"},\"limit\":1}");
-        ArrayList<NCMBObject> result = (ArrayList<NCMBObject>)objServ.searchObject("TestClass", conditions);
+        ArrayList<NCMBObject> result = (ArrayList<NCMBObject>) objServ.searchObject("TestClass", conditions);
         Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
-        
+
     }
 
     @Test
-    public void searchObjectInBackground_valid_class () throws Exception {
-        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+    public void searchObjectInBackground_valid_class() throws Exception {
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         JSONObject conditions = new JSONObject("{\"where\":{\"key\":\"value\"},\"limit\":1}");
         objServ.searchObjectInBackground("TestClass", conditions, new SearchObjectCallback() {
             @Override
             public void done(List result, NCMBException e) {
-                searchResult = (ArrayList<NCMBObject>)result;
+                searchResult = (ArrayList<NCMBObject>) result;
             }
         });
 

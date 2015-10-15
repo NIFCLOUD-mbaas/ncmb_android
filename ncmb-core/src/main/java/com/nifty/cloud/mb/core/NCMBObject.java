@@ -10,22 +10,24 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *  NCMBObject is used to retrieve and upload the data in data store
+ * NCMBObject is used to retrieve and upload the data in data store
  */
-public class NCMBObject extends NCMBBase{
+public class NCMBObject extends NCMBBase {
 
     /**
      * Constructor with class name
+     *
      * @param className class name for data store
      */
-    public NCMBObject(String className){
+    public NCMBObject(String className) {
         super(className);
     }
 
     /**
      * Constructor with class name and default value
+     *
      * @param className class name for data store
-     * @param params parameter for setting value. same field name as property(objectId, createDate, updateDate, acl) can't set.
+     * @param params    parameter for setting value. same field name as property(objectId, createDate, updateDate, acl) can't set.
      * @throws NCMBException
      */
     NCMBObject(String className, JSONObject params) throws NCMBException {
@@ -38,12 +40,13 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * save current NCMBObject to data store
+     *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
     public void save() throws NCMBException {
         NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
         JSONObject res = null;
-        if (getObjectId() == null){
+        if (getObjectId() == null) {
             res = objService.saveObject(mClassName, mFields);
         } else {
             JSONObject updateJson = null;
@@ -61,6 +64,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * save current NCMBObject to data store asynchronously
+     *
      * @param callback callback after object save
      */
     public void saveInBackground(final DoneCallback callback) {
@@ -96,12 +100,12 @@ public class NCMBObject extends NCMBBase{
                 updateJson = createUpdateJsonData();
             } catch (JSONException e) {
                 if (callback != null) {
-                    callback.done(new NCMBException(NCMBException.INVALID_JSON,e.getMessage()));
+                    callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
             }
 
             NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
-            objService.updateObjectInBackground(mClassName, getObjectId(), updateJson,executeCallback);
+            objService.updateObjectInBackground(mClassName, getObjectId(), updateJson, executeCallback);
         }
 
     }
@@ -239,6 +243,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * fetch current NCMBObject data from data store
+     *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
     public void fetchObject() throws NCMBException {
@@ -254,9 +259,10 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * fetch current NCMBObject data from data store asynchronously
+     *
      * @param callback callback after fetch data
      */
-    public void fetchObjectInBackground (final DoneCallback callback){
+    public void fetchObjectInBackground(final DoneCallback callback) {
         NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
         objService.fetchObjectInBackground(mClassName, getObjectId(), new ExecuteServiceCallback() {
             @Override
@@ -289,6 +295,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * delete current NCMBObject from data store
+     *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
     public void deleteObject() throws NCMBException {
@@ -300,9 +307,10 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * delete current NCMBObject from data store asynchronously
+     *
      * @param callback callback after delete object
      */
-    public void deleteObjectInBackground (final DoneCallback callback) {
+    public void deleteObjectInBackground(final DoneCallback callback) {
         NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
         objService.deleteObjectInBackground(mClassName, getObjectId(), new ExecuteServiceCallback() {
             @Override
@@ -326,12 +334,12 @@ public class NCMBObject extends NCMBBase{
      * increment the value of the specified key
      * this method is effective for the saved object that contains value of the specified key
      *
-     * @param key field name to increment value
+     * @param key    field name to increment value
      * @param amount increment amount number
      * @throws NCMBException exception from sdk internal
      */
     public void increment(String key, int amount) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null && !mFields.isNull(key)) {
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {
@@ -351,12 +359,12 @@ public class NCMBObject extends NCMBBase{
      * add objects to given key
      * this method is effective for the saved object that contains value of the specified key
      *
-     * @param key field name to add objects
+     * @param key     field name to add objects
      * @param objects objects to add
      * @throws NCMBException exception from sdk internal
      */
     public void addToList(String key, List objects) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null && !mFields.isNull(key)) {
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {
@@ -377,12 +385,12 @@ public class NCMBObject extends NCMBBase{
      * add objects if object is unique in the specified key
      * this method is effective for the saved object that contains value of the specified key
      *
-     * @param key field name to add objects
+     * @param key     field name to add objects
      * @param objects objects to add
      * @throws NCMBException exception from sdk internal
      */
     public void addUniqueToList(String key, List objects) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null && !mFields.isNull(key)) {
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {
@@ -404,12 +412,12 @@ public class NCMBObject extends NCMBBase{
      * remove objects from array in the given key
      * this method is effective for the saved object that contains value of the specified key
      *
-     * @param key field name to remove objects
+     * @param key     field name to remove objects
      * @param objects objects to remove
      * @throws NCMBException exception from sdk internal
      */
     public void removeFromList(String key, List objects) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null && !mFields.isNull(key)) {
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {

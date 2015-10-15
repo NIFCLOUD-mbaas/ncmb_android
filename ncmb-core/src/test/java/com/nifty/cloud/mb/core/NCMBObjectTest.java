@@ -187,7 +187,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void save_object_with_remove () {
+    public void save_object_with_remove() {
         try {
             NCMBObject obj = new NCMBObject("TestClass", new JSONObject("{\"key\":\"value\"}"));
             obj.setObjectId("testObjectId");
@@ -285,7 +285,7 @@ public class NCMBObjectTest {
     @Test
     public void update_object_with_acl_parameter_dont_update_acl() {
         try {
-            NCMBObject obj = new NCMBObject("TestClass",new JSONObject("{\"acl\":{\"*\":{\"read\":true, \"write\":true}}}"));
+            NCMBObject obj = new NCMBObject("TestClass", new JSONObject("{\"acl\":{\"*\":{\"read\":true, \"write\":true}}}"));
             obj.setObjectId("updateTestObjectId");
             obj.put("updateKey", "updateValue");
             obj.save();
@@ -589,23 +589,23 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void fetchObject_non_object_id () {
+    public void fetchObject_non_object_id() {
 
         NCMBObject obj = new NCMBObject("testClass");
         try {
             obj.fetchObject();
-        } catch (NCMBException e){
+        } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
         }
     }
 
     @Test
-    public void fetchObject_non_exist_object () {
+    public void fetchObject_non_exist_object() {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
         try {
             obj.fetchObject();
-        } catch (NCMBException e){
+        } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
         }
     }
@@ -636,7 +636,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void fetch_object_non_object_id () throws Exception {
+    public void fetch_object_non_object_id() throws Exception {
 
         NCMBObject obj = new NCMBObject("TestClass");
         obj.fetchObjectInBackground(new DoneCallback() {
@@ -652,7 +652,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void fetch_object_non_exist_object () throws Exception {
+    public void fetch_object_non_exist_object() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
         obj.fetchObjectInBackground(new DoneCallback() {
@@ -679,7 +679,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void delete_object_without_object_id () {
+    public void delete_object_without_object_id() {
 
         NCMBObject obj = new NCMBObject("TestClass");
         try {
@@ -715,7 +715,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void delete_object_in_background_without_object_id () {
+    public void delete_object_in_background_without_object_id() {
 
         NCMBObject obj = new NCMBObject("TestClass");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -731,7 +731,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void delete_object_in_background_non_exist_object_id () {
+    public void delete_object_in_background_non_exist_object_id() {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("nonExistId");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -762,7 +762,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void add_operation() throws Exception{
+    public void add_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addToList("list", Arrays.asList("value1", "value2"));
@@ -773,7 +773,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void add_unique_operation() throws Exception{
+    public void add_unique_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addUniqueToList("list", Arrays.asList("value1", "value2"));
@@ -785,7 +785,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void remove_operation() throws Exception{
+    public void remove_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.removeFromList("list", Arrays.asList("value1", "value2"));
@@ -797,7 +797,7 @@ public class NCMBObjectTest {
 
 
     @Test
-    public void add_relation_to_object () throws Exception {
+    public void add_relation_to_object() throws Exception {
         NCMBObject pointerObj = new NCMBObject("pointerClass");
         pointerObj.setObjectId("testObjectId");
 
@@ -812,7 +812,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void remove_relation_operation() throws Exception{
+    public void remove_relation_operation() throws Exception {
         NCMBObject pointerObj = new NCMBObject("pointerClass");
         pointerObj.setObjectId("testObjectId");
 
