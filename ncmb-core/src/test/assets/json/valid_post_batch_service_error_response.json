@@ -1,0 +1,18 @@
+[
+  {
+    "success": {
+      "updateDate": "2015-09-25T04:14:25.333Z"
+    }
+  },
+  {
+    "success": {
+      "updateDate": "2015-09-25T04:14:25.555Z"
+    }
+  },
+  {
+    "error": {
+      "code": "E404001",
+      "error": "No data available."
+    }
+  }
+]

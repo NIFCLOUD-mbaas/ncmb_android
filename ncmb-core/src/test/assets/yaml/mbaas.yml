@@ -533,3 +533,114 @@
   response:
     status: 200
     file: valid_get_searchRole_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: PUT
+          path: 2013-09-01/classes/food/firstDummyObjectId
+          body: {"name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/classes/food/secondDummyObjectId
+          body: {"name":"apple","type","fruit"}
+        - method: DELETE
+          path: 2013-09-01/classes/food/thirdDummyObjectId
+          body: {}
+  response:
+    status: 200
+    file: valid_post_batch_service_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: PUT
+          path: 2013-09-01/classes/food/firstDummyObjectId
+          body: {"name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/classes/food/secondDummyObjectId
+          body: {"name":"apple","type","fruit"}
+        - method: DELETE
+          path: 2013-09-01/classes/food/thirdDummyObjectId_error
+          body: {}
+  response:
+    status: 200
+    file: valid_post_batch_service_error_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: POST
+          path: 2013-09-01/classes/food
+          body: {"name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/classes/food/dummyObjectId
+          body: {"name":"apple","type","fruit"}
+  response:
+    status: 200
+    file: valid_post_batch_entity_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: POST
+          path: 2013-09-01/classes/food
+          body: {"name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/classes/food/errorObjectId
+          body: {"name":"apple","type","fruit"}
+  response:
+    status: 200
+    file: valid_post_batch_entity_error_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: POST
+          path: 2013-09-01/roles
+          body: {"roleName":"firstRole","name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/roles/dummyObjectId
+          body: {"name":"apple","type","fruit"}
+  response:
+    status: 200
+    file: valid_post_batch_entity_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: POST
+          path: 2013-09-01/push
+          body: {"deliveryTime":{"iso":"2019-12-31T15:00:00.000Z","__type":"Date"},"title":"firstTitle","message","firstMessage"}
+        - method: PUT
+          path: 2013-09-01/push/dummyObjectId
+          body: {"deliveryTime":{"iso":"2019-12-31T15:00:00.000Z","__type":"Date"},"title":"secondTitle","message","secondMessage"}
+  response:
+    status: 200
+    file: valid_post_batch_entity_response.json
+---
+  request:
+    url: /2013-09-01/batch
+    method: POST
+    body:
+      requests:
+        - method: POST
+          path: 2013-09-01/installations
+          body: {"deviceType":"android","deviceToken":"firstInstallation","name":"tomato","type","vegetable"}
+        - method: PUT
+          path: 2013-09-01/installations/dummyObjectId
+          body: {"deviceType":"ios","deviceToken":"secondInstallation","name":"apple","type","fruit"}
+  response:
+    status: 200
+    file: valid_post_batch_entity_response.json
