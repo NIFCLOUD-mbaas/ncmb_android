@@ -27,6 +27,10 @@ public class NCMBObjectService extends NCMBService{
             super(service, (CallbackBase)callback);
         }
 
+        ObjectServiceCallback(NCMBObjectService service, BatchCallback callback) {
+            super(service, (CallbackBase) callback);
+        }
+
         protected NCMBObjectService getObjectService() {
             return (NCMBObjectService)mService;
         }
@@ -108,6 +112,71 @@ public class NCMBObjectService extends NCMBService{
 
         }
 
+    }
+
+    /**
+     * Saving Objects JSONObject data to Nifty cloud mobile backend
+     *
+     * @param objects Saving Objects data
+     * @return result of save Objects
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public JSONArray saveAllObject(JSONArray objects) throws NCMBException {
+        JSONObject requests = new JSONObject();
+        try {
+            requests.put("requests", objects);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
+        String url = mContext.baseUrl + "batch";
+        String type = NCMBRequest.HTTP_METHOD_POST;
+        NCMBResponse response = sendRequest(url, type, requests.toString());
+        if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+        }
+        return response.responseArray;
+    }
+
+    /**
+     * Saving Objects JSONObject data to Nifty cloud mobile backend in background thread
+     *
+     * @param objects   saving Objects data
+     * @param callback callback for after Objects save
+     */
+    public void saveAllObjectInBackground(JSONArray objects, BatchCallback callback) {
+        String url = mContext.baseUrl + "batch";
+        String type = NCMBRequest.HTTP_METHOD_POST;
+        try {
+            JSONObject requests = new JSONObject();
+            try {
+                requests.put("requests", objects);
+            } catch (JSONException e) {
+                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            }
+
+            sendRequestAsync(url, type, requests.toString(), null, new ObjectServiceCallback(this, callback) {
+                @Override
+                public void handleResponse(NCMBResponse response) {
+                    BatchCallback callback = (BatchCallback) mCallback;
+                    if (callback != null) {
+                        callback.done(response.responseArray, null);
+                    }
+                }
+
+                @Override
+                public void handleError(NCMBException e) {
+                    BatchCallback callback = (BatchCallback) mCallback;
+                    if (callback != null) {
+                        callback.done(null, e);
+                    }
+                }
+            });
+        } catch (NCMBException e) {
+            //Exception handling for NCMBRequest
+            if (callback != null) {
+                callback.done(null, e);
+            }
+        }
     }
 
     public JSONObject fetchObject(String className,String objectId) throws NCMBException {

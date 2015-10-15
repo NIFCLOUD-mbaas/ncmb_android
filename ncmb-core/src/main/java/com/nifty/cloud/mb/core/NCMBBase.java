@@ -184,6 +184,45 @@ public class NCMBBase {
         return json;
     }
 
+    protected void setServerDataToProperties(JSONObject res) throws NCMBException {
+        if (res != null) {
+            if (res.has("objectId")) {
+                try {
+                    setObjectId(res.getString("objectId"));
+                } catch (JSONException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                }
+            }
+            if (res.has("createDate")) {
+                try {
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+                    setCreateDate(df.parse(res.getString("createDate")));
+                    setUpdateDate(df.parse(res.getString("createDate")));
+                } catch (JSONException | ParseException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                }
+            }
+            if (res.has("updateDate")) {
+                try {
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+                    setUpdateDate(df.parse(res.getString("updateDate")));
+                } catch (JSONException | ParseException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                }
+            }
+            if (res.has("acl")) {
+                try {
+                    NCMBAcl acl = new NCMBAcl(res.getJSONObject("acl"));
+                    setAcl(acl);
+                } catch (JSONException e) {
+                    throw new IllegalArgumentException(e.getMessage());
+                }
+            }
+
+        }
+
+    }
+
     /**
      * put string value to given key
      * @param key field name for put the value

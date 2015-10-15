@@ -6,8 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -106,6 +104,137 @@ public class NCMBObject extends NCMBBase{
             objService.updateObjectInBackground(mClassName, getObjectId(), updateJson,executeCallback);
         }
 
+    }
+
+    /**
+     * saves each object in the list.
+     *
+     * @param objects save objects list
+     * @return response data
+     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     */
+    static public JSONArray saveAll(List<NCMBBase> objects) throws NCMBException {
+        //create content
+        JSONArray content = createSaveAllContent(objects);
+
+        //connect
+        NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
+        JSONArray responseArray = objService.saveAllObject(content);
+
+        //response set
+        setResponseArrayForObjects(responseArray, objects);
+        return responseArray;
+    }
+
+    /**
+     * saves each object in the list to asynchronously.
+     *
+     * @param callback callback after objects save
+     * @param objects  save objects list
+     */
+    static public void saveAllInBackground(final List<NCMBBase> objects, final BatchCallback callback) {
+        //create content
+        JSONArray content;
+        try {
+            content = createSaveAllContent(objects);
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(null, e);
+            }
+            return;
+        }
+
+        //connect
+        NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
+        objService.saveAllObjectInBackground(content, new BatchCallback() {
+
+            @Override
+            public void done(JSONArray responseArray, NCMBException e) {
+                if (e != null) {
+                    if (callback != null) {
+                        callback.done(responseArray, e);
+                    }
+                } else {
+                    //response set
+                    try {
+                        setResponseArrayForObjects(responseArray, objects);
+                        if (callback != null) {
+                            callback.done(responseArray, null);
+                        }
+                    } catch (NCMBException error) {
+                        if (callback != null) {
+                            callback.done(responseArray, error);
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+
+    //Create a content data for saveAll
+    static private JSONArray createSaveAllContent(List<NCMBBase> objects) throws NCMBException {
+        JSONArray content = new JSONArray();
+        try {
+            for (NCMBBase obj : objects) {
+                if (obj instanceof NCMBInstallation) {
+                    //NCMBInstallation
+                    content.put(createObjectJSON(obj, NCMBInstallationService.SERVICE_PATH));
+                } else if (obj instanceof NCMBObject) {
+                    //NCMBObject
+                    content.put(createObjectJSON(obj, NCMBObjectService.SERVICE_PATH + obj.getClassName()));
+                } else if (obj instanceof NCMBRole) {
+                    //NCMBRole
+                    content.put(createObjectJSON(obj, NCMBRoleService.SERVICE_PATH));
+                } else if (obj instanceof NCMBPush) {
+                    //NCMBPush
+                    content.put(createObjectJSON(obj, NCMBPushService.SERVICE_PATH));
+                } else {
+                    throw new IllegalArgumentException("Invalid argument.");
+                }
+            }
+        } catch (JSONException error) {
+            throw new NCMBException(error);
+        }
+        return content;
+    }
+
+    //Create a JSONObject of each object
+    static private JSONObject createObjectJSON(NCMBBase obj, String classPath) throws JSONException {
+        String method;
+        String path = NCMB.DEFAULT_API_VERSION + "/";
+        JSONObject body;
+
+        if (obj.getObjectId() == null) {
+            method = NCMBRequest.HTTP_METHOD_POST;
+            path += classPath;
+            body = obj.mFields;
+        } else {
+            method = NCMBRequest.HTTP_METHOD_PUT;
+            path += classPath + "/" + obj.getObjectId();
+            body = obj.createUpdateJsonData();
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("method", method);
+        json.put("path", path);
+        json.put("body", body);
+        return json;
+    }
+
+    //Set the response array for each object
+    static private void setResponseArrayForObjects(JSONArray responseArray, List<NCMBBase> objects) throws NCMBException {
+        for (int i = 0; i < responseArray.length(); i++) {
+            try {
+                if (responseArray.getJSONObject(i).has("success")) {
+                    NCMBBase obj = objects.get(i);
+                    obj.setServerDataToProperties(responseArray.getJSONObject(i).getJSONObject("success"));
+                    obj.mUpdateKeys.clear();
+                }
+            } catch (JSONException | NCMBException e) {
+                throw new NCMBException(NCMBException.GENERIC_ERROR, "saveAll object count " + i + ": Response format is invalid.");
+            }
+        }
     }
 
     /**
@@ -296,42 +425,4 @@ public class NCMBObject extends NCMBBase{
         }
     }
 
-    private void setServerDataToProperties(JSONObject res) throws NCMBException {
-        if (res != null) {
-            if (res.has("objectId")) {
-                try {
-                    setObjectId(res.getString("objectId"));
-                } catch (JSONException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-            if (res.has("createDate")){
-                try {
-                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
-                    setCreateDate(df.parse(res.getString("createDate")));
-                    setUpdateDate(df.parse(res.getString("createDate")));
-                } catch (JSONException | ParseException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-            if (res.has("updateDate")){
-                try {
-                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
-                    setUpdateDate(df.parse(res.getString("updateDate")));
-                } catch (JSONException | ParseException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-            if (res.has("acl")){
-                try {
-                    NCMBAcl acl = new NCMBAcl(res.getJSONObject("acl"));
-                    setAcl(acl);
-                } catch (JSONException e) {
-                    throw new IllegalArgumentException(e.getMessage());
-                }
-            }
-
-        }
-
-    }
 }

@@ -1,5 +1,6 @@
 package com.nifty.cloud.mb.core;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +22,7 @@ public class NCMBResponse {
 
     //通信結果文字列
     public JSONObject responseData = null;
+    public JSONArray responseArray = null;
     //通信結果ステータスコード
     public int statusCode = 0;
 
@@ -51,7 +53,12 @@ public class NCMBResponse {
                 br.close();
 
                 if (sb.length() > 0) {
-                    responseData = new JSONObject(new String(sb));
+                    try {
+                        responseData = new JSONObject(new String(sb));
+                    }catch (JSONException error) {
+                        //複数オブジェクト操作API
+                        responseArray = new JSONArray(new String(sb));
+                    }
                 }
 
                 if (statusCode != HttpURLConnection.HTTP_CREATED &&
