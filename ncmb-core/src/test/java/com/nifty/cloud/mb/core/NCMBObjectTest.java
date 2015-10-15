@@ -6,6 +6,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -21,7 +22,10 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * NCMBObjectTest
@@ -310,6 +314,263 @@ public class NCMBObjectTest {
         } catch (NCMBException | JSONException | ParseException e) {
             Assert.fail(e.getMessage());
         }
+    }
+
+
+    @Test
+    public void saveAll_push() throws Exception {
+        //first role
+        NCMBPush firstPush = new NCMBPush();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sf.parse("2020-01-01 00:00:00");
+        firstPush.setDeliveryTime(date);
+        firstPush.setTitle("firstTitle");
+        firstPush.setMessage("firstMessage");
+
+        //second role
+        NCMBPush secondPush = new NCMBPush();
+        secondPush.setObjectId("dummyObjectId");
+        secondPush.setDeliveryTime(date);
+        secondPush.setTitle("secondTitle");
+        secondPush.setMessage("secondMessage");
+
+        //connect
+        List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstPush);
+        objects.add(secondPush);
+        JSONArray response = NCMBObject.saveAll(objects);
+
+        //first role check
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+        //second role check
+        Assert.assertEquals("dummyObjectId", objects.get(1).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.555Z"), objects.get(1).getUpdateDate());
+
+        //response check
+        Assert.assertTrue(response.getJSONObject(0).has("success"));
+        Assert.assertTrue(response.getJSONObject(1).has("success"));
+    }
+
+    @Test
+    public void saveAll_installation() throws Exception {
+        //first installation
+        NCMBInstallation firstInstallation = new NCMBInstallation();
+        firstInstallation.setDeviceToken("firstInstallation");
+        firstInstallation.setDeviceType("android");
+        firstInstallation.put("name", "tomato");
+        firstInstallation.put("type", "vegetable");
+
+        //second installation
+        NCMBInstallation secondInstallation = new NCMBInstallation();
+        secondInstallation.setObjectId("dummyObjectId");
+        secondInstallation.setDeviceToken("secondInstallation");
+        secondInstallation.setDeviceType("ios");
+        secondInstallation.put("name", "apple");
+        secondInstallation.put("type", "fruit");
+
+        //connect
+        List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstInstallation);
+        objects.add(secondInstallation);
+        JSONArray response = NCMBObject.saveAll(objects);
+
+        //first installation check;
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+        //second installation check
+        Assert.assertEquals("dummyObjectId", objects.get(1).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.555Z"), objects.get(1).getUpdateDate());
+
+        //response check
+        Assert.assertTrue(response.getJSONObject(0).has("success"));
+        Assert.assertTrue(response.getJSONObject(1).has("success"));
+    }
+
+    @Test
+    public void saveAll_role() throws Exception {
+        //first role
+        NCMBRole firstRole = new NCMBRole("firstRole");
+        firstRole.put("name", "tomato");
+        firstRole.put("type", "vegetable");
+
+        //second role
+        NCMBRole secondRole = new NCMBRole("secondRole");
+        secondRole.setObjectId("dummyObjectId");
+        secondRole.put("name", "apple");
+        secondRole.put("type", "fruit");
+
+        //connect
+        List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstRole);
+        objects.add(secondRole);
+        JSONArray response = NCMBObject.saveAll(objects);
+
+        //first push check
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+        //second push check
+        Assert.assertEquals("dummyObjectId", objects.get(1).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.555Z"), objects.get(1).getUpdateDate());
+
+        //response check
+        Assert.assertTrue(response.getJSONObject(0).has("success"));
+        Assert.assertTrue(response.getJSONObject(1).has("success"));
+    }
+
+    @Test
+    public void saveAll_object() throws Exception {
+        //first object POST
+        NCMBObject firstObject = new NCMBObject("food");
+        firstObject.put("name", "tomato");
+        firstObject.put("type", "vegetable");
+
+        //second object PUT
+        NCMBObject secondObject = new NCMBObject("food");
+        secondObject.setObjectId("dummyObjectId");
+        secondObject.put("name", "apple");
+        secondObject.put("type", "fruit");
+
+        //connect
+        List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstObject);
+        objects.add(secondObject);
+        JSONArray response = NCMBObject.saveAll(objects);
+
+        //first object check
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+        //second object check
+        Assert.assertEquals("dummyObjectId", objects.get(1).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.555Z"), objects.get(1).getUpdateDate());
+
+        //response check
+        Assert.assertTrue(response.getJSONObject(0).has("success"));
+        Assert.assertTrue(response.getJSONObject(1).has("success"));
+    }
+
+    @Test
+    public void saveAll_object_error() throws Exception {
+        //first object POST
+        NCMBObject firstObject = new NCMBObject("food");
+        firstObject.put("name", "tomato");
+        firstObject.put("type", "vegetable");
+
+        //second object PUT
+        NCMBObject secondObject = new NCMBObject("food");
+        secondObject.setObjectId("errorObjectId");
+        secondObject.put("name", "apple");
+        secondObject.put("type", "fruit");
+
+        //connect check
+        List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstObject);
+        objects.add(secondObject);
+        JSONArray response = NCMBObject.saveAll(objects);
+
+        //first object check
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+        Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+        //response check
+        Assert.assertTrue(response.getJSONObject(0).has("success"));
+        Assert.assertTrue(response.getJSONObject(1).has("error"));
+        Assert.assertEquals("E404001", response.getJSONObject(1).getJSONObject("error").getString("code"));
+        Assert.assertEquals("No data available.", response.getJSONObject(1).getJSONObject("error").getString("error"));
+    }
+
+    @Test
+    public void saveAllInBackground_object() throws Exception {
+        //first object POST
+        NCMBObject firstObject = new NCMBObject("food");
+        firstObject.put("name", "tomato");
+        firstObject.put("type", "vegetable");
+
+        //second object PUT
+        NCMBObject secondObject = new NCMBObject("food");
+        secondObject.setObjectId("dummyObjectId");
+        secondObject.put("name", "apple");
+        secondObject.put("type", "fruit");
+
+        //connect
+        final List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstObject);
+        objects.add(secondObject);
+        NCMBObject.saveAllInBackground(objects, new BatchCallback() {
+            @Override
+            public void done(JSONArray responseArray, NCMBException e) {
+                try {
+                    //first object check
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+                    Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+                    Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+                    //second object check
+                    Assert.assertEquals("dummyObjectId", objects.get(1).getObjectId());
+                    Assert.assertEquals(df.parse("2015-09-25T04:14:25.555Z"), objects.get(1).getUpdateDate());
+
+                    //response check
+                    Assert.assertTrue(responseArray.getJSONObject(0).has("success"));
+                    Assert.assertTrue(responseArray.getJSONObject(1).has("success"));
+                } catch (JSONException | ParseException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    @Test
+    public void saveAllInBackground_object_error() throws Exception {
+        //first object POST
+        NCMBObject firstObject = new NCMBObject("food");
+        firstObject.put("name", "tomato");
+        firstObject.put("type", "vegetable");
+
+        //second object PUT
+        NCMBObject secondObject = new NCMBObject("food");
+        secondObject.setObjectId("errorObjectId");
+        secondObject.put("name", "apple");
+        secondObject.put("type", "fruit");
+
+        //connect
+        final List<NCMBBase> objects = new ArrayList<>();
+        objects.add(firstObject);
+        objects.add(secondObject);
+        NCMBObject.saveAllInBackground(objects, new BatchCallback() {
+            @Override
+            public void done(JSONArray responseArray, NCMBException e) {
+                try {
+                    //first object check
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", objects.get(0).getObjectId());
+                    Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getCreateDate());
+                    Assert.assertEquals(df.parse("2015-09-25T04:14:25.333Z"), objects.get(0).getUpdateDate());
+
+                    //response check
+                    Assert.assertTrue(responseArray.getJSONObject(0).has("success"));
+                    Assert.assertTrue(responseArray.getJSONObject(1).has("error"));
+                    Assert.assertEquals("E404001", responseArray.getJSONObject(1).getJSONObject("error").getString("code"));
+                    Assert.assertEquals("No data available.", responseArray.getJSONObject(1).getJSONObject("error").getString("error"));
+                } catch (JSONException | ParseException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
     }
 
     @Test

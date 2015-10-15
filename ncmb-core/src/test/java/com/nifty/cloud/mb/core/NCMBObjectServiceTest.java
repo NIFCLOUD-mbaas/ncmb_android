@@ -4,6 +4,8 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -196,4 +198,121 @@ public class NCMBObjectServiceTest {
         Assert.assertEquals("8FgKqFlH8dZRDrBJ", searchResult.get(0).getObjectId());
     }
 
+    @Test
+    public void saveAllObject_valid_class() throws Exception {
+
+        //first
+        JSONObject firstObject = new JSONObject();
+        firstObject.put("method", "PUT");
+        firstObject.put("path", "2013-09-01/classes/food/firstDummyObjectId");
+        firstObject.put("body", new JSONObject("{name:tomato,type:vegetable}"));
+
+        //second
+        JSONObject secondObject = new JSONObject();
+        secondObject.put("method", "PUT");
+        secondObject.put("path", "2013-09-01/classes/food/secondDummyObjectId");
+        secondObject.put("body", new JSONObject("{name:apple,type:fruit}"));
+
+        //third
+        JSONObject thirdObject = new JSONObject();
+        thirdObject.put("method", "DELETE");
+        thirdObject.put("path", "2013-09-01/classes/food/thirdDummyObjectId");
+        thirdObject.put("body", new JSONObject());
+
+        //connect
+        JSONArray objects = new JSONArray();
+        objects.put(firstObject);
+        objects.put(secondObject);
+        objects.put(thirdObject);
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
+        JSONArray responseArray = objServ.saveAllObject(objects);
+
+        //check
+        Assert.assertTrue(responseArray.getJSONObject(0).has("success"));
+        Assert.assertEquals("2015-09-25T04:14:25.333Z", responseArray.getJSONObject(0).getJSONObject("success").getString("updateDate"));
+        Assert.assertTrue(responseArray.getJSONObject(1).has("success"));
+        Assert.assertEquals("2015-09-25T04:14:25.555Z", responseArray.getJSONObject(1).getJSONObject("success").getString("updateDate"));
+        Assert.assertTrue(responseArray.getJSONObject(2).has("success"));
+        Assert.assertTrue(responseArray.getJSONObject(2).isNull("success"));
+    }
+
+    @Test
+    public void saveAllObjectInBackground_valid_class() throws Exception {
+
+        //first
+        JSONObject firstObject = new JSONObject();
+        firstObject.put("method", "PUT");
+        firstObject.put("path", "2013-09-01/classes/food/firstDummyObjectId");
+        firstObject.put("body", new JSONObject("{name:tomato,type:vegetable}"));
+
+        //second
+        JSONObject secondObject = new JSONObject();
+        secondObject.put("method", "PUT");
+        secondObject.put("path", "2013-09-01/classes/food/secondDummyObjectId");
+        secondObject.put("body", new JSONObject("{name:apple,type:fruit}"));
+
+        //third
+        JSONObject thirdObject = new JSONObject();
+        thirdObject.put("method", "DELETE");
+        thirdObject.put("path", "2013-09-01/classes/food/thirdDummyObjectId");
+        thirdObject.put("body", new JSONObject());
+
+        //connect
+        JSONArray objects = new JSONArray();
+        objects.put(firstObject);
+        objects.put(secondObject);
+        objects.put(thirdObject);
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
+        objServ.saveAllObjectInBackground(objects, new BatchCallback() {
+            @Override
+            public void done(JSONArray objects, NCMBException e) {
+                //check
+                try {
+                    Assert.assertTrue(objects.getJSONObject(0).has("success"));
+                    Assert.assertEquals("2015-09-25T04:14:25.333Z", objects.getJSONObject(0).getJSONObject("success").getString("updateDate"));
+                    Assert.assertTrue(objects.getJSONObject(1).has("success"));
+                    Assert.assertEquals("2015-09-25T04:14:25.555Z", objects.getJSONObject(1).getJSONObject("success").getString("updateDate"));
+                    Assert.assertTrue(objects.getJSONObject(2).has("success"));
+                    Assert.assertTrue(objects.getJSONObject(2).isNull("success"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    @Test
+    public void saveAllObject_error() throws Exception {
+
+        //first
+        JSONObject firstObject = new JSONObject();
+        firstObject.put("method", "PUT");
+        firstObject.put("path", "2013-09-01/classes/food/firstDummyObjectId");
+        firstObject.put("body", new JSONObject("{name:tomato,type:vegetable}"));
+        //second
+        JSONObject secondObject = new JSONObject();
+        secondObject.put("method", "PUT");
+        secondObject.put("path", "2013-09-01/classes/food/secondDummyObjectId");
+        secondObject.put("body", new JSONObject("{name:apple,type:fruit}"));
+        //third
+        JSONObject thirdObject = new JSONObject();
+        thirdObject.put("method", "DELETE");
+        thirdObject.put("path", "2013-09-01/classes/food/thirdDummyObjectId_error");
+        thirdObject.put("body", new JSONObject());
+
+        JSONArray objects = new JSONArray();
+        objects.put(firstObject);
+        objects.put(secondObject);
+        objects.put(thirdObject);
+
+        NCMBObjectService objServ = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
+        JSONArray responseArray = objServ.saveAllObject(objects);
+        Assert.assertTrue(responseArray.getJSONObject(0).has("success"));
+        Assert.assertEquals("2015-09-25T04:14:25.333Z", responseArray.getJSONObject(0).getJSONObject("success").getString("updateDate"));
+        Assert.assertTrue(responseArray.getJSONObject(1).has("success"));
+        Assert.assertEquals("2015-09-25T04:14:25.555Z", responseArray.getJSONObject(1).getJSONObject("success").getString("updateDate"));
+        Assert.assertTrue(responseArray.getJSONObject(2).has("error"));
+        Assert.assertEquals("E404001", responseArray.getJSONObject(2).getJSONObject("error").getString("code"));
+        Assert.assertEquals("No data available.", responseArray.getJSONObject(2).getJSONObject("error").getString("error"));
+    }
 }
