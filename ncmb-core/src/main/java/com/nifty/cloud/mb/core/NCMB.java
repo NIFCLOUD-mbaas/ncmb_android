@@ -5,7 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 /**
- * The NCMB Class contains sdk inilialize method and factory method for Service class
+ * Core class for NCMB API
  */
 public class NCMB {
     /** Version of this SDK */
@@ -38,7 +38,8 @@ public class NCMB {
         USER,
         ROLE,
         INSTALLATION,
-        PUSH
+        PUSH,
+        FILE
     };
 
     /**
@@ -118,6 +119,9 @@ public class NCMB {
             case PUSH:
                 service = (NCMBPushService)new NCMBPushService(sCurrentContext);
                 break;
+            case FILE:
+                service = (NCMBFileService)new NCMBFileService(sCurrentContext);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid serviceType");
         }
@@ -142,22 +146,5 @@ public class NCMB {
             // if we can’t find it in the manifest, just return null
         }
         return null;
-    }
-
-    /**
-     * Setting time out
-     * Default 10000 milliseconds
-     * @param timeout milliseconds
-     */
-    public static void setTimeout(int timeout){
-        NCMBConnection.sConnectionTimeout = timeout;
-    }
-
-    /**
-     * Getting time out
-     * @return timeout milliseconds
-     */
-    public static int getTimeout(){
-        return NCMBConnection.sConnectionTimeout;
     }
 }

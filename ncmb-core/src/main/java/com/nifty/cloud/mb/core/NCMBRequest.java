@@ -1,6 +1,5 @@
 package com.nifty.cloud.mb.core;
 
-import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -12,21 +11,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * NCMBRequest class is used to config api request
- */
 public class NCMBRequest {
 
     // region Constant
@@ -50,12 +44,10 @@ public class NCMBRequest {
     static final String HEADER_APPS_SESSION_TOKEN = "X-NCMB-Apps-Session-Token";
     //コンテントタイプ
     static final String HEADER_CONTENT_TYPE = "Content-Type";
-    //コンテントタイプの値
-    static final String HEADER_CONTENT_TYPE_VALUE = "application/json";
-    //SDKVersionのキー
-    static final String HEADER_SDK_VERSION = "X-NCMB-SDK-Version";
-    //OSVersionのキー
-    static final String HEADER_OS_VERSION = "X-NCMB-OS-Version";
+    //JSON形式のコンテントタイプの値
+    static final String HEADER_CONTENT_TYPE_JSON = "application/json";
+    //ファイル形式のコンテントタイプの値
+    static final String HEADER_CONTENT_TYPE_FILE = "multipart/form-data";
     //シグネチャメソッドのキー
     private static final String SIGNATURE_METHOD_KEY = "SignatureMethod";
     //シグネチャメソッドの値
@@ -84,7 +76,7 @@ public class NCMBRequest {
     private HashMap<String, String> requestProperties = new HashMap<String, String>();
 
     // リクエスト生成用(File)
-    private byte[] postData = null;
+    private byte[] fileData = null;
     private String contentType = null;
     // endregion
 
@@ -158,8 +150,8 @@ public class NCMBRequest {
      *
      * @return File送信データ
      */
-    public byte[] getPostData() {
-        return this.postData;
+    public byte[] getFileData() {
+        return this.fileData;
     }
 
     /**
@@ -180,11 +172,11 @@ public class NCMBRequest {
         return this.timestamp;
     }
 
-    public String getRequestProperty(String key) {
+    public String getRequestProperty(String key){
         return this.requestProperties.get(key);
     }
 
-    public HashMap<String, String> getAllRequestProperties() {
+    public HashMap<String, String> getAllRequestProperties(){
         return this.requestProperties;
     }
 
@@ -198,14 +190,29 @@ public class NCMBRequest {
      * @param url            URL
      * @param method         HTTPメソッド
      * @param content        コンテントデータ
-     * @param queryParam     検索条件
+     * @param queryParam    検索条件
      * @param sessionToken   セッショントークン
      * @param applicationKey アプリケーションキー
      * @param clientKey      クライアントキー
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
-        this(url, method, content, queryParam, sessionToken, applicationKey, clientKey, null);
+        this(url,method,content,null,HEADER_CONTENT_TYPE_JSON,queryParam,sessionToken,applicationKey,clientKey,null);
+    }
+
+
+    /**
+     * file用コンストラクタ
+     *
+     * @param url            URL
+     * @param method         HTTPメソッド
+     * @param fileData       POSTデータ
+     * @param aclJson        ACLデータ
+     * @param sessionToken   セッショントークン
+     * @param applicationKey アプリケーションキー
+     * @param clientKey      クライアントキー
+     */
+    public NCMBRequest(String url, String method, byte[] fileData, JSONObject aclJson, String sessionToken, String applicationKey, String clientKey) throws NCMBException{
+        this(url,method,aclJson.toString(),fileData,HEADER_CONTENT_TYPE_FILE,null,sessionToken,applicationKey,clientKey,null);
     }
 
     /**
@@ -214,14 +221,29 @@ public class NCMBRequest {
      * @param url            URL
      * @param method         HTTPメソッド
      * @param content        コンテントデータ
-     * @param queryParam     検索条件
+     * @param queryParam    検索条件
      * @param sessionToken   セッショントークン
      * @param applicationKey アプリケーションキー
      * @param clientKey      クライアントキー
      * @param timestamp      タイムスタンプ
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey, String timestamp) throws NCMBException {
+    public NCMBRequest(String url,
+                       String method,
+                       String content,
+                       byte[] fileData,
+                       String contentType,
+                       JSONObject queryParam,
+                       String sessionToken,
+                       String applicationKey,
+                       String clientKey,
+                       String timestamp
+    ) throws NCMBException {
+        //必須プロパティ設定
+        //ToDo:nullチェックメソッドがAPI19からだったので修正する
+        //this.url = Objects.requireNonNull(url, "url must not be null.");
+        //this.method = Objects.requireNonNull(method, "method must not be null.");
+        //this.applicationKey = Objects.requireNonNull(applicationKey, "applicationKey must not be null.");
+        //this.clientKey = Objects.requireNonNull(clientKey, "clientKey must not be null.");
 
         this.method = method;
         this.applicationKey = applicationKey;
@@ -234,6 +256,10 @@ public class NCMBRequest {
         this.queryParam = queryParam;
         this.sessionToken = sessionToken;
         this.timestamp = timestamp;
+
+        this.contentType = contentType;
+        this.fileData = fileData;
+
 
         try {
             this.url = new URL(url);
@@ -249,8 +275,6 @@ public class NCMBRequest {
                 Iterator<?> keys = queryParam.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
-                    //String value = queryParam.get(key).toString();
-                    //Log.v("tag", "KEY:" + key + " VALUE:" + value);
                     String param = key + "=" + URLEncoder.encode(queryParam.get(key).toString(), "UTF-8");
                     parameterList.add(param);//シグネチャ生成で使用
                     query = query + param;
@@ -273,17 +297,16 @@ public class NCMBRequest {
             this.requestProperties.put(HEADER_CONTENT_TYPE, contentType);
             //this.httpRequest.addHeader(HEADER_CONTENT_TYPE, contentType);
         } else {
-            this.requestProperties.put(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
+            this.requestProperties.put(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_JSON);
         }
         // アプリケーションキー設定
         this.requestProperties.put(HEADER_APPLICATION_KEY, this.applicationKey);
 
         try {
             // タイムスタンプ生成/設定
-            if (this.timestamp == null) {
+            if(this.timestamp == null){
                 //timestamp引数なしコンストラクタの場合は現在時刻で生成する
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
-                df.setTimeZone(new SimpleTimeZone(0, "GMT"));
+                SimpleDateFormat df = NCMBDateFormat.getIso8601();
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
                 this.timestamp = URLEncoder.encode(df.format(ts), "UTF-8");
             }
@@ -301,16 +324,6 @@ public class NCMBRequest {
         if (this.sessionToken != null && this.sessionToken.length() > 0) {
             this.requestProperties.put(HEADER_APPS_SESSION_TOKEN, this.sessionToken);
         }
-
-        // 独自UserAgent設定
-        this.requestProperties.put(HEADER_SDK_VERSION, "android-" + NCMB.SDK_VERSION);
-        String osVersion = Build.VERSION.RELEASE;
-        this.requestProperties.put(HEADER_OS_VERSION, "android-" + osVersion);
-
-        //createHttpRequestで生成したRequestのコンテント設定
-        //addContent();
-        this.content = content;
-
     }
 
     private void invalidCheck(String url, String method, String content, JSONObject queryString, String sessionToken, String applicationKey, String clientKey) {
@@ -318,9 +331,6 @@ public class NCMBRequest {
         if (method.equals("POST") || method.equals("PUT")) {
             if (queryString != null && queryString.length() > 0) {
                 throw new IllegalArgumentException("Can not set the queryString in the POST or PUT.");
-            }
-            if (content == null) {
-                throw new IllegalArgumentException("Please set the content in the POST or PUT.");
             }
             //オブジェクト取得、検索時のコンテントは不正。クエリ文字列は取得時のnullを許容する
         } else if (method.equals("GET")) {
@@ -335,31 +345,6 @@ public class NCMBRequest {
         }
     }
 
-    /**
-     * file用コンストラクタ
-     *
-     * @param url            URL
-     * @param method         HTTPメソッド
-     * @param postData       POSTデータ
-     * @param contentType    コンテントタイプ
-     * @param queryString    検索条件
-     * @param sessionToken   セッショントークン
-     * @param applicationKey アプリケーションキー
-     * @param clientKey      クライアントキー
-     */
-    public NCMBRequest(String url, String method, byte[] postData, String contentType, JSONObject queryString, String sessionToken, String applicationKey, String clientKey) {
-//ToDo:nullチェックメソッドがAPI19からだったので修正する
-//        this.url = Objects.requireNonNull(url, "url must not be null");
-//        this.method = Objects.requireNonNull(method, "method must not be null");
-//        this.postData = Objects.requireNonNull(postData, "postData must not be null");
-//        this.contentType = Objects.requireNonNull(contentType, "contentType must not be null");
-//        this.queryString = Objects.requireNonNull(queryString, "queryString must not be null");
-//        this.sessionToken = Objects.requireNonNull(sessionToken, "sessionToken must not be null");
-//        this.applicationKey = Objects.requireNonNull(applicationKey, "applicationKey must not be null");
-//        this.clientKey = Objects.requireNonNull(clientKey, "clientKey must not be null");
-
-        //TODO:ファイル用リクエスト生成処理の実装
-    }
     //endregion
 
     // region Method
