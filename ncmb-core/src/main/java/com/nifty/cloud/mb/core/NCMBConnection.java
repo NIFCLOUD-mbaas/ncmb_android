@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -16,40 +17,37 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * NCMBConnection is a class that communicates with NIFTY Cloud mobile backend
- */
 public class NCMBConnection {
 
-    //time out millisecond from NIFTY Cloud mobile backend
-    static int sConnectionTimeout = 10000;
+    //サーバ接続のタイムアウト時間
+    private static final int CONNECTION_TIMEOUT = 10000;
 
-    //API request object
+    //リクエスト
     private NCMBRequest ncmbRequest = null;
 
-    //Callback after request api
+    /**
+     * コールバック用のリスナー
+     */
     private RequestApiCallback mCallback;
 
     /**
-     * setting callback for api request
-     * @param callback callback for api request
+     * コールバックの設定を行う
      */
     public void setCallbackListener(RequestApiCallback callback){
         mCallback = callback;
     }
 
     /**
-     * Constructor with NCMBRequest
-     * @param request API request object
+     * コンストラクタ
+     *
+     * @param request リクエスト
      */
     public NCMBConnection(NCMBRequest request) {
         this.ncmbRequest = request;
     }
 
     /**
-     * Request NIFTY Cloud mobile backed api synchronously
-     * @return result object from NIFTY Cloud mobile backend
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * 同期通信
      */
     public NCMBResponse sendRequest() throws NCMBException {
 
@@ -82,7 +80,7 @@ public class NCMBConnection {
                             //enable post data option
                             urlConnection.setDoOutput(true);
 
-                            if (urlConnection.getRequestProperty("Content-Type").equals("application/json")) {
+                            if (urlConnection.getRequestProperty("Content-Type").equals(NCMBRequest.HEADER_CONTENT_TYPE_JSON)) {
 
                                 //Sending json data
                                 DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
@@ -90,10 +88,61 @@ public class NCMBConnection {
                                 writer.write(ncmbRequest.getContent());
                                 writer.flush();
                                 writer.close();
-                            } else if (urlConnection.getRequestProperty("Content-Type").equals("multipart-formdata")) {
+                            } else if (urlConnection.getRequestProperty("Content-Type").equals(NCMBRequest.HEADER_CONTENT_TYPE_FILE)) {
 
                                 //Sending file data
                                 //TODO:file data upload
+
+                                final String twoHyphens = "--";
+                                final String boundary =  "-------"+ Long.toString(System.currentTimeMillis());
+                                final String lineEnd = "\r\n";
+
+                                //urlConnection.setRequestProperty("Connection", "Keep-Alive");
+                                //urlConnection.setRequestProperty("Content-Type", "multipart/form-data;");
+
+                                DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
+                                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                                writer.write(boundary + lineEnd);
+
+                                //writer.write(lineEnd);
+                                String fileStr = "";
+
+
+                                //filedata
+                                //writer.write("Content-Type:"+ NCMBRequest.HEADER_CONTENT_TYPE_FILE + lineEnd);
+                                /*
+                                writer.write("Content-Disposition: form-data; name=\"file\"; filename=\"test.txt\"" + lineEnd);
+                                writer.write("Content-Type: text/plain" + lineEnd);
+                                writer.write(lineEnd);
+                                writer.write("test file...");
+                                writer.write(lineEnd);
+                                */
+
+                                fileStr += boundary + lineEnd;
+                                fileStr += "Content-Disposition: form-data; name=file; filename=test.txt" + lineEnd;
+                                fileStr += "Content-Type: text/plain" + lineEnd;
+                                fileStr += lineEnd;
+                                fileStr += "test file...";
+                                fileStr += lineEnd;
+                                fileStr += boundary + twoHyphens + lineEnd;
+
+                                //writer.write("Content-Transfer-Encoding: binary" + lineEnd);
+                                //writer.write(new String(ncmbRequest.getFileData(), "UTF-8"));
+
+                                /*
+                                //acl
+                                writer.write(boundary + lineEnd);
+                                writer.write("Content-Disposition: form-data; name=\"acl\"" + lineEnd);
+                                writer.write("Content-Type: application/json" + lineEnd);
+                                writer.write(ncmbRequest.getContent());
+                                */
+
+                                //writer.write(boundary + twoHyphens + lineEnd);
+                                Log.d("Error", fileStr);
+                                writer.write(fileStr);
+                                writer.flush();
+                                writer.close();
                             }
 
                         }
@@ -124,7 +173,7 @@ public class NCMBConnection {
 
             });
 
-            res = future.get(sConnectionTimeout, TimeUnit.MILLISECONDS);
+            res = future.get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
             if (res.statusCode != HttpURLConnection.HTTP_CREATED &&
                     res.statusCode != HttpURLConnection.HTTP_OK) {
                 throw new NCMBException(res.mbStatus, res.mbErrorMessage);
@@ -136,8 +185,7 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backend api asynchronously
-     * @param callback execute callback after api request
+     * 非同期通信
      */
     public void sendRequestAsynchronously(RequestApiCallback callback) {
         setCallbackListener(callback);

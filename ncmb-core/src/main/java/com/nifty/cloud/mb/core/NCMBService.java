@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import org.json.JSONObject;
 
 /**
- * Abstract class for Service class
+ * Serivce abstract class
  */
 public abstract class NCMBService {
     /**
@@ -36,7 +36,6 @@ public abstract class NCMBService {
 
         /**
          * Generic constructor
-         *
          * @param service
          * @param callback
          */
@@ -48,79 +47,69 @@ public abstract class NCMBService {
 
         /**
          * Constructor
-         *
          * @param service
          * @param callback callback for action
          */
         ServiceCallback(NCMBService service, DoneCallback callback) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
         }
 
         /**
          * Constructor
-         *
          * @param service
          * @param callback callback for getting user
          */
         ServiceCallback(NCMBService service, UserCallback callback) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
         }
 
         /**
          * Constructor
-         *
          * @param service
          * @param callback callback for login
          */
         ServiceCallback(NCMBService service, LoginCallback callback) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
         }
 
         /**
          * Constructor for NCMBObject callback
          */
-        ServiceCallback(NCMBService service, ExecuteServiceCallback callback) {
-            this(service, (CallbackBase) callback);
+        ServiceCallback(NCMBService service, ExecuteServiceCallback callback){
+            this(service, (CallbackBase)callback);
         }
 
 
         /**
          * Constructor with options
-         *
-         * @param service  service object
+         * @param service service object
          * @param callback callback object
-         * @param options  options as JSON
+         * @param options options as JSON
          */
         ServiceCallback(NCMBService service, LoginCallback callback, JSONObject options) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
             mOptions = options;
         }
 
+        ServiceCallback(NCMBService service, IdCallback callback) {
+            this(service, (CallbackBase)callback);
+        }
+
         ServiceCallback(NCMBService service, RoleCallback callback) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
         }
 
         ServiceCallback(NCMBService service, SearchUserCallback callback) {
-            this(service, (CallbackBase) callback);
-        }
-
-        ServiceCallback(NCMBService service, SearchPushCallback callback) {
-            this(service, (CallbackBase) callback);
-        }
-
-        ServiceCallback(NCMBService service, SearchInstallationCallback callback) {
-            this(service, (CallbackBase) callback);
+            this(service, (CallbackBase)callback);
         }
 
         abstract public void handleResponse(NCMBResponse response) throws NCMBException;
-
         abstract public void handleError(NCMBException e);
 
         /**
          * override SendRequestCallback#done
-         *
          * @param response response obejct
-         * @param e        excettion when error
+         * @param e excettion when error
          */
         @Override
         public void done(NCMBResponse response, NCMBException e) {
@@ -137,7 +126,6 @@ public abstract class NCMBService {
 
     /**
      * constructor
-     *
      * @param context Service context
      */
     NCMBService(NCMBContext context) {
@@ -147,20 +135,18 @@ public abstract class NCMBService {
 
     /**
      * sendRequest shortcut
-     *
-     * @param url  URL
+     * @param url URL
      * @param type http method
      * @return NCMBResponse object
-     */
+     * */
     protected NCMBResponse sendRequest(String url, String type) throws NCMBException {
         return sendRequest(url, type, null, null);
     }
 
     /**
      * sendRequest shortcut
-     *
-     * @param url     URL
-     * @param type    http method
+     * @param url URL
+     * @param type http method
      * @param content content body
      * @return NCMBResponse object
      */
@@ -170,19 +156,15 @@ public abstract class NCMBService {
 
     /**
      * send request
-     *
-     * @param url         URL
-     * @param type        http method
-     * @param content     content body
+     * @param url URL
+     * @param type http method
+     * @param content content body
      * @param queryString query string
      * @return NCMBResponse response object
      */
     protected NCMBResponse sendRequest(String url, String type, String content, JSONObject queryString)
-            throws NCMBException {
+        throws NCMBException {
 
-        if (mContext.sessionToken == null) {
-            mContext.sessionToken = NCMBUser.getSessionToken();
-        }
         String sessionToken = mContext.sessionToken;
         String applicationKey = mContext.applicationKey;
         String clientKey = mContext.clientKey;
@@ -201,21 +183,16 @@ public abstract class NCMBService {
 
     /**
      * Send request in asynchronously
-     *
-     * @param url         URL
-     * @param type        http method
-     * @param content     contnt body
+     * @param url URL
+     * @param type http method
+     * @param content contnt body
      * @param queryString query string
-     * @param callback    callback on finished
+     * @param callback callback on finished
      * @throws NCMBException
      */
     protected void sendRequestAsync(String url, String type, String content, JSONObject queryString,
                                     RequestApiCallback callback)
             throws NCMBException {
-        
-        if (mContext.sessionToken == null) {
-            mContext.sessionToken = NCMBUser.getSessionToken();
-        }
         String sessionToken = mContext.sessionToken;
         String applicationKey = mContext.applicationKey;
         String clientKey = mContext.clientKey;
@@ -227,10 +204,31 @@ public abstract class NCMBService {
         connection.sendRequestAsynchronously(callback);
     }
 
+    protected void sendRequestFileAsync(String url, String method, byte[] fileData, JSONObject aclJson,
+                                        RequestApiCallback callback)
+            throws NCMBException {
+        String sessionToken = mContext.sessionToken;
+        String applicationKey = mContext.applicationKey;
+        String clientKey = mContext.clientKey;
+
+        NCMBRequest request = new NCMBRequest(
+                url,
+                method,
+                fileData,
+                aclJson,
+                sessionToken,
+                applicationKey,
+                clientKey
+        );
+
+        NCMBConnection connection = new NCMBConnection(request);
+        connection.sendRequestAsynchronously(callback);
+
+    }
+
     /**
      * Send request in asynchronously with parameter bag
-     *
-     * @param params   params for NCMBRequest
+     * @param params params for NCMBRequest
      * @param callback callback on finished
      * @throws NCMBException
      */

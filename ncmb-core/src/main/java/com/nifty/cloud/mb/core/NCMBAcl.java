@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * NCMBAcl class contains acl setting for datastore , user , role
+ * ACL classs
  */
 public class NCMBAcl {
     /**
@@ -90,23 +90,22 @@ public class NCMBAcl {
     /**
      * Constructor
      */
-    NCMBAcl() {
+    public NCMBAcl() {
         userAcl = new HashMap<String, Permission>();
         roleAcl = new HashMap<String, Permission>();
     }
 
     /**
-     * Constructor from JSON
+     * Costruct from JSON
      */
-    NCMBAcl(JSONObject json) throws JSONException {
+        public NCMBAcl(JSONObject json) throws JSONException {
         this();
         parse(json);
     }
 
     /**
-     * parse json from JSONObject
-     * @param input input JSONObject
-     * @throws JSONException exception from JSONObject
+     * parse from JSONObject
+     * @param input input JSON
      */
     public void parse(JSONObject input) throws JSONException {
        for (Iterator<String> it = input.keys(); it.hasNext(); ) {
@@ -126,7 +125,7 @@ public class NCMBAcl {
     /**
      * Convert to JSONObject
      * @return converted value
-     * @throws JSONException exception from JSONException
+     * @throws JSONException
      */
     public JSONObject toJson() throws JSONException {
         JSONObject result = new JSONObject();
@@ -143,7 +142,7 @@ public class NCMBAcl {
 
     /**
      * Check ACL is empty or not
-     * @return return true when acl is empty
+     * @return
      */
     public boolean isEmpty() {
         return userAcl.isEmpty() || roleAcl.isEmpty();
