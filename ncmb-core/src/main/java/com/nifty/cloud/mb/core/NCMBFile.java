@@ -11,6 +11,7 @@ import java.util.List;
  * NCMBFile class.
  * NCMBFile can not add any field.
  * The setting can be filed, please refer to the following API Reference.
+ * http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html
  */
 public class NCMBFile extends NCMBBase {
 
