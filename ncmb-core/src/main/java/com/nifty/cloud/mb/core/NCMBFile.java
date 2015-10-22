@@ -1,0 +1,320 @@
+package com.nifty.cloud.mb.core;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * NCMBFile class.
+ * NCMBFile can not add any field.
+ * The setting can be filed, please refer to the following API Reference.
+ */
+public class NCMBFile extends NCMBBase {
+
+    static final List<String> ignoreKeys = Arrays.asList("fileName", "fileData", "mimeType", "fileSize", "createDate", "updateDate", "acl");
+
+    /**
+     * Set fileName
+     *
+     * @param fileName fileName
+     */
+
+    public void setFileName(String fileName) {
+        try {
+            mFields.put("fileName", fileName);
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * Get fileName
+     *
+     * @return fileName
+     */
+    public String getFileName() {
+        try {
+            if (mFields.isNull("fileName")) {
+                return null;
+            }
+            return mFields.getString("fileName");
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
+    /**
+     * Set fileData
+     *
+     * @param data fileData
+     */
+    public void setFileData(byte[] data) {
+        try {
+            mFields.put("fileData", data);
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * Get fileData
+     *
+     * @return fileData
+     */
+    public byte[] getFileData() {
+        try {
+            if (mFields.isNull("fileData")) {
+                return null;
+            }
+            return (byte[]) mFields.get("fileData");
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
+    /**
+     * Constructor
+     */
+    public NCMBFile() {
+        this(null, null, null);
+    }
+
+    /**
+     * Constructor with fileName
+     *
+     * @param fileName file name
+     */
+    public NCMBFile(String fileName) {
+        this(fileName, null, null);
+    }
+
+    /**
+     * Constructor with fileName and fileACL
+     *
+     * @param fileName file name
+     * @param acl      file acl
+     */
+    public NCMBFile(String fileName, NCMBAcl acl) {
+        this(fileName, null, acl);
+    }
+
+    /**
+     * Constructor with fileName and fileData and fileACL
+     *
+     * @param fileName file name
+     * @param fileData file data
+     * @param acl      file acl
+     */
+    public NCMBFile(String fileName, byte[] fileData, NCMBAcl acl) {
+        super("files");
+        setFileName(fileName);
+        setFileData(fileData);
+        setAcl(acl);
+        mIgnoreKeys = ignoreKeys;
+    }
+
+    /**
+     * Upload file to file store
+     *
+     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     */
+    public void save() throws NCMBException {
+        JSONObject aclJson = createAclJSON();
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        JSONObject res = fileService.saveFile(getFileName(), getFileData(), aclJson);
+        setLocalData(res);
+    }
+
+    /**
+     * Upload file to file store asynchronously
+     *
+     * @param callback callback after file save
+     */
+    public void saveInBackground(final DoneCallback callback) {
+        JSONObject aclJson = new JSONObject();
+        try {
+            aclJson = createAclJSON();
+        } catch (NCMBException error) {
+            if (callback != null) {
+                callback.done(error);
+            }
+        }
+
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        fileService.saveFileInBackground(getFileName(), getFileData(), aclJson, new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject jsonData, NCMBException e) {
+                if (e != null) {
+                    if (callback != null) {
+                        callback.done(e);
+                    }
+                } else {
+                    try {
+                        setLocalData(jsonData);
+                    } catch (NCMBException error) {
+                        if (callback != null) {
+                            callback.done(error);
+                        }
+                    }
+                    if (callback != null) {
+                        callback.done(null);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Update file to file store
+     *
+     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     */
+    public void update() throws NCMBException {
+        JSONObject aclJson = createAclJSON();
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        JSONObject res = fileService.updateFile(getFileName(), aclJson);
+        setLocalData(res);
+    }
+
+    /**
+     * Update file to file store asynchronously
+     *
+     * @param callback callback after file update
+     */
+    public void updateInBackground(final DoneCallback callback) {
+        JSONObject aclJson = new JSONObject();
+        try {
+            aclJson = createAclJSON();
+        } catch (NCMBException error) {
+            if (callback != null) {
+                callback.done(error);
+            }
+        }
+
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        fileService.updateFileInBackground(getFileName(), aclJson, new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject jsonData, NCMBException e) {
+                if (e != null) {
+                    if (callback != null) {
+                        callback.done(e);
+                    }
+                } else {
+                    try {
+                        setLocalData(jsonData);
+                    } catch (NCMBException error) {
+                        if (callback != null) {
+                            callback.done(error);
+                        }
+                    }
+                    if (callback != null) {
+                        callback.done(null);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Delete file to file store
+     *
+     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     */
+    public void delete() throws NCMBException {
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        fileService.deleteFile(getFileName());
+    }
+
+    /**
+     * Delete file to file store asynchronously
+     *
+     * @param callback callback after file delete
+     */
+    public void deleteInBackground(final DoneCallback callback) {
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        fileService.deleteFileInBackground(getFileName(), new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject jsonData, NCMBException e) {
+                if (e != null) {
+                    if (callback != null) {
+                        callback.done(e);
+                    }
+                } else {
+                    if (callback != null) {
+                        callback.done(null);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * GEt fileData from file store
+     *
+     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     */
+    public byte[] getData() throws NCMBException {
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        byte[] data = fileService.getFile(getFileName());
+        setFileData(data);
+        return getFileData();
+    }
+
+    /**
+     * Get file to file store asynchronously
+     *
+     * @param callback callback after file get
+     */
+    public void getDataInBackground(final GetDataCallback callback) {
+        NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
+        fileService.getFileInBackground(getFileName(), new GetDataCallback() {
+            @Override
+            public void done(byte[] data, NCMBException e) {
+                if (e != null) {
+                    if (callback != null) {
+                        callback.done(null, e);
+                    }
+                } else {
+                    setFileData(data);
+                    if (callback != null) {
+                        callback.done(getFileData(), null);
+                    }
+                }
+            }
+        });
+    }
+
+    private JSONObject createAclJSON() throws NCMBException {
+        JSONObject aclJson = null;
+        try {
+            if (getAcl() == null) {
+                aclJson = new NCMBAcl().toJson();
+            } else {
+                aclJson = getAcl().toJson();
+            }
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid acl");
+        }
+        return aclJson;
+    }
+
+    void setLocalData(JSONObject res) throws NCMBException {
+        if (res != null) {
+            try {
+                //新規作成時
+                if (res.has("createDate") && !res.has("updateDate")) {
+                    res.put("updateDate", res.getString("createDate"));
+                }
+                for (Iterator<String> keys = res.keys(); keys.hasNext(); ) {
+                    String key = keys.next();
+                    mFields.put(key, res.get(key));
+                }
+            } catch (JSONException e) {
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
+            }
+        }
+    }
+}
