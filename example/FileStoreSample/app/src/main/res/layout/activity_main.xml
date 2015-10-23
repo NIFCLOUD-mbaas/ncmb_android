@@ -125,4 +125,48 @@
         android:layout_below="@+id/button7"
         android:layout_alignLeft="@+id/button7"
         android:layout_alignStart="@+id/button7"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="・その他"
+        android:id="@+id/textView3"
+        android:layout_marginTop="34dp"
+        android:layout_below="@+id/button9"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:onClick="onPOST_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POST_JP"
+        android:id="@+id/button11"
+        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/button9"
+        android:layout_alignStart="@+id/button9"/>
+
+    <Button
+        android:onClick="onPUT_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PUT_JP"
+        android:id="@+id/button12"
+        android:layout_alignTop="@+id/button11"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"/>
+
+    <Button
+        android:onClick="onDELETE_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DELETE_JP"
+        android:id="@+id/button13"
+        android:layout_alignTop="@+id/button12"
+        android:layout_toRightOf="@+id/button12"
+        android:layout_toEndOf="@+id/button12"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"/>
+
 </RelativeLayout>

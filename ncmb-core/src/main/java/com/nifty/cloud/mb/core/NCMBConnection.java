@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -104,7 +105,7 @@ public class NCMBConnection {
 
                                 //upload data
                                 out.writeBytes("--" + boundary + lineEnd);
-                                out.writeBytes("Content-Disposition: form-data; name=file; filename=" + ncmbRequest.getFileName() + lineEnd);
+                                out.writeBytes("Content-Disposition: form-data; name=file; filename=" + URLEncoder.encode(ncmbRequest.getFileName(),"UTF-8") + lineEnd);
                                 out.writeBytes("Content-Type: " + createMineType(ncmbRequest.getFileName()) + lineEnd);
                                 out.writeBytes(lineEnd);
                                 for (int i=0;i<ncmbRequest.getFileData().length;i++){

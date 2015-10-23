@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     static final String INTENT_RESULT = "result";
     static final String TEXT_FILENAME = "Hello.txt";
+    static final String TEXT_FILENAME_JP = "テスト.txt";
     static final String IMAGE_FILENAME = "ic_launcher.png";
     Intent intent;
 
@@ -343,6 +344,89 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+    }
+
+
+    /**
+     * 日本語ファイル名のアップロード
+     *
+     * @param v view
+     */
+    public void onPOST_JP_Clicked(View v) {
+        //ACL 読み込み:不可 , 書き込み:可
+        NCMBAcl acl = new NCMBAcl();
+        acl.setPublicReadAccess(false);
+        acl.setPublicWriteAccess(true);
+
+
+        //テキストアップロード
+        byte[] data = "日本語名ファイルアップロード".getBytes();
+        NCMBFile file = new NCMBFile(TEXT_FILENAME_JP, data, acl);
+
+        //通信
+        String result;
+        try {
+            file.save();
+            result = createSuccessString(file);
+        } catch (NCMBException e) {
+            result = createFailureString(e);
+        }
+
+        //結果
+        intent.putExtra(INTENT_RESULT, result);
+        startActivityForResult(intent, 0);
+    }
+
+
+    /**
+     * 日本語ファイル名の更新
+     *
+     * @param v view
+     */
+    public void onPUT_JP_Clicked(View v) {
+        //ACL 読み込み:可 , 書き込み:可
+        NCMBAcl acl = new NCMBAcl();
+        acl.setPublicReadAccess(true);
+        acl.setPublicWriteAccess(true);
+
+        //テキスト更新
+        NCMBFile file = new NCMBFile(TEXT_FILENAME_JP, acl);
+
+        //通信
+        String result;
+        try {
+            file.update();
+            result = createSuccessString(file);
+        } catch (NCMBException e) {
+            result = createFailureString(e);
+        }
+
+        //結果
+        intent.putExtra(INTENT_RESULT, result);
+        startActivityForResult(intent, 0);
+    }
+
+    /**
+     * 日本語ファイル名の削除
+     *
+     * @param v view
+     */
+    public void onDELETE_JP_Clicked(View v) {
+        //テキスト削除
+        NCMBFile file = new NCMBFile(TEXT_FILENAME_JP);
+
+        //通信
+        String result;
+        try {
+            file.delete();
+            result = createSuccessString(file);
+        } catch (NCMBException e) {
+            result = createFailureString(e);
+        }
+
+        //結果
+        intent.putExtra(INTENT_RESULT, result);
+        startActivityForResult(intent, 0);
     }
 
     String createSuccessString(NCMBFile file) {

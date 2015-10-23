@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +65,7 @@ public class NCMBFileService extends NCMBService {
         if (!validateFileName(fileName)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
         }
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         NCMBResponse response = sendRequestFile(url, NCMBRequest.HTTP_METHOD_POST, fileName, fileData, aclJson);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_CREATED) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
@@ -84,7 +86,7 @@ public class NCMBFileService extends NCMBService {
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
 
         try {
             sendRequestFileAsync(url, NCMBRequest.HTTP_METHOD_POST, fileName, fileData, aclJson, new FileServiceCallback(this, callback) {
@@ -126,7 +128,7 @@ public class NCMBFileService extends NCMBService {
         if (!validateFileName(fileName)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
         }
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         JSONObject content = new JSONObject();
         try {
             content.put("acl", aclJson);
@@ -163,7 +165,7 @@ public class NCMBFileService extends NCMBService {
             }
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         try {
             sendRequestAsync(url, NCMBRequest.HTTP_METHOD_PUT, content.toString(), null, new FileServiceCallback(this, callback) {
 
@@ -204,7 +206,7 @@ public class NCMBFileService extends NCMBService {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_DELETE;
         NCMBResponse response = sendRequest(url, type);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -226,7 +228,7 @@ public class NCMBFileService extends NCMBService {
             }
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         try {
             sendRequestAsync(url, NCMBRequest.HTTP_METHOD_DELETE, null, null, new FileServiceCallback(this, callback) {
 
@@ -267,7 +269,7 @@ public class NCMBFileService extends NCMBService {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -289,7 +291,7 @@ public class NCMBFileService extends NCMBService {
             }
         }
 
-        String url = mContext.baseUrl + mServicePath + "/" + fileName;
+        String url = createURL(fileName);
         try {
             sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, null, new FileServiceCallback(this, callback) {
                 @Override
@@ -327,7 +329,7 @@ public class NCMBFileService extends NCMBService {
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public List searchFile(JSONObject conditions) throws NCMBException {
-        String url = mContext.baseUrl + mServicePath;
+        String url = createURL(null);
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type, null, conditions);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -344,7 +346,7 @@ public class NCMBFileService extends NCMBService {
      * @param callback   callback for after file get
      */
     public void searchFileInBackground(JSONObject conditions, SearchFileCallback callback) {
-        String url = mContext.baseUrl + mServicePath;
+        String url = createURL(null);
         try {
             sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, conditions, new FileServiceCallback(this, callback) {
                 @Override
@@ -400,6 +402,20 @@ public class NCMBFileService extends NCMBService {
         }
     }
 
+    String createURL(String name){
+        StringBuilder url = new StringBuilder(mContext.baseUrl + mServicePath);
+        if(name != null){
+            String encodeName = "";
+            try {
+                encodeName  = URLEncoder.encode(name, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalArgumentException(e);
+            }
+            url.append("/").append(encodeName);
+        }
+
+        return url.toString();
+    }
 
     private boolean validateFileName(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
