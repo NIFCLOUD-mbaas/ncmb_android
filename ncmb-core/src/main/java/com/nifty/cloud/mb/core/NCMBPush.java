@@ -18,9 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * NCMBPush is used to retrieve and send the push notification
- * NCMBPush can not add any field.
- * The setting can be filed, please refer to the following API Reference.
+ * NCMBPush is used to retrieve and send the push notification.<br>
+ * NCMBPush can not add any field.<br>
+ * Information about the field names that can be set , refer to the following reference .<br>
  * http://mb.cloud.nifty.com/doc/current/rest/push/pushRegistration.html
  */
 public class NCMBPush extends NCMBBase {

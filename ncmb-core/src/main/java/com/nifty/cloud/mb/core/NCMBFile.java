@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * NCMBFile class.
- * NCMBFile can not add any field.
- * The setting can be filed, please refer to the following API Reference.
+ * NCMBFile class.<br>
+ * NCMBFile can not add any field.<br>
+ * Information about the field names that can be set , refer to the following reference .<br>
  * http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html
  */
 public class NCMBFile extends NCMBBase {
