@@ -106,7 +106,7 @@ public class NCMBConnection {
                                 //upload data
                                 out.writeBytes("--" + boundary + lineEnd);
                                 out.writeBytes("Content-Disposition: form-data; name=file; filename=" + URLEncoder.encode(ncmbRequest.getFileName(),"UTF-8") + lineEnd);
-                                out.writeBytes("Content-Type: " + createMineType(ncmbRequest.getFileName()) + lineEnd);
+                                out.writeBytes("Content-Type: " + createMimeType(ncmbRequest.getFileName()) + lineEnd);
                                 out.writeBytes(lineEnd);
                                 for (int i=0;i<ncmbRequest.getFileData().length;i++){
                                     out.writeByte(ncmbRequest.getFileData()[i]);
@@ -197,7 +197,7 @@ public class NCMBConnection {
 
     }
 
-    private String createMineType(String fileName) {
+    private String createMimeType(String fileName) {
         //fileの拡張子毎のmimeTypeを作成
         String mimeType = null;
         if (fileName.lastIndexOf(".") != -1) {
