@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param v view
      */
-    public void onGETDataClicked(View v) {
+    public void onGETClicked(View v) {
         Toast.makeText(this, "同期GET実行", Toast.LENGTH_SHORT).show();
         //テキストダウンロード
         NCMBFile file = new NCMBFile(TEXT_FILENAME);
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         //通信
         String result;
         try {
-            file.getData();
+            file.fetch();
             result = createSuccessString(file);
         } catch (NCMBException e) {
             result = createFailureString(e);
@@ -268,13 +268,13 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param v view
      */
-    public void onAsyncGETDataClicked(View v) {
+    public void onAsyncGETClicked(View v) {
         Toast.makeText(this, "非同期GET実行", Toast.LENGTH_SHORT).show();
         //画像ダウンロード
         final NCMBFile file = new NCMBFile(IMAGE_FILENAME);
 
         //通信
-        file.getDataInBackground(new GetDataCallback() {
+        file.fetchInBackground(new GetDataCallback() {
             @Override
             public void done(byte[] data, NCMBException e) {
                 String result;

@@ -264,7 +264,7 @@ public class NCMBFileService extends NCMBService {
      * @return API response
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public byte[] getFile(String fileName) throws NCMBException {
+    public byte[] fetchFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
         }
@@ -284,7 +284,7 @@ public class NCMBFileService extends NCMBService {
      * @param fileName get file name
      * @param callback callback for after file get
      */
-    public void getFileInBackground(String fileName, GetDataCallback callback) {
+    public void fetchFileInBackground(String fileName, GetDataCallback callback) {
         if (!validateFileName(fileName)) {
             if (callback != null) {
                 callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));

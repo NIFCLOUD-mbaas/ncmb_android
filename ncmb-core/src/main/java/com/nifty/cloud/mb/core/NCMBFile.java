@@ -257,9 +257,9 @@ public class NCMBFile extends NCMBBase {
      *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
-    public byte[] getData() throws NCMBException {
+    public byte[] fetch() throws NCMBException {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
-        byte[] data = fileService.getFile(getFileName());
+        byte[] data = fileService.fetchFile(getFileName());
         setFileData(data);
         return getFileData();
     }
@@ -269,9 +269,9 @@ public class NCMBFile extends NCMBBase {
      *
      * @param callback callback after file get
      */
-    public void getDataInBackground(final GetDataCallback callback) {
+    public void fetchInBackground(final GetDataCallback callback) {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
-        fileService.getFileInBackground(getFileName(), new GetDataCallback() {
+        fileService.fetchFileInBackground(getFileName(), new GetDataCallback() {
             @Override
             public void done(byte[] data, NCMBException e) {
                 if (e != null) {
