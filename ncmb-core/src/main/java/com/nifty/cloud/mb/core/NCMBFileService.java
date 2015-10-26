@@ -26,7 +26,7 @@ public class NCMBFileService extends NCMBService {
             super(service, (CallbackBase) callback);
         }
 
-        FileServiceCallback(NCMBFileService service, GetDataCallback callback) {
+        FileServiceCallback(NCMBFileService service, FetchFileCallback callback) {
             super(service, (CallbackBase) callback);
         }
 
@@ -284,7 +284,7 @@ public class NCMBFileService extends NCMBService {
      * @param fileName get file name
      * @param callback callback for after file get
      */
-    public void fetchFileInBackground(String fileName, GetDataCallback callback) {
+    public void fetchFileInBackground(String fileName, FetchFileCallback callback) {
         if (!validateFileName(fileName)) {
             if (callback != null) {
                 callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
@@ -297,7 +297,7 @@ public class NCMBFileService extends NCMBService {
                 @Override
                 public void handleResponse(NCMBResponse response) {
 
-                    GetDataCallback callback = (GetDataCallback) mCallback;
+                    FetchFileCallback callback = (FetchFileCallback) mCallback;
                     if (callback != null) {
                         callback.done(response.responseByte, null);
                     }
@@ -306,7 +306,7 @@ public class NCMBFileService extends NCMBService {
                 @Override
                 public void handleError(NCMBException e) {
 
-                    GetDataCallback callback = (GetDataCallback) mCallback;
+                    FetchFileCallback callback = (FetchFileCallback) mCallback;
                     if (callback != null) {
                         callback.done(null, e);
                     }

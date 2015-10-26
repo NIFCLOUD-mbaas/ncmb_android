@@ -269,9 +269,9 @@ public class NCMBFile extends NCMBBase {
      *
      * @param callback callback after file get
      */
-    public void fetchInBackground(final GetDataCallback callback) {
+    public void fetchInBackground(final FetchFileCallback callback) {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
-        fileService.fetchFileInBackground(getFileName(), new GetDataCallback() {
+        fileService.fetchFileInBackground(getFileName(), new FetchFileCallback() {
             @Override
             public void done(byte[] data, NCMBException e) {
                 if (e != null) {

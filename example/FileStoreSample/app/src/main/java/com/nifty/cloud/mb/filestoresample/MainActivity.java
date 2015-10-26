@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.nifty.cloud.mb.core.DoneCallback;
 import com.nifty.cloud.mb.core.FindCallback;
-import com.nifty.cloud.mb.core.GetDataCallback;
+import com.nifty.cloud.mb.core.FetchFileCallback;
 import com.nifty.cloud.mb.core.NCMB;
 import com.nifty.cloud.mb.core.NCMBAcl;
 import com.nifty.cloud.mb.core.NCMBException;
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         final NCMBFile file = new NCMBFile(IMAGE_FILENAME);
 
         //通信
-        file.fetchInBackground(new GetDataCallback() {
+        file.fetchInBackground(new FetchFileCallback() {
             @Override
             public void done(byte[] data, NCMBException e) {
                 String result;
