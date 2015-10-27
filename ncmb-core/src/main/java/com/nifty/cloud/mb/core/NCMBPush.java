@@ -18,7 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *  NCMBPush is used to retrieve and send the push notification
+ * NCMBPush is used to retrieve and send the push notification.<br>
+ * NCMBPush can not add any field.<br>
+ * Information about the field names that can be set , refer to the following reference .<br>
+ * http://mb.cloud.nifty.com/doc/current/rest/push/pushRegistration.html
  */
 public class NCMBPush extends NCMBBase {
 
@@ -92,7 +95,7 @@ public class NCMBPush extends NCMBBase {
      *
      * @return String push message
      */
-    public String getMessage(){
+    public String getMessage() {
         try {
             if (mFields.isNull("message")) {
                 return null;
@@ -402,7 +405,7 @@ public class NCMBPush extends NCMBBase {
         try {
             JSONObject whereConditions = query.getConditions();
             JSONObject value = new JSONObject();
-            if(whereConditions.has("where")){
+            if (whereConditions.has("where")) {
                 value = whereConditions.getJSONObject("where");
             }
             mFields.put("searchCondition", value);
@@ -599,9 +602,8 @@ public class NCMBPush extends NCMBBase {
 
     /**
      * Constructor
-     *
      */
-    public NCMBPush(){
+    public NCMBPush() {
         super("push");
         mIgnoreKeys = ignoreKeys;
     }
@@ -859,8 +861,8 @@ public class NCMBPush extends NCMBBase {
     void setLocalData(JSONObject data) throws NCMBException {
         try {
             //新規作成時
-            if(data.has("createDate")&&!data.has("updateDate")){
-                data.put("updateDate",data.getString("createDate"));
+            if (data.has("createDate") && !data.has("updateDate")) {
+                data.put("updateDate", data.getString("createDate"));
             }
             for (Iterator<String> keys = data.keys(); keys.hasNext(); ) {
                 String key = keys.next();
@@ -891,24 +893,24 @@ public class NCMBPush extends NCMBBase {
 
     /**
      * If it contains the dialog in the payload data, it will display the dialog
-     * @param context context
-     * @param bundle pushData
+     *
+     * @param context                 context
+     * @param bundle                  pushData
      * @param dialogPushConfiguration push settings
      */
-    public static void dialogPushHandler(Context context,Bundle bundle, NCMBDialogPushConfiguration dialogPushConfiguration)
-    {
-        if(!bundle.containsKey("com.nifty.Dialog")){
+    public static void dialogPushHandler(Context context, Bundle bundle, NCMBDialogPushConfiguration dialogPushConfiguration) {
+        if (!bundle.containsKey("com.nifty.Dialog")) {
             //dialogが有効になっていない場合
             return;
         }
 
-        if(dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE){
+        if (dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
             //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
             return;
         }
 
         ApplicationInfo appInfo;
-        String activityName ="";
+        String activityName = "";
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             activityName = appInfo.packageName + appInfo.metaData.getString(NCMBGcmListenerService.OPEN_PUSH_START_ACTIVITY_KEY);

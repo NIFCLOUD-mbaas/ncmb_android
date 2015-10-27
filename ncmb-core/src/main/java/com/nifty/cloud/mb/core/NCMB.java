@@ -38,7 +38,8 @@ public class NCMB {
         USER,
         ROLE,
         INSTALLATION,
-        PUSH
+        PUSH,
+        FILE
     };
 
     /**
@@ -117,6 +118,9 @@ public class NCMB {
                 break;
             case PUSH:
                 service = (NCMBPushService)new NCMBPushService(sCurrentContext);
+                break;
+            case FILE:
+                service = (NCMBFileService)new NCMBFileService(sCurrentContext);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid serviceType");

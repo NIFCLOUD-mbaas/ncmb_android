@@ -102,7 +102,12 @@ public class NCMBBase {
 
     protected void setAclFromInternal (NCMBAcl acl) {
         try {
-            mFields.put("acl", acl.toJson());
+            if(acl == null){
+                mFields.put("acl", null);
+            }else {
+                mFields.put("acl", acl.toJson());
+            };
+
         } catch (JSONException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

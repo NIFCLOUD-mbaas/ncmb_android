@@ -315,7 +315,7 @@ public class NCMBObjectService extends NCMBService{
 
                 @Override
                 public void handleError(NCMBException e) {
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
+                    SearchObjectCallback callback = (SearchObjectCallback) mCallback;
                     if (callback != null) {
                         callback.done(null, e);
                     }

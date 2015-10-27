@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import android.os.AsyncTask;
+import android.webkit.MimeTypeMap;
 
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -32,14 +34,16 @@ public class NCMBConnection {
 
     /**
      * setting callback for api request
+     *
      * @param callback callback for api request
      */
-    public void setCallbackListener(RequestApiCallback callback){
+    public void setCallbackListener(RequestApiCallback callback) {
         mCallback = callback;
     }
 
     /**
      * Constructor with NCMBRequest
+     *
      * @param request API request object
      */
     public NCMBConnection(NCMBRequest request) {
@@ -48,6 +52,7 @@ public class NCMBConnection {
 
     /**
      * Request NIFTY Cloud mobile backed api synchronously
+     *
      * @return result object from NIFTY Cloud mobile backend
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
@@ -82,7 +87,7 @@ public class NCMBConnection {
                             //enable post data option
                             urlConnection.setDoOutput(true);
 
-                            if (urlConnection.getRequestProperty("Content-Type").equals("application/json")) {
+                            if (urlConnection.getRequestProperty("Content-Type").equals(NCMBRequest.HEADER_CONTENT_TYPE_JSON)) {
 
                                 //Sending json data
                                 DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
@@ -90,10 +95,36 @@ public class NCMBConnection {
                                 writer.write(ncmbRequest.getContent());
                                 writer.flush();
                                 writer.close();
-                            } else if (urlConnection.getRequestProperty("Content-Type").equals("multipart-formdata")) {
+                            } else if (urlConnection.getRequestProperty("Content-Type").equals(NCMBRequest.HEADER_CONTENT_TYPE_FILE)) {
 
                                 //Sending file data
-                                //TODO:file data upload
+                                final String boundary = Long.toString(System.currentTimeMillis());
+                                final String lineEnd = "\r\n";
+                                urlConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                                DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
+
+                                //upload data
+                                out.writeBytes("--" + boundary + lineEnd);
+                                out.writeBytes("Content-Disposition: form-data; name=file; filename=" + URLEncoder.encode(ncmbRequest.getFileName(),"UTF-8") + lineEnd);
+                                out.writeBytes("Content-Type: " + createMimeType(ncmbRequest.getFileName()) + lineEnd);
+                                out.writeBytes(lineEnd);
+                                for (int i=0;i<ncmbRequest.getFileData().length;i++){
+                                    out.writeByte(ncmbRequest.getFileData()[i]);
+                                }
+                                out.writeBytes(lineEnd);
+
+                                //ACLのみ対応
+                                if(!ncmbRequest.getContent().isEmpty()&&!ncmbRequest.getContent().equals("{}")){
+                                    out.writeBytes("--" + boundary + lineEnd);
+                                    out.writeBytes("Content-Disposition: form-data; name=acl; filename=acl" + lineEnd);
+                                    out.writeBytes(lineEnd);
+                                    out.writeBytes(ncmbRequest.getContent());
+                                    out.writeBytes(lineEnd);
+                                }
+
+                                out.writeBytes("--" + boundary + "--" + lineEnd);
+                                out.flush();
+                                out.close();
                             }
 
                         }
@@ -137,11 +168,12 @@ public class NCMBConnection {
 
     /**
      * Request NIFTY Cloud mobile backend api asynchronously
+     *
      * @param callback execute callback after api request
      */
     public void sendRequestAsynchronously(RequestApiCallback callback) {
         setCallbackListener(callback);
-        AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
             NCMBResponse res = null;
             NCMBException error = null;
@@ -163,6 +195,19 @@ public class NCMBConnection {
             }
         }.execute();
 
+    }
+
+    private String createMimeType(String fileName) {
+        //fileの拡張子毎のmimeTypeを作成
+        String mimeType = null;
+        if (fileName.lastIndexOf(".") != -1) {
+            String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        if (mimeType == null) {
+            mimeType = "application/octet-stream";
+        }
+        return mimeType;
     }
 }
 
