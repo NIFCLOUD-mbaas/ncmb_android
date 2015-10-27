@@ -651,20 +651,12 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
+    @Override
     public void fetch() throws NCMBException {
         //connect
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject json = installationService.getInstallation(getObjectId());
-        //afterFetch
-        setLocalData(json);
-    }
-
-    /**
-     * Get installation object inBackground
-     * none callback
-     */
-    public void fetchInBackground() {
-        fetchInBackground(null);
+        NCMBInstallation installation = installationService.fetchInstallation(getObjectId());
+        mFields = installation.mFields;
     }
 
     /**
@@ -672,26 +664,22 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @param callback DoneCallback
      */
+    @Override
     public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        installationService.getInstallationInBackground(getObjectId(), new ExecuteServiceCallback() {
+        installationService.fetchInstallationInBackground(getObjectId(), new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(JSONObject responseData, NCMBException error) {
-                NCMBInstallation installation = null;
-                if (error == null) {
-                    //instance set data
-                    try {
-                        installation = new NCMBInstallation(responseData);
-                        setLocalData(responseData);
-                    } catch (NCMBException e) {
-                        error = e;
-                    }
+            public void done(NCMBInstallation installation, NCMBException e) {
+                NCMBException error = null;
+                if (e != null) {
+                    error = e;
+                } else {
+                    mFields = installation.mFields;
                 }
                 if (callback != null) {
                     callback.done(installation, error);
                 }
-
             }
         });
     }

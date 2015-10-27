@@ -329,7 +329,6 @@ public class NCMBInstallationTest {
     public void fetchInBackground_none_callback() throws Exception {
         //post
         NCMBInstallation installation = new NCMBInstallation();
-        installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.setObjectId("7FrmPTBKSNtVjajm");
         installation.fetchInBackground();
 
@@ -340,6 +339,27 @@ public class NCMBInstallationTest {
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
+    }
+
+    /**
+     * - 内容：fetchInBackgroundが成功することを確認する
+     * - 結果：非同期でInstallationの取得ができること
+     */
+    @Test
+    public void fetchInBackground_with_callback () throws Exception {
+        NCMBInstallation installation = new NCMBInstallation();
+        installation.setObjectId("7FrmPTBKSNtVjajm");
+        installation.fetchInBackground(new FetchCallback<NCMBInstallation>() {
+            @Override
+            public void done(NCMBInstallation fetchedInstallation, NCMBException e) {
+                //check
+                Assert.assertEquals("7FrmPTBKSNtVjajm", fetchedInstallation.getObjectId());
+                Assert.assertEquals("value", fetchedInstallation.getString("key"));
+                Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", fetchedInstallation.getDeviceToken());
+                Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("createDate"));
+                Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("updateDate"));
+            }
+        });
     }
 
     /**

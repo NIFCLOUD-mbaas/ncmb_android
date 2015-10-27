@@ -191,9 +191,9 @@ public class NCMBRoleTest {
     public void fetch_role_in_background () throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
-        role.fetchObjectInBackground(new DoneCallback() {
+        role.fetchObjectInBackground(new FetchCallback<NCMBRole>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBRole fetchedRole, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }

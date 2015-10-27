@@ -214,13 +214,13 @@ public class NCMBInstallationServiceTest {
      * - 結果：objectId,valueを含むJSONObjectが返却される事
      */
     @Test
-    public void getInstallation() throws Exception {
+    public void fetchInstallation() throws Exception {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject json = installationService.getInstallation("7FrmPTBKSNtVjajm");
+        NCMBInstallation installation = installationService.fetchInstallation("7FrmPTBKSNtVjajm");
 
         //checkAssert
-        Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-        Assert.assertEquals("value", json.getString("key"));
+        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getString("objectId"));
+        Assert.assertEquals("value", installation.getString("key"));
     }
 
     /**
@@ -228,19 +228,15 @@ public class NCMBInstallationServiceTest {
      * - 結果：objectId,valueを含むJSONObjectが返却される事
      */
     @Test
-    public void getInstallationInBackground() throws Exception {
+    public void fetchInstallationInBackground() throws Exception {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        installationService.getInstallationInBackground("7FrmPTBKSNtVjajm", new ExecuteServiceCallback() {
+        installationService.fetchInstallationInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(JSONObject json, NCMBException e) {
+            public void done(NCMBInstallation installation, NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
-                try {
-                    Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-                    Assert.assertEquals("value", json.getString("key"));
-                } catch (JSONException error) {
-                    Assert.assertNull(error);
-                }
+                Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getString("objectId"));
+                Assert.assertEquals("value", installation.getString("key"));
             }
         });
     }
@@ -297,8 +293,7 @@ public class NCMBInstallationServiceTest {
     @Test
     public void installationPropertyCheck() throws Exception {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject params = installationService.getInstallation("7FrmPTBKSNtVjajm");
-        NCMBInstallation installation = new NCMBInstallation(params);
+        NCMBInstallation installation = installationService.fetchInstallation("7FrmPTBKSNtVjajm");
 
         //checkAssert
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());

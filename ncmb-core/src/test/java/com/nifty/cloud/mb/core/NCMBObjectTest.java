@@ -323,7 +323,7 @@ public class NCMBObjectTest {
     public void fetch_object() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObject();
+        obj.fetch();
         Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
         Assert.assertEquals("value", obj.getString("key"));
 
@@ -339,7 +339,7 @@ public class NCMBObjectTest {
 
         NCMBObject obj = new NCMBObject("testClass");
         try {
-            obj.fetchObject();
+            obj.fetch();
         } catch (NCMBException e){
             Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
         }
@@ -350,7 +350,7 @@ public class NCMBObjectTest {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
         try {
-            obj.fetchObject();
+            obj.fetch();
         } catch (NCMBException e){
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
         }
@@ -360,7 +360,7 @@ public class NCMBObjectTest {
     public void fetch_object_in_background() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObjectInBackground(new FetchCallback<NCMBObject>() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
 
             @Override
             public void done(NCMBObject object, NCMBException e) {
@@ -400,7 +400,7 @@ public class NCMBObjectTest {
     public void fetch_object_non_object_id () throws Exception {
 
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.fetchObjectInBackground(new FetchCallback<NCMBObject>() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
             public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {
@@ -416,7 +416,7 @@ public class NCMBObjectTest {
     public void fetch_object_non_exist_object () throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
-        obj.fetchObjectInBackground(new FetchCallback<NCMBObject>() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
             public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {

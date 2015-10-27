@@ -176,14 +176,14 @@ public class NCMBPushServiceTest {
         JSONObject json = null;
         try {
             NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-            json = pushService.getPush("7FrmPTBKSNtVjajm");
-        } catch (NCMBException e) {
-            error = e;
-        }
+            NCMBPush push = pushService.fetchPush("7FrmPTBKSNtVjajm");
 
-        Assert.assertNull(error);
-        Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-        Assert.assertEquals("http://www.yahoo.co.jp/", json.getString("richUrl"));
+            Assert.assertNull(error);
+            Assert.assertEquals("7FrmPTBKSNtVjajm", push.getString("objectId"));
+            Assert.assertEquals("http://www.yahoo.co.jp/", push.getString("richUrl"));
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     /**
@@ -193,17 +193,13 @@ public class NCMBPushServiceTest {
     @Test
     public void getPushInBackground() throws Exception {
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        pushService.getPushInBackground("7FrmPTBKSNtVjajm", new ExecuteServiceCallback() {
+        pushService.fetchPushInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBPush>() {
             @Override
-            public void done(JSONObject json, NCMBException e) {
+            public void done(NCMBPush push, NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
-                try {
-                    Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-                    Assert.assertEquals("http://www.yahoo.co.jp/", json.getString("richUrl"));
-                } catch (JSONException error) {
-                    Assert.assertNull(error);
-                }
+                Assert.assertEquals("7FrmPTBKSNtVjajm", push.getString("objectId"));
+                Assert.assertEquals("http://www.yahoo.co.jp/", push.getString("richUrl"));
             }
         });
     }

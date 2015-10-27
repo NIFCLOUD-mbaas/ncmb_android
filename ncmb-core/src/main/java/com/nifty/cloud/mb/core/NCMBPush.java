@@ -710,9 +710,9 @@ public class NCMBPush extends NCMBBase {
     public void fetch() throws NCMBException {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        JSONObject json = pushService.getPush(getObjectId());
+        NCMBPush push = pushService.fetchPush(getObjectId());
         //afterFetch
-        setLocalData(json);
+        setLocalData(push.mFields);
     }
 
     /**
@@ -731,17 +731,18 @@ public class NCMBPush extends NCMBBase {
     public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        pushService.getPushInBackground(getObjectId(), new ExecuteServiceCallback() {
+        pushService.fetchPushInBackground(getObjectId(), new FetchCallback<NCMBPush>() {
             @Override
-            public void done(JSONObject responseData, NCMBException error) {
-                NCMBPush push = null;
-                if (error == null) {
+            public void done(NCMBPush push, NCMBException e) {
+                NCMBException error = null;
+                if (e != null) {
+                    error = e;
+                } else {
                     //instance set data
                     try {
-                        push = new NCMBPush(responseData);
-                        setLocalData(responseData);
-                    } catch (NCMBException e) {
-                        error = e;
+                        setLocalData(push.mFields);
+                    } catch (NCMBException ncmbError) {
+                        error = ncmbError;
                     }
                 }
                 if (callback != null) {

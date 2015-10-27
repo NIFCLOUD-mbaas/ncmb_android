@@ -23,6 +23,10 @@ public class NCMBObjectService extends NCMBService{
             super(service, (CallbackBase)callback);
         }
 
+        ObjectServiceCallback(NCMBObjectService service, FetchCallback callback) {
+            super(service, (CallbackBase)callback);
+        }
+
         ObjectServiceCallback(NCMBObjectService service, SearchObjectCallback callback) {
             super(service, (CallbackBase)callback);
         }
@@ -110,7 +114,7 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
-    public JSONObject fetchObject(String className,String objectId) throws NCMBException {
+    public NCMBObject fetchObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
@@ -121,10 +125,10 @@ public class NCMBObjectService extends NCMBService{
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
         }
-        return response.responseData;
+        return new NCMBObject(className, response.responseData);
     }
 
-    public void fetchObjectInBackground(String className, String objectId, ExecuteServiceCallback callback){
+    public void fetchObjectInBackground(final String className, String objectId, final FetchCallback callback){
         if (!validateClassName(className) || !validateObjectId(objectId)){
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
         } else {
@@ -140,15 +144,14 @@ public class NCMBObjectService extends NCMBService{
                     @Override
                     public void handleResponse(NCMBResponse response) {
 
-                        ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
+                        FetchCallback<NCMBObject> callback = (FetchCallback) mCallback;
                         if (callback != null) {
-                            callback.done(response.responseData, null);
+                            callback.done(new NCMBObject(className, response.responseData), null);
                         }
                     }
 
                     @Override
                     public void handleError(NCMBException e) {
-                        ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                         if (callback != null) {
                             callback.done(null, e);
                         }

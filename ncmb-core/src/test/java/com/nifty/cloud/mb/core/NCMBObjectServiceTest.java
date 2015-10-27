@@ -81,37 +81,35 @@ public class NCMBObjectServiceTest {
     }
 
     @Test
-    public void getObject_valid_class () throws Exception {
+    public void fetchObject_valid_class () throws Exception {
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
-        response = objServ.fetchObject(
+        NCMBObject obj = objServ.fetchObject(
                 "TestClass",
                 "getTestObjectId"
         );
 
-        Assert.assertEquals("7FrmPTBKSNtVjajm", response.getString("objectId"));
-        Assert.assertEquals("2014-06-03T11:28:30.348Z", response.getString("createDate"));
-        Assert.assertEquals("2014-06-03T11:28:30.348Z", response.getString("updateDate"));
-        Assert.assertEquals("{}", response.getString("acl"));
+        Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getString("objectId"));
+        Assert.assertEquals("2014-06-03T11:28:30.348Z", obj.getString("createDate"));
+        Assert.assertEquals("2014-06-03T11:28:30.348Z", obj.getString("updateDate"));
+        Assert.assertEquals("{}", obj.getString("acl"));
     }
 
     @Test
-    public void getObjectInBackground_valid_class () throws Exception {
+    public void fetchObjectInBackground_valid_class () throws Exception {
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.fetchObjectInBackground(
                 "TestClass",
                 "getTestObjectId",
-                new ExecuteServiceCallback() {
+                new FetchCallback<NCMBObject>() {
                     @Override
-                    public void done(JSONObject json, NCMBException e) {
-                        response = json;
+                    public void done(NCMBObject object, NCMBException e) {
+                        Assert.assertEquals("7FrmPTBKSNtVjajm", object.getString("objectId"));
+                        Assert.assertEquals("2014-06-03T11:28:30.348Z", object.getString("createDate"));
+                        Assert.assertEquals("2014-06-03T11:28:30.348Z", object.getString("updateDate"));
+                        Assert.assertEquals("{}", object.getString("acl"));
                     }
                 }
         );
-
-        Assert.assertEquals("7FrmPTBKSNtVjajm", response.getString("objectId"));
-        Assert.assertEquals("2014-06-03T11:28:30.348Z", response.getString("createDate"));
-        Assert.assertEquals("2014-06-03T11:28:30.348Z", response.getString("updateDate"));
-        Assert.assertEquals("{}", response.getString("acl"));
     }
 
     @Test

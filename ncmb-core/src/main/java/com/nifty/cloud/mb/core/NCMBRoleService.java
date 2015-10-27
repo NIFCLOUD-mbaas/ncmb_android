@@ -37,7 +37,7 @@ public class NCMBRoleService extends NCMBService {
         RoleServiceCallback(NCMBRoleService service, DoneCallback callback) {
             super((NCMBService)service, callback);
         }
-        RoleServiceCallback(NCMBRoleService service, RoleCallback callback) {
+        RoleServiceCallback(NCMBRoleService service, FetchCallback callback) {
             super((NCMBService)service, callback);
         }
 
@@ -120,16 +120,15 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = createRoleParams(roleName);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().createRoleCheckResponse(response);
+            public void handleResponse(NCMBResponse response){
 
-                ExecuteServiceCallback executeServiceCallback = (ExecuteServiceCallback)mCallback;
+                ExecuteServiceCallback executeServiceCallback = (ExecuteServiceCallback) mCallback;
                 executeServiceCallback.done(response.responseData, null);
             }
 
             @Override
             public void handleError(NCMBException e) {
-                ExecuteServiceCallback executeServiceCallback = (ExecuteServiceCallback)mCallback;
+                ExecuteServiceCallback executeServiceCallback = (ExecuteServiceCallback) mCallback;
                 executeServiceCallback.done(null, e);
             }
         });
@@ -181,8 +180,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = deleteRoleParams(roleId);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().deleteRoleCheckResponse(response);
+            public void handleResponse(NCMBResponse response){
 
                 DoneCallback doneCallback = (DoneCallback) mCallback;
                 doneCallback.done(null);
@@ -226,7 +224,7 @@ public class NCMBRoleService extends NCMBService {
      * @return role object
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public NCMBRole getRole(String roleId) throws NCMBException {
+    public NCMBRole fetchRole(String roleId) throws NCMBException {
         RequestParams reqParams = getRoleParams(roleId);
         NCMBResponse response = sendRequest(reqParams);
         getRoleCheckResponse(response);
@@ -236,26 +234,29 @@ public class NCMBRoleService extends NCMBService {
 
     /**
      * Get role information in background
-     * @param roleId role id
+     * @param objectId objectId of role
      * @param callback callback when process finished
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void getRoleInBackground(String roleId, RoleCallback callback) throws NCMBException {
-        RequestParams reqParams = getRoleParams(roleId);
+    public void fetchRoleInBackground(String objectId, final FetchCallback callback) throws NCMBException {
+        if (objectId == null) {
+            throw new NCMBException(new IllegalArgumentException("objectId is must not be null."));
+        }
+        RequestParams reqParams = getRoleParams(objectId);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().getRoleCheckResponse(response);
-                NCMBRole role = new NCMBRole(response.responseData);
-
-                RoleCallback roleCallback = (RoleCallback)mCallback;
-                roleCallback.done(role, null);
+            public void handleResponse(NCMBResponse response){
+                FetchCallback<NCMBRole> callback = (FetchCallback)mCallback;
+                if (callback != null) {
+                    callback.done(new NCMBRole(response.responseData), null);
+                }
             }
 
             @Override
             public void handleError(NCMBException e) {
-                RoleCallback roleCallback = (RoleCallback)mCallback;
-                roleCallback.done(null, e);
+                if (callback != null) {
+                    callback.done(null, e);
+                }
             }
         });
     }
@@ -461,8 +462,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = addUserRelationsParams(roleId, users);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().addUserRelationsCheckResponse(response);
+            public void handleResponse(NCMBResponse response){
 
                 ExecuteServiceCallback doneCallback = (ExecuteServiceCallback)mCallback;
                 doneCallback.done(response.responseData, null);
@@ -543,8 +543,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = addRoleRelationParams(roleId, roles);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().addRoleRelationsCheckResponse(response);
+            public void handleResponse(NCMBResponse response){
 
                 ExecuteServiceCallback doneCallback = (ExecuteServiceCallback)mCallback;
                 doneCallback.done(response.responseData, null);
@@ -616,8 +615,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = setAclParams(roleId, acl);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getRoleService().setAclCheckResponse(response);
+            public void handleResponse(NCMBResponse response){
                 DoneCallback doneCallback = (DoneCallback)mCallback;
                 doneCallback.done(null);
             }

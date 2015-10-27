@@ -42,19 +42,12 @@ public class NCMBInstallationService extends NCMBService {
             super(service, callback);
         }
 
-        InstallationServiceCallback(NCMBInstallationService service, SearchInstallationCallback callback) {
+        InstallationServiceCallback(NCMBInstallationService service, FetchCallback callback) {
             super(service, callback);
         }
 
-        /**
-         * Check response in each casse, then throe exception when it's wrong
-         *
-         * @param response response object
-         * @throws NCMBException
-         */
-        @Override
-        public void handleResponse(NCMBResponse response) throws NCMBException {
-            // do nothing in default
+        InstallationServiceCallback(NCMBInstallationService service, SearchInstallationCallback callback) {
+            super(service, callback);
         }
     }
 
@@ -116,7 +109,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param params         installation parameters
      * @param callback       JSONCallback
      */
-    public void createInstallationInBackground(String registrationId, JSONObject params, ExecuteServiceCallback callback) {
+    public void createInstallationInBackground(String registrationId, JSONObject params, final ExecuteServiceCallback callback) {
         try {
             //null check
             final JSONObject argumentParams = argumentNullCheckForPOST(registrationId, params);
@@ -139,13 +132,14 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_CREATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //create currentInstallation
-                    writeCurrentInstallation(argumentParams, response.responseData);
+                    try {
+                        writeCurrentInstallation(argumentParams, response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -220,7 +214,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param params   installation parameters
      * @param callback JSONCallback
      */
-    public void updateInstallationInBackground(final String objectId, JSONObject params, ExecuteServiceCallback callback) {
+    public void updateInstallationInBackground(final String objectId, JSONObject params, final ExecuteServiceCallback callback) {
         try {
             //null check
             final JSONObject argumentParams = argumentNullCheckForPOST(objectId, params);
@@ -241,13 +235,14 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_UPDATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Update failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //update currentInstallation
-                    writeCurrentInstallation(argumentParams, response.responseData);
+                    try {
+                        writeCurrentInstallation(argumentParams, response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -321,10 +316,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_DELETED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //clear currentInstallation
                     clearCurrentInstallation();
@@ -360,7 +352,7 @@ public class NCMBInstallationService extends NCMBService {
      * @return result of get installation
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public JSONObject getInstallation(String objectId) throws NCMBException {
+    public NCMBInstallation fetchInstallation(String objectId) throws NCMBException {
         //null check
         if (objectId == null) {
             throw new NCMBException(new IllegalArgumentException("objectId is must not be null."));
@@ -373,7 +365,7 @@ public class NCMBInstallationService extends NCMBService {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Getting failed.");
         }
 
-        return response.responseData;
+        return new NCMBInstallation(response.responseData);
     }
 
     /**
@@ -382,7 +374,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param objectId objectId
      * @param callback callback is executed after get installation
      */
-    public void getInstallationInBackground(String objectId, ExecuteServiceCallback callback) {
+    public void fetchInstallationInBackground(String objectId, final FetchCallback callback) {
         try {
             //null check
             if (objectId == null) {
@@ -393,20 +385,16 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Getting failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
+                    FetchCallback<NCMBInstallation> callback = (FetchCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(new NCMBInstallation(response.responseData), null);
                     }
                 }
 
                 @Override
                 public void handleError(NCMBException e) {
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
                         callback.done(null, e);
                     }
@@ -445,17 +433,19 @@ public class NCMBInstallationService extends NCMBService {
      * @param conditions search conditions
      * @param callback   JSONCallback
      */
-    public void searchInstallationInBackground(JSONObject conditions, SearchInstallationCallback callback) {
+    public void searchInstallationInBackground(JSONObject conditions, final SearchInstallationCallback callback) {
         try {
             final RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
                     //return the value of the key 'results'
-                    ArrayList<NCMBInstallation> array = createSearchResults(response.responseData);
+                    ArrayList<NCMBInstallation> array = null;
+                    try {
+                        array = createSearchResults(response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     SearchInstallationCallback callback = (SearchInstallationCallback) mCallback;
                     if (callback != null) {

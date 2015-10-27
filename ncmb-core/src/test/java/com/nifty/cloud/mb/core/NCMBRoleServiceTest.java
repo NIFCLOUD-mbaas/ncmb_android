@@ -133,7 +133,7 @@ public class NCMBRoleServiceTest {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
-        NCMBRole role = roleService.getRole(roleId);
+        NCMBRole role = roleService.fetchRole(roleId);
         Assert.assertEquals(role.getObjectId(), roleId);
     }
 
@@ -146,7 +146,7 @@ public class NCMBRoleServiceTest {
         NCMBRoleService roleService = getRoleService();
         final String roleId = "dummyRoleId";
 
-        roleService.getRoleInBackground(roleId, new RoleCallback() {
+        roleService.fetchRoleInBackground(roleId, new FetchCallback<NCMBRole>() {
             @Override
             public void done(NCMBRole role, NCMBException e) {
                 Assert.assertEquals(e, null);
