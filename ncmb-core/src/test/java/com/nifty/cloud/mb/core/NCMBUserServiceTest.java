@@ -661,6 +661,7 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
+        System.out.println("currentUser:" + currentUser.mFields.toString());
         Assert.assertEquals("dummyUserId", currentUser.getObjectId());
         Assert.assertEquals("value", currentUser.getString("key"));
 
