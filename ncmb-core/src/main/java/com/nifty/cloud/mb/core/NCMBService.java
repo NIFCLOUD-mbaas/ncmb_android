@@ -1,5 +1,6 @@
 package com.nifty.cloud.mb.core;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -112,7 +113,7 @@ public abstract class NCMBService {
             this(service, (CallbackBase) callback);
         }
 
-        abstract public void handleResponse(NCMBResponse response) throws NCMBException;
+        abstract public void handleResponse(NCMBResponse response);
 
         abstract public void handleError(NCMBException e);
 
@@ -210,7 +211,7 @@ public abstract class NCMBService {
      * @throws NCMBException
      */
     protected void sendRequestAsync(String url, String type, String content, JSONObject queryString,
-                                    RequestApiCallback callback)
+                                    final ServiceCallback callback)
             throws NCMBException {
         
         if (mContext.sessionToken == null) {
@@ -224,7 +225,30 @@ public abstract class NCMBService {
                 sessionToken, applicationKey, clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
-        connection.sendRequestAsynchronously(callback);
+        connection.sendRequestAsynchronously(new RequestApiCallback() {
+            @Override
+            public void done(NCMBResponse res, NCMBException e) {
+                if (e != null) {
+                    callback.handleError(e);
+                } else {
+                    if (res.statusCode == NCMBResponse.HTTP_STATUS_CREATED ||
+                            res.statusCode == NCMBResponse.HTTP_STATUS_OK) {
+                        callback.handleResponse(res);
+                    } else {
+                        try {
+                            callback.handleError(
+                                new NCMBException(
+                                    res.responseData.getString("code"),
+                                    res.responseData.getString("error")
+                                )
+                            );
+                        } catch (JSONException e1) {
+                            callback.handleError(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -234,7 +258,7 @@ public abstract class NCMBService {
      * @param callback callback on finished
      * @throws NCMBException
      */
-    protected void sendRequestAsync(RequestParams params, RequestApiCallback callback)
+    protected void sendRequestAsync(RequestParams params, ServiceCallback callback)
             throws NCMBException {
         sendRequestAsync(params.url, params.type, params.content, params.query, callback);
     }
