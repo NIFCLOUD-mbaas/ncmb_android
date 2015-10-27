@@ -612,7 +612,7 @@ public class NCMBPush extends NCMBBase {
      * @param params input parameters
      * @throws NCMBException
      */
-    NCMBPush(JSONObject params) throws NCMBException {
+    NCMBPush(JSONObject params){
         super("push", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -728,22 +728,24 @@ public class NCMBPush extends NCMBBase {
      *
      * @param callback DoneCallback
      */
-    public void fetchInBackground(final DoneCallback callback) {
+    public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.getPushInBackground(getObjectId(), new ExecuteServiceCallback() {
             @Override
             public void done(JSONObject responseData, NCMBException error) {
+                NCMBPush push = null;
                 if (error == null) {
                     //instance set data
                     try {
+                        push = new NCMBPush(responseData);
                         setLocalData(responseData);
                     } catch (NCMBException e) {
                         error = e;
                     }
                 }
                 if (callback != null) {
-                    callback.done(error);
+                    callback.done(push, error);
                 }
             }
         });

@@ -397,7 +397,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    NCMBInstallation(JSONObject params) throws NCMBException {
+    NCMBInstallation(JSONObject params){
         super("installation", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -672,23 +672,26 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @param callback DoneCallback
      */
-    public void fetchInBackground(final DoneCallback callback) {
+    public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.getInstallationInBackground(getObjectId(), new ExecuteServiceCallback() {
             @Override
             public void done(JSONObject responseData, NCMBException error) {
+                NCMBInstallation installation = null;
                 if (error == null) {
                     //instance set data
                     try {
+                        installation = new NCMBInstallation(responseData);
                         setLocalData(responseData);
                     } catch (NCMBException e) {
                         error = e;
                     }
                 }
                 if (callback != null) {
-                    callback.done(error);
+                    callback.done(installation, error);
                 }
+
             }
         });
     }

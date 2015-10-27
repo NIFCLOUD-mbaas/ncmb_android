@@ -306,9 +306,9 @@ public class NCMBInstallationTest {
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
-        installation.fetchInBackground(new DoneCallback() {
+        installation.fetchInBackground(new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBInstallation fetchedInstallation, NCMBException e) {
                 Assert.assertNull(e);
             }
         });

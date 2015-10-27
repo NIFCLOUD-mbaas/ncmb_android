@@ -311,9 +311,9 @@ public class NCMBPushTest {
         //get
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
-        push.fetchInBackground(new DoneCallback() {
+        push.fetchInBackground(new FetchCallback<NCMBPush>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBPush fetchedPush, NCMBException e) {
                 Assert.assertNull(e);
             }
         });

@@ -30,7 +30,7 @@ public class NCMBObject extends NCMBBase{
      * @param params parameter for setting value. same field name as property(objectId, createDate, updateDate, acl) can't set.
      * @throws NCMBException
      */
-    NCMBObject(String className, JSONObject params) throws NCMBException {
+    NCMBObject(String className, JSONObject params){
         super(className, params);
         mIgnoreKeys = Arrays.asList(
                 "objectId", "acl",
@@ -127,29 +127,29 @@ public class NCMBObject extends NCMBBase{
      * fetch current NCMBObject data from data store asynchronously
      * @param callback callback after fetch data
      */
-    public void fetchObjectInBackground (final DoneCallback callback){
+    public void fetchObjectInBackground (final FetchCallback callback){
         NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
         objService.fetchObjectInBackground(mClassName, getObjectId(), new ExecuteServiceCallback() {
             @Override
             public void done(JSONObject jsonData, NCMBException e) {
                 if (e != null) {
                     if (callback != null) {
-                        callback.done(e);
+                        callback.done(null, e);
                     }
                 } else {
                     try {
                         setServerDataToProperties(jsonData);
                         copyFrom(jsonData);
                         if (callback != null) {
-                            callback.done(null);
+                            callback.done(new NCMBObject(mClassName, jsonData), null);
                         }
                     } catch (NCMBException error) {
                         if (callback != null) {
-                            callback.done(error);
+                            callback.done(null, error);
                         }
                     } catch (JSONException jsonError) {
                         if (callback != null) {
-                            callback.done(new NCMBException(NCMBException.INVALID_JSON, jsonError.getMessage()));
+                            callback.done(null, new NCMBException(NCMBException.INVALID_JSON, jsonError.getMessage()));
                         }
                     }
                 }
