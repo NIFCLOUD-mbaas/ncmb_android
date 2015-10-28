@@ -90,7 +90,7 @@ public class NCMBAcl {
     /**
      * Constructor
      */
-    NCMBAcl() {
+    public NCMBAcl() {
         userAcl = new HashMap<String, Permission>();
         roleAcl = new HashMap<String, Permission>();
     }
@@ -98,7 +98,7 @@ public class NCMBAcl {
     /**
      * Constructor from JSON
      */
-    NCMBAcl(JSONObject json) throws JSONException {
+    public NCMBAcl(JSONObject json) throws JSONException {
         this();
         parse(json);
     }

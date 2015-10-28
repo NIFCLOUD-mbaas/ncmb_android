@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +22,8 @@ public class NCMBResponse {
 
     //通信結果文字列
     public JSONObject responseData = null;
+    //通信結果byte(file取得)
+    public byte[] responseByte = null;
     //通信結果ステータスコード
     public int statusCode = 0;
 
@@ -29,21 +32,23 @@ public class NCMBResponse {
     public String mbErrorMessage = null;
 
     /**
-     *  API response
-     * @param in InputStream
-     * @param responseCode statusCode
+     * API response
+     *
+     * @param in              InputStream
+     * @param responseCode    statusCode
      * @param responseHeaders responseHeaders
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public NCMBResponse(InputStream in, int responseCode, Map<String, List<String>> responseHeaders) throws NCMBException {
         statusCode = responseCode;
         String contentType = responseHeaders.get("Content-Type").get(0);
-        if (contentType.equals("application/json") || contentType.equals("application/json;charset=UTF-8")) {
-            // Set response json data
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            try {
+        try {
+            if (contentType.equals("application/json") || contentType.equals("application/json;charset=UTF-8")) {
+                // Set response json data
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                StringBuilder sb = new StringBuilder();
+                String line;
+
                 while ((line = br.readLine()) != null) {
                     sb.append(line);
 
@@ -54,18 +59,26 @@ public class NCMBResponse {
                     responseData = new JSONObject(new String(sb));
                 }
 
-                if (statusCode != HttpURLConnection.HTTP_CREATED &&
-                        statusCode != HttpURLConnection.HTTP_OK) {
-                    mbStatus = responseData.getString("code");
-                    mbErrorMessage = responseData.getString("error");
-                    //throw new NCMBException(mbStatus, responseData.getString("error"));
+            } else {
+                // Set response byte[] data
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                byte[] data = new byte[32768];
+                int nRead;
+                while ((nRead = in.read(data, 0, data.length)) != -1) {
+                    buffer.write(data, 0, nRead);
                 }
-            } catch (IOException | JSONException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                this.responseByte = buffer.toByteArray();
             }
-        } else {
 
-            //Set response file data
+            //Set error
+            if (statusCode != HttpURLConnection.HTTP_CREATED &&
+                    statusCode != HttpURLConnection.HTTP_OK) {
+                mbStatus = responseData.getString("code");
+                mbErrorMessage = responseData.getString("error");
+                //throw new NCMBException(mbStatus, responseData.getString("error"));
+            }
+        } catch (IOException | JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
         }
 
         //Checking invalid sessionToken
@@ -77,6 +90,7 @@ public class NCMBResponse {
     /**
      * check invalid sessionToken
      * automatic logout when 'E404001' error
+     *
      * @param code statusCode
      */
     void invalidSessionToken(String code) {

@@ -34,7 +34,18 @@ public class NCMBRequestTest {
     @Test
     public void requestPropertyCheck() throws Exception {
         //NCMBRequest作成
-        NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass", Constants.HTTP_METHOD_POST, "content", null, "sessionToken", "applicationKey", "clientKey", "2015-06-12T02:59:52.367Z");
+        NCMBRequest request = new NCMBRequest(
+                "https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
+                Constants.HTTP_METHOD_POST,
+                "content",
+                null,
+                null,
+                null,
+                null,
+                "sessionToken",
+                "applicationKey",
+                "clientKey",
+                "2015-06-12T02:59:52.367Z");
 
         //プロパティ取得
         String url = request.getUrl().toString();
@@ -68,6 +79,9 @@ public class NCMBRequestTest {
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
                 Constants.HTTP_METHOD_GET,
                 null,
+                null,
+                null,
+                null,
                 new JSONObject("{\"where\":{\"testKey\":\"testValue\"}}"),
                 null,
                 "6145f91061916580c742f806bab67649d10f45920246ff459404c46f00ff3e56",
@@ -97,6 +111,9 @@ public class NCMBRequestTest {
         //NCMBRequest作成
         NCMBRequest request = new NCMBRequest("https://mb.api.cloud.nifty.com/2013-09-01/classes/TestClass",
                 Constants.HTTP_METHOD_GET,
+                null,
+                null,
+                null,
                 null,
                 new JSONObject("{\"where\":{\"testKey\":\"testValue\"}}"),
                 null,

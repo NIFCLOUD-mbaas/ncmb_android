@@ -1,5 +1,7 @@
 ## Android SDK for NiftyCloud mobile backend
 
+[![Build Status](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android)
+
 ## ダウンロード
 
 Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。

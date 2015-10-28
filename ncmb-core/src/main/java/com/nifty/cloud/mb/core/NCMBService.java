@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Abstract class for Service class
+ * Serivce abstract class
  */
 public abstract class NCMBService {
     /**
@@ -182,6 +182,34 @@ public abstract class NCMBService {
         return response;
     }
 
+    /**
+     * Send request file
+     *
+     * @param url      URL
+     * @param method   http method
+     * @param fileName file name
+     * @param fileData file data
+     * @param aclJson  JSON of acl
+     * @return NCMBResponse response object
+     * @throws NCMBException
+     */
+    protected NCMBResponse sendRequestFile(String url, String method, String fileName, byte[] fileData, JSONObject aclJson)
+            throws NCMBException {
+
+        if (mContext.sessionToken == null) {
+            mContext.sessionToken = NCMBUser.getSessionToken();
+        }
+        String sessionToken = mContext.sessionToken;
+        String applicationKey = mContext.applicationKey;
+        String clientKey = mContext.clientKey;
+
+        NCMBRequest request = new NCMBRequest(url, method, fileName, fileData, aclJson, sessionToken, applicationKey, clientKey);
+
+        NCMBConnection connection = new NCMBConnection(request);
+        NCMBResponse response = connection.sendRequest();
+        return response;
+    }
+
     protected NCMBResponse sendRequest(RequestParams params) throws NCMBException {
         return this.sendRequest(params.url, params.type, params.content, params.query);
     }
@@ -190,16 +218,15 @@ public abstract class NCMBService {
      * Send request in asynchronously
      *
      * @param url         URL
-     * @param type        http method
+     * @param method      http method
      * @param content     contnt body
      * @param queryString query string
      * @param callback    callback on finished
      * @throws NCMBException
      */
-    protected void sendRequestAsync(String url, String type, String content, JSONObject queryString,
-                                    final ServiceCallback callback)
-            throws NCMBException {
-        
+    protected void sendRequestAsync(String url, String method, String content, JSONObject queryString,
+                                    final ServiceCallback callback) throws NCMBException {
+
         if (mContext.sessionToken == null) {
             mContext.sessionToken = NCMBUser.getSessionToken();
         }
@@ -207,8 +234,14 @@ public abstract class NCMBService {
         String applicationKey = mContext.applicationKey;
         String clientKey = mContext.clientKey;
 
-        NCMBRequest request = new NCMBRequest(url, type, content, queryString,
-                sessionToken, applicationKey, clientKey);
+        NCMBRequest request = new NCMBRequest(
+                url,
+                method,
+                content,
+                queryString,
+                sessionToken,
+                applicationKey,
+                clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
         connection.sendRequestAsynchronously(new RequestApiCallback() {
@@ -228,13 +261,49 @@ public abstract class NCMBService {
                                     res.responseData.getString("error")
                                 )
                             );
-                        } catch (JSONException e1) {
-                            callback.handleError(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                        } catch (JSONException error) {
+                            callback.handleError(new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage()));
                         }
                     }
                 }
             }
         });
+    }
+
+    /**
+     * Send request file in asynchronously
+     *
+     * @param url      URL
+     * @param method   http method
+     * @param fileName file name
+     * @param fileData file data
+     * @param aclJson  JSON of acl
+     * @param callback callback on finished
+     */
+    protected void sendRequestFileAsync(String url, String method, String fileName, byte[] fileData, JSONObject aclJson,
+                                        RequestApiCallback callback)
+            throws NCMBException {
+        if (mContext.sessionToken == null) {
+            mContext.sessionToken = NCMBUser.getSessionToken();
+        }
+        String sessionToken = mContext.sessionToken;
+        String applicationKey = mContext.applicationKey;
+        String clientKey = mContext.clientKey;
+
+        NCMBRequest request = new NCMBRequest(
+                url,
+                method,
+                fileName,
+                fileData,
+                aclJson,
+                sessionToken,
+                applicationKey,
+                clientKey
+        );
+
+        NCMBConnection connection = new NCMBConnection(request);
+        connection.sendRequestAsynchronously(callback);
+
     }
 
     /**
