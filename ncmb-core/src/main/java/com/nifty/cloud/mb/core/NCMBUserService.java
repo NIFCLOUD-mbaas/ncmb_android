@@ -511,6 +511,11 @@ public class NCMBUserService extends NCMBService {
         RequestParams reqParams = updateUserParams(userId, params);
         NCMBResponse response = sendRequest(reqParams);
         //update currentUser
+        try {
+            params.put("objectId", userId);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
         updateUserCheckResponse(response);
         writeCurrentUser(params, response.responseData);
         return response.responseData;
@@ -532,9 +537,12 @@ public class NCMBUserService extends NCMBService {
 
                 //update currentUser
                 try {
+                    params.put("objectId", userId);
                     writeCurrentUser(params, response.responseData);
                 } catch (NCMBException e) {
                     callback.done(null, e);
+                } catch (JSONException e) {
+                    callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
                 }
 
                 ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
