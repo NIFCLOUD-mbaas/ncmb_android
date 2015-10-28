@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     public void onFetchClicked(View v) {
         String result;
         try {
-            obj.fetchObject();
+            obj.fetch();
             result = createSuccessString(obj);
             Toast.makeText(this, "取得成功 : "+obj.getObjectId(), Toast.LENGTH_SHORT).show();
         } catch (Exception error) {
