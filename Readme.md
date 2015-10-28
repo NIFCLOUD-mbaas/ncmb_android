@@ -7,6 +7,23 @@
 Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
 
 
+## 依存ライブラリ
+
+このSDKでは、以下のライブラリを使用しています。
+
+- Gson
+
+プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。
+事前にSDK Managerでのインストールが必要です。
+
+- Android Support Library
+- Google Play Services SDK
+
+
+## 動作環境
+
+本SDKは、Android 4.x / 5.x / 6.0 にて動作確認を行っております。
+
 ## インストール
 
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
@@ -16,6 +33,7 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
 
 ```
 dependencies {
+    compile 'com.google.code.gson:gson:2.3.1'
     compile files('libs/NCMB.jar')
 }
 ```
@@ -57,17 +75,6 @@ obj.saveInBackground(new DoneCallback() {
     }
 });
 ```
-## 依存ライブラリ（任意）
-
-プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。
-
-| 機能名           | 必要なライブラリ |
-|:---:             | :---:            |
-| プッシュ通知機能 | Google Play Services SDK |
-
-## 動作環境
-
-本SDKは、Android 4.x / 5.xにて動作確認を行っております。
 
 ## ライセンス
 
