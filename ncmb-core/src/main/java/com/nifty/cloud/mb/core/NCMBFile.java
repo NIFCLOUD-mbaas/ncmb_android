@@ -11,7 +11,7 @@ import java.util.List;
  * NCMBFile class.<br>
  * NCMBFile can not add any field.<br>
  * Information about the field names that can be set , refer to the following reference .<br>
- * http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html
+ * @see <a target="_blank" href="http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html">NIFTY Cloud mobile backned API Reference(Japanese)</a>
  */
 public class NCMBFile extends NCMBBase {
 
@@ -220,7 +220,7 @@ public class NCMBFile extends NCMBBase {
     }
 
     /**
-     * Delete file to file store
+     * Delete file from file store
      *
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
@@ -230,7 +230,7 @@ public class NCMBFile extends NCMBBase {
     }
 
     /**
-     * Delete file to file store asynchronously
+     * Delete file from file store asynchronously
      *
      * @param callback callback after file delete
      */
@@ -265,7 +265,7 @@ public class NCMBFile extends NCMBBase {
     }
 
     /**
-     * Get file to file store asynchronously
+     * Get file from file store asynchronously
      *
      * @param callback callback after file get
      */
