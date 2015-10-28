@@ -30,7 +30,7 @@ public class NCMBObject extends NCMBBase{
      * @param params parameter for setting value. same field name as property(objectId, createDate, updateDate, acl) can't set.
      * @throws NCMBException
      */
-    NCMBObject(String className, JSONObject params) throws NCMBException {
+    NCMBObject(String className, JSONObject params){
         super(className, params);
         mIgnoreKeys = Arrays.asList(
                 "objectId", "acl",
@@ -112,48 +112,37 @@ public class NCMBObject extends NCMBBase{
      * fetch current NCMBObject data from data store
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
-    public void fetchObject() throws NCMBException {
+    public void fetch() throws NCMBException {
         NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
-        JSONObject res = objService.fetchObject(mClassName, getObjectId());
-        setServerDataToProperties(res);
-        try {
-            copyFrom(res);
-        } catch (JSONException e) {
-            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
-        }
+        NCMBObject obj = objService.fetchObject(mClassName, getObjectId());
+        mFields = obj.mFields;
+    }
+
+    /**
+     * Get object in Background without callback
+     */
+    public void fetchInBackground() {
+        fetchInBackground(null);
     }
 
     /**
      * fetch current NCMBObject data from data store asynchronously
      * @param callback callback after fetch data
      */
-    public void fetchObjectInBackground (final DoneCallback callback){
+    public void fetchInBackground (final FetchCallback callback){
         NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
-        objService.fetchObjectInBackground(mClassName, getObjectId(), new ExecuteServiceCallback() {
+        objService.fetchObjectInBackground(mClassName, getObjectId(), new FetchCallback<NCMBObject>() {
             @Override
-            public void done(JSONObject jsonData, NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
+                NCMBException error = null;
                 if (e != null) {
-                    if (callback != null) {
-                        callback.done(e);
-                    }
+                    error = e;
                 } else {
-                    try {
-                        setServerDataToProperties(jsonData);
-                        copyFrom(jsonData);
-                        if (callback != null) {
-                            callback.done(null);
-                        }
-                    } catch (NCMBException error) {
-                        if (callback != null) {
-                            callback.done(error);
-                        }
-                    } catch (JSONException jsonError) {
-                        if (callback != null) {
-                            callback.done(new NCMBException(NCMBException.INVALID_JSON, jsonError.getMessage()));
-                        }
-                    }
+                    mFields = object.mFields;
                 }
-
+                if (callback != null) {
+                    callback.done(object, error);
+                }
             }
         });
     }
@@ -296,6 +285,11 @@ public class NCMBObject extends NCMBBase{
         }
     }
 
+    /**
+     * Set server data to ignore key properties
+     * @param res
+     * @throws NCMBException
+     */
     private void setServerDataToProperties(JSONObject res) throws NCMBException {
         if (res != null) {
             if (res.has("objectId")) {

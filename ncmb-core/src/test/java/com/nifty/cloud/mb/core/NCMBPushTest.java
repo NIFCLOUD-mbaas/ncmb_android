@@ -311,9 +311,9 @@ public class NCMBPushTest {
         //get
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
-        push.fetchInBackground(new DoneCallback() {
+        push.fetchInBackground(new FetchCallback<NCMBPush>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBPush fetchedPush, NCMBException e) {
                 Assert.assertNull(e);
             }
         });
@@ -335,6 +335,26 @@ public class NCMBPushTest {
 
         //check
         checkGetResponse(push);
+    }
+
+    /**
+     * - 内容：fetchInBackgroundが成功することを確認する
+     * - 結果：非同期でプッシュ通知が取得できること
+     */
+    @Test
+    public void fetchInBackground_with_callback () throws Exception {
+        NCMBPush push = new NCMBPush();
+        push.setObjectId("7FrmPTBKSNtVjajm");
+        push.fetchInBackground(new FetchCallback<NCMBPush>() {
+            @Override
+            public void done(NCMBPush fetchedPush, NCMBException e) {
+                try {
+                    checkGetResponse(fetchedPush);
+                } catch (Exception e1) {
+                    Assert.fail(e1.getMessage());
+                }
+            }
+        });
     }
 
     /**
@@ -442,8 +462,8 @@ public class NCMBPushTest {
     public void checkInstanceGet() throws Exception {
         //set Instance data
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        JSONObject json = pushService.getPush("7FrmPTBKSNtVjajm");
-        NCMBPush push = new NCMBPush(json);
+        NCMBPush fetchedPush = pushService.fetchPush("7FrmPTBKSNtVjajm");
+        NCMBPush push = new NCMBPush(fetchedPush.mFields);
 
         //check get
         checkGetResponse(push);

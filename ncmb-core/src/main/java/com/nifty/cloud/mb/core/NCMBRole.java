@@ -45,7 +45,7 @@ public class NCMBRole extends NCMBBase{
      * @param params source JSON
      * @throws NCMBException
      */
-    NCMBRole(JSONObject params) throws NCMBException {
+    NCMBRole(JSONObject params){
         super("role", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -230,7 +230,7 @@ public class NCMBRole extends NCMBBase{
      */
     public void fetchObject() throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
-        NCMBRole role = roleService.getRole(getObjectId());
+        NCMBRole role = roleService.fetchRole(getObjectId());
         if (role != null) {
             mFields = role.mFields;
         }
@@ -240,27 +240,26 @@ public class NCMBRole extends NCMBBase{
      * fetch role asynchronously
      * @param callback callback after fetch roles
      */
-    public void fetchObjectInBackground (final DoneCallback callback) {
+    public void fetchObjectInBackground (final FetchCallback callback) {
         NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
         try {
-            roleService.getRoleInBackground(getObjectId(), new RoleCallback() {
+            roleService.fetchRoleInBackground(getObjectId(), new FetchCallback<NCMBRole>() {
                 @Override
                 public void done(NCMBRole role, NCMBException e) {
+                    NCMBException error = null;
                     if (e != null) {
-                        if (callback != null){
-                            callback.done(e);
-                        }
+                        error = e;
                     } else {
                         mFields = role.mFields;
-                        if (callback != null) {
-                            callback.done(null);
-                        }
+                    }
+                    if (callback != null) {
+                        callback.done(role, null);
                     }
                 }
             });
         } catch (NCMBException e) {
             if (callback != null){
-                callback.done(e);
+                callback.done(null, e);
             }
         }
     }

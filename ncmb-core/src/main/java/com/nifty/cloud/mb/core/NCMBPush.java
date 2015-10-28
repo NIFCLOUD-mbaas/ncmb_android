@@ -614,7 +614,7 @@ public class NCMBPush extends NCMBBase {
      * @param params input parameters
      * @throws NCMBException
      */
-    NCMBPush(JSONObject params) throws NCMBException {
+    NCMBPush(JSONObject params){
         super("push", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -712,9 +712,9 @@ public class NCMBPush extends NCMBBase {
     public void fetch() throws NCMBException {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        JSONObject json = pushService.getPush(getObjectId());
+        NCMBPush push = pushService.fetchPush(getObjectId());
         //afterFetch
-        setLocalData(json);
+        setLocalData(push.mFields);
     }
 
     /**
@@ -730,22 +730,25 @@ public class NCMBPush extends NCMBBase {
      *
      * @param callback DoneCallback
      */
-    public void fetchInBackground(final DoneCallback callback) {
+    public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        pushService.getPushInBackground(getObjectId(), new ExecuteServiceCallback() {
+        pushService.fetchPushInBackground(getObjectId(), new FetchCallback<NCMBPush>() {
             @Override
-            public void done(JSONObject responseData, NCMBException error) {
-                if (error == null) {
+            public void done(NCMBPush push, NCMBException e) {
+                NCMBException error = null;
+                if (e != null) {
+                    error = e;
+                } else {
                     //instance set data
                     try {
-                        setLocalData(responseData);
-                    } catch (NCMBException e) {
-                        error = e;
+                        setLocalData(push.mFields);
+                    } catch (NCMBException ncmbError) {
+                        error = ncmbError;
                     }
                 }
                 if (callback != null) {
-                    callback.done(error);
+                    callback.done(push, error);
                 }
             }
         });

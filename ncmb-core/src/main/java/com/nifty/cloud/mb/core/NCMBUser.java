@@ -309,34 +309,34 @@ public class NCMBUser extends NCMBObject{
     }
 
     @Override
-    public void fetchObject() throws NCMBException {
+    public void fetch() throws NCMBException {
         NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
-        NCMBUser user = service.getUser(getObjectId());
+        NCMBUser user = service.fetchUser(getObjectId());
         mFields = user.mFields;
     }
 
     @Override
-    public void fetchObjectInBackground (final DoneCallback callback) {
+    public void fetchInBackground (final FetchCallback callback) {
         NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
         try {
-            service.getUserInBackground(getObjectId(), new UserCallback() {
+            service.fetchUserInBackground(getObjectId(), new FetchCallback<NCMBUser>() {
                 @Override
                 public void done(NCMBUser user, NCMBException e) {
                     if (e != null) {
                         if (callback != null) {
-                            callback.done(e);
+                            callback.done(null, e);
                         }
                     } else {
                         mFields = user.mFields;
                         if (callback != null) {
-                            callback.done(null);
+                            callback.done(user, null);
                         }
                     }
                 }
             });
         } catch (NCMBException e) {
             if (callback != null) {
-                callback.done(e);
+                callback.done(null, e);
             }
         }
     }

@@ -294,7 +294,7 @@ public class NCMBUserServiceTest {
         String userId = "dummyUserId";
 
         NCMBUserService userService = getUserService();
-        NCMBUser user = userService.getUser(userId);
+        NCMBUser user = userService.fetchUser(userId);
     }
 
     /**
@@ -306,7 +306,7 @@ public class NCMBUserServiceTest {
         String userId = "dummyUserId";
 
         NCMBUserService userService = getUserService();
-        userService.getUserInBackground(userId, new UserCallback() {
+        userService.fetchUserInBackground(userId, new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
@@ -661,6 +661,7 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
+        System.out.println("currentUser:" + currentUser.mFields.toString());
         Assert.assertEquals("dummyUserId", currentUser.getObjectId());
         Assert.assertEquals("value", currentUser.getString("key"));
 

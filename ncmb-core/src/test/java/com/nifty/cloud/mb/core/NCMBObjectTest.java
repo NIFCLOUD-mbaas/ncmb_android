@@ -323,7 +323,7 @@ public class NCMBObjectTest {
     public void fetch_object() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObject();
+        obj.fetch();
         Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
         Assert.assertEquals("value", obj.getString("key"));
 
@@ -339,7 +339,7 @@ public class NCMBObjectTest {
 
         NCMBObject obj = new NCMBObject("testClass");
         try {
-            obj.fetchObject();
+            obj.fetch();
         } catch (NCMBException e){
             Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
         }
@@ -350,7 +350,7 @@ public class NCMBObjectTest {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
         try {
-            obj.fetchObject();
+            obj.fetch();
         } catch (NCMBException e){
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
         }
@@ -360,11 +360,25 @@ public class NCMBObjectTest {
     public void fetch_object_in_background() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
+                object.getString("key");
                 if (e != null) {
                     Assert.fail("get object raise exception:" + e.getMessage());
+                } else {
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", object.getObjectId());
+                    Assert.assertEquals("value", object.getString("key"));
+
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+                    try {
+                        Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                        Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
@@ -386,9 +400,9 @@ public class NCMBObjectTest {
     public void fetch_object_non_object_id () throws Exception {
 
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {
@@ -402,9 +416,9 @@ public class NCMBObjectTest {
     public void fetch_object_non_exist_object () throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {

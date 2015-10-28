@@ -37,7 +37,7 @@ public class NCMBUserService extends NCMBService {
             super((NCMBService) service, callback);
         }
 
-        UserServiceCallback(NCMBUserService service, UserCallback callback) {
+        UserServiceCallback(NCMBUserService service, FetchCallback callback) {
             super((NCMBService) service, callback);
         }
 
@@ -55,17 +55,6 @@ public class NCMBUserService extends NCMBService {
 
         public NCMBUserService getUserService() {
             return (NCMBUserService) mService;
-        }
-
-        /**
-         * Check response in each casse, then throe exception when it's wrong
-         *
-         * @param response response object
-         * @throws NCMBException
-         */
-        @Override
-        public void handleResponse(NCMBResponse response) throws NCMBException {
-            // do nothing in default
         }
     }
 
@@ -288,8 +277,7 @@ public class NCMBUserService extends NCMBService {
 
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().inviteByMailCheckResponse(response);
+            public void handleResponse(NCMBResponse response) {
                 DoneCallback callback = (DoneCallback) mCallback;
                 callback.done(null);
             }
@@ -371,7 +359,7 @@ public class NCMBUserService extends NCMBService {
      * @param callback callback when process finished
      * @throws NCMBException
      */
-    protected void registerUserInBackground(JSONObject params, boolean oauth, LoginCallback callback)
+    protected void registerUserInBackground(JSONObject params, boolean oauth, final LoginCallback callback)
             throws NCMBException {
         try {
             RequestParams reqParams = registerUserParams(params);
@@ -381,15 +369,22 @@ public class NCMBUserService extends NCMBService {
 
             sendRequestAsync(reqParams, new UserServiceCallback(this, callback, options) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
+                public void handleResponse(NCMBResponse response){
+                    /*
                     try {
                         boolean oauth = mOptions.getBoolean("oauth");
                         getUserService().registerUserCheckResponse(response, oauth);
                     } catch (JSONException e) {
                         throw new NCMBException(NCMBException.INVALID_JSON, "Bad oauth option");
                     }
+                    */
 
-                    NCMBUser user = getUserService().postLoginProcess(response);
+                    NCMBUser user = null;
+                    try {
+                        user = getUserService().postLoginProcess(response);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
                     LoginCallback callback = (LoginCallback) mCallback;
                     callback.done(user, null);
                 }
@@ -439,14 +434,12 @@ public class NCMBUserService extends NCMBService {
      * @return NCMBUser instance
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public NCMBUser getUser(String userId) throws NCMBException {
+    public NCMBUser fetchUser(String userId) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
         NCMBResponse response = sendRequest(reqParams);
         getUserCheckResponse(response);
 
-        JSONObject result = response.responseData;
-        ;
-        return new NCMBUser(result);
+        return new NCMBUser(response.responseData);
     }
 
     /**
@@ -456,20 +449,23 @@ public class NCMBUserService extends NCMBService {
      * @param callback callback when process finished
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void getUserInBackground(String userId, UserCallback callback) throws NCMBException {
+    public void fetchUserInBackground(String userId, final FetchCallback callback) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().getUserCheckResponse(response);
-                NCMBUser user = new NCMBUser(response.responseData);
-                UserCallback callback = (UserCallback) mCallback;
+            public void handleResponse(NCMBResponse response){
+                NCMBUser user = null;
+                try {
+                    user = new NCMBUser(response.responseData);
+                } catch (NCMBException e) {
+                    callback.done(null, e);
+                }
+                FetchCallback<NCMBUser> callback = (FetchCallback) mCallback;
                 callback.done(user, null);
             }
 
             @Override
             public void handleError(NCMBException e) {
-                UserCallback callback = (UserCallback) mCallback;
                 callback.done(null, e);
             }
         });
@@ -520,8 +516,8 @@ public class NCMBUserService extends NCMBService {
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
         }
-        writeCurrentUser(params, response.responseData);
         updateUserCheckResponse(response);
+        writeCurrentUser(params, response.responseData);
         return response.responseData;
     }
 
@@ -533,20 +529,21 @@ public class NCMBUserService extends NCMBService {
      * @param callback callback when process finished
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void updateUserInBackground(final String userId, final JSONObject params, ExecuteServiceCallback callback) throws NCMBException {
+    public void updateUserInBackground(final String userId, final JSONObject params, final ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = updateUserParams(userId, params);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().updateUserCheckResponse(response);
+            public void handleResponse(NCMBResponse response) {
 
+                //update currentUser
                 try {
                     params.put("objectId", userId);
+                    writeCurrentUser(params, response.responseData);
+                } catch (NCMBException e) {
+                    callback.done(null, e);
                 } catch (JSONException e) {
-                    throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                    callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
                 }
-                //update currentUser
-                writeCurrentUser(params, response.responseData);
 
                 ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                 callback.done(response.responseData, null);
@@ -624,12 +621,18 @@ public class NCMBUserService extends NCMBService {
         RequestParams reqParams = loginByNameParams(userName, password);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().loginByNameCheckResponse(response);
-                NCMBUser user = getUserService().postLoginProcess(response);
+            public void handleResponse(NCMBResponse response){
+                NCMBException error = null;
+                NCMBUser user = null;
+                try {
+                    getUserService().loginByNameCheckResponse(response);
+                    user = getUserService().postLoginProcess(response);
+                } catch (NCMBException e) {
+                    error = e;
+                }
 
                 LoginCallback loginCallback = (LoginCallback) mCallback;
-                loginCallback.done(user, null);
+                loginCallback.done(user, error);
             }
 
             @Override
@@ -702,16 +705,26 @@ public class NCMBUserService extends NCMBService {
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public void loginByMailInBackground(String mailAddress, String password,
-                                        LoginCallback callback) throws NCMBException {
-        RequestParams params = loginByMailParams(mailAddress, password);
+                                        LoginCallback callback) throws NCMBException{
+        RequestParams params = null;
+        try {
+            params = loginByMailParams(mailAddress, password);
+        } catch (NCMBException e) {
+            callback.done(null, e);
+        }
         sendRequestAsync(params, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().loginByMailCheckResponse(response);
-                NCMBUser user = getUserService().postLoginProcess(response);
+            public void handleResponse(NCMBResponse response){
+                NCMBUser user = null;
+                NCMBException error = null;
+                try {
+                    user = getUserService().postLoginProcess(response);
+                } catch (NCMBException e) {
+                    error = e;
+                }
 
                 LoginCallback loginCallback = (LoginCallback) mCallback;
-                loginCallback.done(user, null);
+                loginCallback.done(user, error);
             }
 
             @Override
@@ -801,9 +814,7 @@ public class NCMBUserService extends NCMBService {
         RequestParams reqParams = deleteUserParams(userId);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().deleteUserCheckResponse(response);
-
+            public void handleResponse(NCMBResponse response) {
                 if (userId.equals(NCMBUser.currentUser.getObjectId())) {
                     // unregister login informations
                     clearCurrentUser();
@@ -873,8 +884,7 @@ public class NCMBUserService extends NCMBService {
 
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response) throws NCMBException {
-                getUserService().logoutCheckResponse(response);
+            public void handleResponse(NCMBResponse response) {
 
                 // unregister login informations
                 mContext.sessionToken = null;
@@ -973,16 +983,20 @@ public class NCMBUserService extends NCMBService {
      * @param conditions search conditions, if no condition set to null
      * @param callback   callback when process finished
      */
-    public void searchUserInBackground(JSONObject conditions, SearchUserCallback callback) {
+    public void searchUserInBackground(JSONObject conditions, final SearchUserCallback callback) {
         try {
             RequestParams reqParams = searchUserParams(conditions);
 
             sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    getUserService().searchUserCheckResponse(response);
+                public void handleResponse(NCMBResponse response){
 
-                    ArrayList<NCMBUser> users = getUserService().searchUserPostProcess(response.responseData);
+                    ArrayList<NCMBUser> users = null;
+                    try {
+                        users = getUserService().searchUserPostProcess(response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
                     SearchUserCallback callback = (SearchUserCallback) mCallback;
                     callback.done(users, null);
                 }

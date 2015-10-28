@@ -179,7 +179,7 @@ public class NCMBUserTest {
     public void fetch () throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
-        user.fetchObject();
+        user.fetch();
 
         Assert.assertEquals("Nifty Tarou", user.getUserName());
     }
@@ -188,11 +188,13 @@ public class NCMBUserTest {
     public void fetch_in_background () throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
-        user.fetchObjectInBackground(new DoneCallback() {
+        user.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBUser user, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("Nifty Tarou", user.getUserName());
                 }
             }
         });

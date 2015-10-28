@@ -38,20 +38,14 @@ public class NCMBPushService extends NCMBService {
             super(service, callback);
         }
 
+        PushServiceCallback(NCMBPushService service, FetchCallback callback) {
+            super(service, callback);
+        }
+
         PushServiceCallback(NCMBPushService service, SearchPushCallback callback) {
             super(service, callback);
         }
 
-        /**
-         * Check response in each casse, then throe exception when it's wrong
-         *
-         * @param response response object
-         * @throws NCMBException
-         */
-        @Override
-        public void handleResponse(NCMBResponse response) throws NCMBException {
-            // do nothing in default
-        }
     }
 
 
@@ -122,10 +116,7 @@ public class NCMBPushService extends NCMBService {
             RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_CREATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -198,10 +189,7 @@ public class NCMBPushService extends NCMBService {
             RequestParams request = createRequestParams(pushId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_UPDATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Update failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -261,10 +249,7 @@ public class NCMBPushService extends NCMBService {
             RequestParams request = createRequestParams(pushId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_DELETED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     DoneCallback callback = (DoneCallback) mCallback;
                     if (callback != null) {
@@ -294,7 +279,7 @@ public class NCMBPushService extends NCMBService {
      * @return JSONObject
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public JSONObject getPush(String pushId) throws NCMBException {
+    public NCMBPush fetchPush(String pushId) throws NCMBException {
         //null check
         if (pushId == null) {
             throw new NCMBException(NCMBException.INVALID_JSON, "pushId is must not be null.");
@@ -306,7 +291,7 @@ public class NCMBPushService extends NCMBService {
         if (response.statusCode != HTTP_STATUS_PUSH_GOTTEN) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
         }
-        return response.responseData;
+        return new NCMBPush(response.responseData);
     }
 
     /**
@@ -315,7 +300,7 @@ public class NCMBPushService extends NCMBService {
      * @param pushId   object id
      * @param callback ExecuteServiceCallback
      */
-    public void getPushInBackground(final String pushId, final ExecuteServiceCallback callback) {
+    public void fetchPushInBackground(final String pushId, final FetchCallback callback) {
         try {
             if (pushId == null) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "pushId must no be null");
@@ -325,20 +310,16 @@ public class NCMBPushService extends NCMBService {
             RequestParams request = createRequestParams(pushId, null, null, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
+                    FetchCallback<NCMBPush> callback = (FetchCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(new NCMBPush(response.responseData), null);
                     }
                 }
 
                 @Override
                 public void handleError(NCMBException e) {
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
                         callback.done(null, e);
                     }
@@ -376,17 +357,19 @@ public class NCMBPushService extends NCMBService {
      * @param conditions search conditions
      * @param callback   ExecuteServiceCallback
      */
-    public void searchPushInBackground(JSONObject conditions, SearchPushCallback callback) {
+    public void searchPushInBackground(JSONObject conditions, final SearchPushCallback callback) {
         try {
             final RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
                     //return the value of the key 'results'
-                    ArrayList<NCMBPush> results = createSearchResults(response.responseData);
+                    ArrayList<NCMBPush> results = null;
+                    try {
+                        results = createSearchResults(response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     SearchPushCallback callback = (SearchPushCallback) mCallback;
                     if (callback != null) {
@@ -433,10 +416,7 @@ public class NCMBPushService extends NCMBService {
             RequestParams request = createRequestParams(pushId + "/openNumber", params, null, NCMBRequest.HTTP_METHOD_POST);
             sendRequestAsync(request, new PushServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_PUSH_RECEIPTSTATUS) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "ReceiptStatus failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
