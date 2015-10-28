@@ -97,6 +97,8 @@ public class NCMBAcl {
 
     /**
      * Constructor from JSON
+     * @param json json object of defalut acl
+     * @throws JSONException exception from JSONObject
      */
     public NCMBAcl(JSONObject json) throws JSONException {
         this();

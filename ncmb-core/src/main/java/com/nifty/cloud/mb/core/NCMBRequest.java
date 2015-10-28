@@ -229,6 +229,7 @@ public class NCMBRequest {
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String fileName, byte[] fileData, JSONObject aclJson, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
         this(url, method, aclJson.toString(),fileName, fileData, HEADER_CONTENT_TYPE_FILE, null, sessionToken, applicationKey, clientKey, null);
@@ -242,6 +243,7 @@ public class NCMBRequest {
      * @param content        contentData
      * @param fileName       fileName
      * @param fileData       fileData
+     * @param contentType    content-type
      * @param queryParam     queryJSON
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey

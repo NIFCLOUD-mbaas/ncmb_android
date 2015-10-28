@@ -253,8 +253,8 @@ public class NCMBFile extends NCMBBase {
     }
 
     /**
-     * GEt fileData from file store
-     *
+     * Get fileData from file store
+     * @return byte data obtained from filestore
      * @throws NCMBException exception from NIFTY Cloud mobile backend
      */
     public byte[] fetch() throws NCMBException {
