@@ -61,16 +61,6 @@ public abstract class NCMBService {
          * Constructor
          *
          * @param service
-         * @param callback callback for getting user
-         */
-        ServiceCallback(NCMBService service, UserCallback callback) {
-            this(service, (CallbackBase) callback);
-        }
-
-        /**
-         * Constructor
-         *
-         * @param service
          * @param callback callback for login
          */
         ServiceCallback(NCMBService service, LoginCallback callback) {
@@ -95,10 +85,6 @@ public abstract class NCMBService {
         ServiceCallback(NCMBService service, LoginCallback callback, JSONObject options) {
             this(service, (CallbackBase) callback);
             mOptions = options;
-        }
-
-        ServiceCallback(NCMBService service, RoleCallback callback) {
-            this(service, (CallbackBase) callback);
         }
 
         ServiceCallback(NCMBService service, SearchUserCallback callback) {
