@@ -26,8 +26,9 @@
         android:text="Login"
         android:id="@+id/login_button"
         android:onClick="onLoginClicked"
-        android:layout_alignTop="@+id/sign_up_button"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/mail_login_button"
+        android:layout_toEndOf="@+id/mail_login_button" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -36,9 +37,9 @@
         android:text="Logout"
         android:id="@+id/logout_button"
         android:onClick="onLogoutClicked"
-        android:layout_alignTop="@+id/login_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/user_delete_button"
+        android:layout_alignEnd="@+id/user_delete_button" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -47,10 +48,9 @@
         android:text="CurrentUser"
         android:id="@+id/current_user_button"
         android:onClick="onCurrentUserClicked"
-        android:layout_below="@+id/mail_signup_button"
+        android:layout_alignTop="@+id/user_delete_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="45dp"/>
+        android:layout_alignParentStart="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -59,9 +59,10 @@
         android:text="UserDelete"
         android:id="@+id/user_delete_button"
         android:onClick="onUserDeleteClicked"
-        android:layout_alignTop="@+id/current_user_button"
-        android:layout_alignLeft="@+id/mail_login_button"
-        android:layout_alignStart="@+id/mail_login_button"/>
+        android:layout_below="@+id/mail_login_button"
+        android:layout_toRightOf="@+id/login_button"
+        android:layout_toEndOf="@+id/login_button"
+        android:layout_marginTop="33dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -70,10 +71,10 @@
         android:text="Mail_SignUp"
         android:id="@+id/mail_signup_button"
         android:onClick="onMailSignUpClicked"
-        android:layout_marginTop="42dp"
         android:layout_below="@+id/sign_up_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -81,8 +82,31 @@
         android:layout_height="wrap_content"
         android:text="Mail_login"
         android:id="@+id/mail_login_button"
+        android:onClick="onMailLoginClicked"
+        android:layout_below="@+id/mail_signup_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="36dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mail_SignUpInBackground"
+        android:id="@+id/button"
+        android:onClick="onMailSignUpInBackgroundClicked"
         android:layout_alignTop="@+id/mail_signup_button"
-        android:layout_alignLeft="@+id/login_button"
-        android:layout_alignStart="@+id/login_button"
-        android:onClick="onMailLoginUpClicked"/>
+        android:layout_toRightOf="@+id/current_user_button"
+        android:layout_toEndOf="@+id/current_user_button" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mail_loginInBackground"
+        android:id="@+id/button2"
+        android:onClick="onMailLoginInBackgroundClicked"
+        android:layout_above="@+id/user_delete_button"
+        android:layout_toRightOf="@+id/current_user_button"
+        android:layout_toEndOf="@+id/current_user_button" />
 </RelativeLayout>
