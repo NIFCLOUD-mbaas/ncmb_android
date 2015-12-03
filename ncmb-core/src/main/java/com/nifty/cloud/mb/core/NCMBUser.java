@@ -8,18 +8,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *  NCMBUser is used to sign up and login/logout the user
+ * NCMBUser is used to sign up and login/logout the user
  */
-public class NCMBUser extends NCMBObject{
+public class NCMBUser extends NCMBObject {
 
-    /** current user */
+    /**
+     * current user
+     */
     static NCMBUser currentUser;
 
-    /** currenUser fileName */
+    /**
+     * currenUser fileName
+     */
     static final String USER_FILENAME = "currentUser";
 
     static final List<String> ignoreKeys = Arrays.asList(
-            "objectId", "userName","password",
+            "objectId", "userName", "password",
             "mailAddress", "mailAddressConfirm",
             "acl", "authData",
             "createDate", "updateDate"
@@ -28,12 +32,14 @@ public class NCMBUser extends NCMBObject{
     /**
      * Constructor
      */
-    public NCMBUser(){
+    public NCMBUser() {
         super("user");
         mIgnoreKeys = ignoreKeys;
     }
+
     /**
      * Constructor
+     *
      * @param params input parameters
      */
 
@@ -52,6 +58,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Get user name
+     *
      * @return String user name
      */
     public String getUserName() {
@@ -67,6 +74,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * set user name
+     *
      * @param userName user name string
      */
     public void setUserName(String userName) {
@@ -92,6 +100,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * set password
+     *
      * @param password password string
      */
     public void setPassword(String password) {
@@ -105,6 +114,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Get mail address confirmed flag
+     *
      * @return Boolean mail address is confirmed or not
      */
     public Boolean isMailAddressConfirmed() {
@@ -121,6 +131,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Get mail address
+     *
      * @return String mail address
      */
     public String getMailAddress() {
@@ -137,6 +148,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Set mail address
+     *
      * @param mailAddress String mail address
      */
     public void setMailAddress(String mailAddress) {
@@ -150,6 +162,7 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Get authData
+     *
      * @return JSONObject or null
      */
     public JSONObject getAuthData() {
@@ -167,10 +180,11 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * sign up to NIFTY Cloud mobile backend
+     *
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void signUp () throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public void signUp() throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         NCMBUser user = service.registerByName(getUserName(), getPassword());
         mFields = user.mFields;
         //copyFrom(user.mFields);
@@ -178,10 +192,11 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * sign up to NIFTY Cloud mobile backend
+     *
      * @param callback callback for after sign up
      */
-    public void signUpInBackground (final DoneCallback callback){
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public void signUpInBackground(final DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.registerByNameInBackground(getUserName(), getPassword(), new LoginCallback() {
                 @Override
@@ -251,7 +266,7 @@ public class NCMBUser extends NCMBObject{
      *
      * @param mailAddress mailAddress
      * @param password    password
-     * @param callback Callback is executed after login
+     * @param callback    Callback is executed after login
      */
     public static void loginWithMailAddressInBackground(String mailAddress, String password,
                                                         LoginCallback callback) {
@@ -267,18 +282,20 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * login with username and password
+     *
      * @param userName user name
      * @param password password
      * @return NCMBUser object that logged-in
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public static NCMBUser login(String userName, String password) throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         return service.loginByName(userName, password);
     }
 
     /**
      * Login with username and password in background
+     *
      * @param userName user name
      * @param password password
      * @param callback callback when finished
@@ -286,26 +303,28 @@ public class NCMBUser extends NCMBObject{
      */
     public static void loginInBackground(String userName, String password,
                                          LoginCallback callback) throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         service.loginByNameInBackground(userName, password, callback);
 
     }
 
     /**
      * logout from NIFTY Cloud mobile backend
+     *
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public static void logout () throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public static void logout() throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         service.logout();
     }
 
     /**
      * logout from NIFTY Cloud mobile backend
+     *
      * @param callback Callback is executed after logout
      */
-    public static void logoutInBackground (DoneCallback callback) {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public static void logoutInBackground(DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.logoutInBackground(callback);
         } catch (NCMBException e) {
@@ -317,10 +336,10 @@ public class NCMBUser extends NCMBObject{
 
     @Override
     public void save() throws NCMBException {
-        if (getObjectId() == null){
+        if (getObjectId() == null) {
             signUp();
         } else {
-            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             try {
                 JSONObject response = service.updateUser(getObjectId(), createUpdateJsonData());
                 if (!response.isNull("updateDate")) {
@@ -338,7 +357,7 @@ public class NCMBUser extends NCMBObject{
         if (getObjectId() == null) {
             signUpInBackground(callback);
         } else {
-            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             try {
                 service.updateUserInBackground(getObjectId(), createUpdateJsonData(), new ExecuteServiceCallback() {
                     @Override
@@ -368,14 +387,14 @@ public class NCMBUser extends NCMBObject{
 
     @Override
     public void fetch() throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         NCMBUser user = service.fetchUser(getObjectId());
         mFields = user.mFields;
     }
 
     @Override
-    public void fetchInBackground (final FetchCallback callback) {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public void fetchInBackground(final FetchCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.fetchUserInBackground(getObjectId(), new FetchCallback<NCMBUser>() {
                 @Override
@@ -400,9 +419,9 @@ public class NCMBUser extends NCMBObject{
     }
 
     @Override
-    public void deleteObject () throws NCMBException {
+    public void deleteObject() throws NCMBException {
         try {
-            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             service.deleteUser(getObjectId());
             mFields = new JSONObject();
             mUpdateKeys.clear();
@@ -414,8 +433,8 @@ public class NCMBUser extends NCMBObject{
     }
 
     @Override
-    public void deleteObjectInBackground (final DoneCallback callback) {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+    public void deleteObjectInBackground(final DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.deleteUserInBackground(getObjectId(), new ExecuteServiceCallback() {
                 @Override
@@ -472,10 +491,11 @@ public class NCMBUser extends NCMBObject{
 
     /**
      * Get sessionToken
+     *
      * @return sessionToken
      */
-    public static String getSessionToken(){
-        if(getCurrentUser().getString("sessionToken") != null){
+    public static String getSessionToken() {
+        if (getCurrentUser().getString("sessionToken") != null) {
             return NCMBUser.getCurrentUser().getString("sessionToken");
         } else {
             return null;
