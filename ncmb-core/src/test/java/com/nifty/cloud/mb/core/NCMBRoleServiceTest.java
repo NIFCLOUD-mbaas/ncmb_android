@@ -42,7 +42,7 @@ public class NCMBRoleServiceTest {
                 mocServerUrl,
                 null);
 
-         ShadowLog.stream = System.out;
+        ShadowLog.stream = System.out;
     }
 
     @After
@@ -54,7 +54,7 @@ public class NCMBRoleServiceTest {
 
 
     protected NCMBRoleService getRoleService() {
-        return (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+        return (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
     }
 
     /**

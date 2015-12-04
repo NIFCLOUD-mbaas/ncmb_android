@@ -56,7 +56,7 @@ public class NCMBRoleTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void create_role () throws Exception {
+    public void create_role() throws Exception {
         NCMBRole role = new NCMBRole("dummyRoleName");
         try {
             role.createRole();
@@ -69,7 +69,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void create_role_in_background () throws Exception {
+    public void create_role_in_background() throws Exception {
         NCMBRole role = new NCMBRole();
         role.setRoleName("dummyRoleName");
         role.createRoleInBackground(new DoneCallback() {
@@ -88,7 +88,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_user () throws Exception {
+    public void add_user() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -104,7 +104,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_user_in_background () throws Exception {
+    public void add_user_in_background() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -130,7 +130,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void remove_user () throws Exception {
+    public void remove_user() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -146,7 +146,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void remove_user_in_background () throws Exception {
+    public void remove_user_in_background() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -173,7 +173,7 @@ public class NCMBRoleTest {
 
 
     @Test
-    public void add_role () throws Exception {
+    public void add_role() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -189,7 +189,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_role_in_background () throws Exception {
+    public void add_role_in_background() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -215,7 +215,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void remove_role () throws Exception {
+    public void remove_role() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -231,7 +231,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void remove_role_in_background () throws Exception {
+    public void remove_role_in_background() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -257,7 +257,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void fetch_role () throws Exception {
+    public void fetch_role() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         try {
@@ -273,7 +273,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void fetch_role_in_background () throws Exception {
+    public void fetch_role_in_background() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         role.fetchObjectInBackground(new FetchCallback<NCMBRole>() {
@@ -295,7 +295,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void delete_role () throws Exception {
+    public void delete_role() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         try {
@@ -308,7 +308,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void delete_role_in_background () throws Exception {
+    public void delete_role_in_background() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         role.deleteObjectInBackground(new DoneCallback() {
