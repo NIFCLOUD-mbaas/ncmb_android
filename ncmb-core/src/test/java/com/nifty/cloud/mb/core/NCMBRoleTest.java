@@ -56,7 +56,7 @@ public class NCMBRoleTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void creat_role () throws Exception {
+    public void create_role () throws Exception {
         NCMBRole role = new NCMBRole("dummyRoleName");
         try {
             role.createRole();
@@ -113,7 +113,7 @@ public class NCMBRoleTest {
 
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
-        role.addUserInBackground(Arrays.asList(user1, user2), new DoneCallback(){
+        role.addUserInBackground(Arrays.asList(user1, user2), new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
@@ -128,6 +128,49 @@ public class NCMBRoleTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
     }
+
+    @Test
+    public void remove_user () throws Exception {
+        NCMBUser user1 = new NCMBUser();
+        user1.setObjectId("dummyUserObjectId1");
+
+        NCMBUser user2 = new NCMBUser();
+        user2.setObjectId("dummyUserObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeUser(Arrays.asList(user1, user2));
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+    }
+
+    @Test
+    public void remove_user_in_background () throws Exception {
+        NCMBUser user1 = new NCMBUser();
+        user1.setObjectId("dummyUserObjectId1");
+
+        NCMBUser user2 = new NCMBUser();
+        user2.setObjectId("dummyUserObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeUserInBackground(Arrays.asList(user1, user2), new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+    }
+
 
     @Test
     public void add_role () throws Exception {
@@ -156,6 +199,48 @@ public class NCMBRoleTest {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         role.addRoleInBackground(Arrays.asList(role1, role2), new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+    }
+
+    @Test
+    public void remove_role () throws Exception {
+        NCMBRole role1 = new NCMBRole("testRole1");
+        role1.setObjectId("dummyRoleObjectId1");
+
+        NCMBRole role2 = new NCMBRole("testRole2");
+        role2.setObjectId("dummyRoleObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeRole(Arrays.asList(role1, role2));
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+    }
+
+    @Test
+    public void remove_role_in_background () throws Exception {
+        NCMBRole role1 = new NCMBRole("testRole1");
+        role1.setObjectId("dummyRoleObjectId1");
+
+        NCMBRole role2 = new NCMBRole("testRole2");
+        role2.setObjectId("dummyRoleObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeRoleInBackground(Arrays.asList(role1, role2), new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
