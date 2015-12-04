@@ -131,7 +131,62 @@ public class NCMBRole extends NCMBBase{
     }
 
     /**
-     * add users to role
+     * remove users to role
+     * @param users NCMBUser list to remove role
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void removeUser(List<NCMBUser> users) throws NCMBException{
+        NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+
+        try {
+            JSONObject res = roleService.removeUserRelations(getObjectId(), users);
+            SimpleDateFormat df = NCMBDateFormat.getIso8601();
+            mFields.put("updateDate", res.getString("updateDate"));
+        } catch (NCMBException e) {
+            throw e;
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
+    }
+
+    /**
+     * remove users to role asynchronously
+     * @param users NCMBUser list to remove role
+     * @param callback callback after remove user
+     */
+    public void removeUserInBackground(List<NCMBUser> users, final DoneCallback callback) {
+        NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+        try {
+            roleService.removeUserRelationsInBackground(getObjectId(), users, new ExecuteServiceCallback() {
+                @Override
+                public void done(JSONObject json, NCMBException e) {
+                    if (e != null) {
+                        if (callback != null) {
+                            callback.done(e);
+                        }
+                    } else {
+                        try {
+                            mFields.put("updateDate", json.getString("updateDate"));
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        } catch (JSONException e1) {
+                            if (callback != null) {
+                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+    /**
+     * add roles to role
      * @param roles NCMBRole list to add role
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
@@ -157,6 +212,60 @@ public class NCMBRole extends NCMBBase{
         NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
         try {
             roleService.addRoleRelationsInBackground(getObjectId(), roles, new ExecuteServiceCallback() {
+                @Override
+                public void done(JSONObject json, NCMBException e) {
+                    if (e != null) {
+                        if (callback != null) {
+                            callback.done(e);
+                        }
+                    } else {
+                        try {
+                            mFields.put("updateDate", json.getString("updateDate"));
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        } catch (JSONException e1) {
+                            if (callback != null) {
+                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+    /**
+     * remove roles to role
+     * @param roles NCMBRole list to remove role
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void removeRole(List<NCMBRole> roles) throws NCMBException{
+        NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+
+        try {
+            JSONObject res = roleService.removeRoleRelations(getObjectId(), roles);
+            mFields.put("updateDate", res.getString("updateDate"));
+        } catch (NCMBException e) {
+            throw e;
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
+    }
+
+    /**
+     * remove roles to role asynchronously
+     * @param roles NCMBRoles list to remove role
+     * @param callback callback after remove role
+     */
+    public void removeRoleInBackground(List<NCMBRole> roles, final DoneCallback callback) {
+        NCMBRoleService roleService = (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+        try {
+            roleService.removeRoleRelationsInBackground(getObjectId(), roles, new ExecuteServiceCallback() {
                 @Override
                 public void done(JSONObject json, NCMBException e) {
                     if (e != null) {

@@ -120,7 +120,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = createRoleParams(roleName);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response){
+            public void handleResponse(NCMBResponse response) {
 
                 ExecuteServiceCallback executeServiceCallback = (ExecuteServiceCallback) mCallback;
                 executeServiceCallback.done(response.responseData, null);
@@ -180,7 +180,7 @@ public class NCMBRoleService extends NCMBService {
         RequestParams reqParams = deleteRoleParams(roleId);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response){
+            public void handleResponse(NCMBResponse response) {
 
                 DoneCallback doneCallback = (DoneCallback) mCallback;
                 doneCallback.done(null);
@@ -395,13 +395,13 @@ public class NCMBRoleService extends NCMBService {
 
 
     /**
-     * Setup params to add users to role
+     * Setup params to add or remove users to role
      * @param roleId role id
-     * @param users users added
+     * @param users users added or removed
      * @return parameters in object
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    protected RequestParams addUserRelationsParams(String roleId, List<NCMBUser> users) throws NCMBException {
+    protected RequestParams userRelationsParams(String roleId, List<NCMBUser> users,boolean isAdd) throws NCMBException {
         try {
             RequestParams reqParams = new RequestParams();
 
@@ -415,7 +415,11 @@ public class NCMBRoleService extends NCMBService {
                 objectList.add(user);
             }
             JSONObject params = new JSONObject();
-            params.put("belongUser", NCMBRelation.addRelation(objectList));
+            if(isAdd){
+                params.put("belongUser", NCMBRelation.addRelation(objectList));
+            }else {
+                params.put("belongUser", NCMBRelation.removeRelation(objectList));
+            }
             reqParams.content = params.toString();
 
             return reqParams;
@@ -443,7 +447,7 @@ public class NCMBRoleService extends NCMBService {
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public JSONObject addUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
-        RequestParams reqParams = addUserRelationsParams(roleId, users);
+        RequestParams reqParams = userRelationsParams(roleId, users, true);
         NCMBResponse response = sendRequest(reqParams);
         addUserRelationsCheckResponse(response);
         return response.responseData;
@@ -459,7 +463,7 @@ public class NCMBRoleService extends NCMBService {
      */
     public void addUserRelationsInBackground(String roleId, List<NCMBUser> users,
                                              ExecuteServiceCallback callback) throws NCMBException {
-        RequestParams reqParams = addUserRelationsParams(roleId, users);
+        RequestParams reqParams = userRelationsParams(roleId, users, true);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
             public void handleResponse(NCMBResponse response){
@@ -477,13 +481,54 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Setup params to add roles to role
+     * Remove users to role
      * @param roleId role id
-     * @param roles roles added
+     * @param users users removed
+     * @return result of remove user to relations
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public JSONObject removeUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
+        RequestParams reqParams = userRelationsParams(roleId, users, false);
+        NCMBResponse response = sendRequest(reqParams);
+        addUserRelationsCheckResponse(response);
+        return response.responseData;
+    }
+
+    /**
+     * Remove users to role in background
+     * @param roleId role id
+     * @param users users removed
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void removeUserRelationsInBackground(String roleId, List<NCMBUser> users,
+                                             ExecuteServiceCallback callback) throws NCMBException {
+        RequestParams reqParams = userRelationsParams(roleId, users, false);
+        sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+
+                ExecuteServiceCallback doneCallback = (ExecuteServiceCallback) mCallback;
+                doneCallback.done(response.responseData, null);
+            }
+
+            @Override
+            public void handleError(NCMBException e) {
+                ExecuteServiceCallback doneCallback = (ExecuteServiceCallback) mCallback;
+                doneCallback.done(null, e);
+            }
+        });
+    }
+
+
+    /**
+     * Setup params to add or remove roles to role
+     * @param roleId role id
+     * @param roles roles added or removed
      * @return parameters in object
      * @throws NCMBException
      */
-    protected RequestParams addRoleRelationParams(String roleId, List<NCMBRole> roles) throws NCMBException {
+    protected RequestParams roleRelationParams(String roleId, List<NCMBRole> roles,boolean isAdd) throws NCMBException {
         try {
             RequestParams reqParams = new RequestParams();
             reqParams.url = mContext.baseUrl + mServicePath + "/" + roleId;
@@ -496,7 +541,11 @@ public class NCMBRoleService extends NCMBService {
                 roleArray.add(new NCMBObject("role", role.mFields));
             }
             JSONObject params = new JSONObject();
-            params.put("belongRole", NCMBRelation.addRelation(roleArray));
+            if(isAdd){
+                params.put("belongRole", NCMBRelation.addRelation(roleArray));
+            }else {
+                params.put("belongRole", NCMBRelation.removeRelation(roleArray));
+            }
             reqParams.content = params.toString();
 
             return reqParams;
@@ -506,11 +555,11 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Check response to add roles to role
+     * Check response to role
      * @param response
      * @throws NCMBException
      */
-    protected void addRoleRelationsCheckResponse(NCMBResponse response) throws NCMBException {
+    protected void roleRelationsCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
         }
@@ -524,9 +573,9 @@ public class NCMBRoleService extends NCMBService {
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public JSONObject addRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
-        RequestParams reqParams = addRoleRelationParams(roleId, roles);
+        RequestParams reqParams = roleRelationParams(roleId, roles, true);
         NCMBResponse response = sendRequest(reqParams);
-        addRoleRelationsCheckResponse(response);
+        roleRelationsCheckResponse(response);
         return response.responseData;
         // update completed, do nothing more
     }
@@ -540,7 +589,7 @@ public class NCMBRoleService extends NCMBService {
      */
     public void addRoleRelationsInBackground(String roleId, List<NCMBRole> roles,
                                              ExecuteServiceCallback callback) throws NCMBException {
-        RequestParams reqParams = addRoleRelationParams(roleId, roles);
+        RequestParams reqParams = roleRelationParams(roleId, roles, true);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
             public void handleResponse(NCMBResponse response){
@@ -556,6 +605,47 @@ public class NCMBRoleService extends NCMBService {
             }
         });
     }
+
+    /**
+     * Remove roles to role
+     * @param roleId role id
+     * @param roles roles removed
+     * @return result of remove role to relations
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public JSONObject removeRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
+        RequestParams reqParams = roleRelationParams(roleId, roles, false);
+        NCMBResponse response = sendRequest(reqParams);
+        roleRelationsCheckResponse(response);
+        return response.responseData;
+    }
+
+    /**
+     * Remove roles to role in background
+     * @param roleId role id
+     * @param roles roles removed
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void removeRoleRelationsInBackground(String roleId, List<NCMBRole> roles,
+                                             ExecuteServiceCallback callback) throws NCMBException {
+        RequestParams reqParams = roleRelationParams(roleId, roles, false);
+        sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+
+                ExecuteServiceCallback doneCallback = (ExecuteServiceCallback) mCallback;
+                doneCallback.done(response.responseData, null);
+            }
+
+            @Override
+            public void handleError(NCMBException e) {
+                ExecuteServiceCallback doneCallback = (ExecuteServiceCallback) mCallback;
+                doneCallback.done(null, e);
+            }
+        });
+    }
+
 
     /**
      * Setup params to set ACL to role
