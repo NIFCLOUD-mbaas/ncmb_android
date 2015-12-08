@@ -458,12 +458,12 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Check response to add users to role
+     * Check response to update role
      *
      * @param response
      * @throws NCMBException
      */
-    protected void addUserRelationsCheckResponse(NCMBResponse response) throws NCMBException {
+    protected void updateRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
         }
@@ -480,7 +480,7 @@ public class NCMBRoleService extends NCMBService {
     public JSONObject addUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
         RequestParams reqParams = userRelationsParams(roleId, users, true);
         NCMBResponse response = sendRequest(reqParams);
-        addUserRelationsCheckResponse(response);
+        updateRoleCheckResponse(response);
         return response.responseData;
         // update completed, do nothing more
     }
@@ -523,7 +523,7 @@ public class NCMBRoleService extends NCMBService {
     public JSONObject removeUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
         RequestParams reqParams = userRelationsParams(roleId, users, false);
         NCMBResponse response = sendRequest(reqParams);
-        addUserRelationsCheckResponse(response);
+        updateRoleCheckResponse(response);
         return response.responseData;
     }
 
@@ -588,18 +588,6 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Check response to role
-     *
-     * @param response
-     * @throws NCMBException
-     */
-    protected void roleRelationsCheckResponse(NCMBResponse response) throws NCMBException {
-        if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
-        }
-    }
-
-    /**
      * Add roles to role
      *
      * @param roleId role id
@@ -610,7 +598,7 @@ public class NCMBRoleService extends NCMBService {
     public JSONObject addRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
         RequestParams reqParams = roleRelationParams(roleId, roles, true);
         NCMBResponse response = sendRequest(reqParams);
-        roleRelationsCheckResponse(response);
+        updateRoleCheckResponse(response);
         return response.responseData;
         // update completed, do nothing more
     }
@@ -653,7 +641,7 @@ public class NCMBRoleService extends NCMBService {
     public JSONObject removeRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
         RequestParams reqParams = roleRelationParams(roleId, roles, false);
         NCMBResponse response = sendRequest(reqParams);
-        roleRelationsCheckResponse(response);
+        updateRoleCheckResponse(response);
         return response.responseData;
     }
 
