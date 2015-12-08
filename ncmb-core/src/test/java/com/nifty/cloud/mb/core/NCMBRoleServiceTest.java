@@ -104,7 +104,7 @@ public class NCMBRoleServiceTest {
         try {
             roleService.deleteRole(roleId);
         } catch (NCMBException e) {
-            Assert.assertTrue("Exception throwed", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -187,7 +187,7 @@ public class NCMBRoleServiceTest {
             ArrayList<NCMBUser> users = generateUsers(numUsers);
             roleService.addUserRelations(roleId, users);
         } catch (NCMBException e) {
-            Assert.assertTrue("addUserRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -228,7 +228,7 @@ public class NCMBRoleServiceTest {
             ArrayList<NCMBUser> users = generateUsers(numUsers);
             roleService.removeUserRelations(roleId, users);
         } catch (NCMBException e) {
-            Assert.assertTrue("addUserRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -285,7 +285,7 @@ public class NCMBRoleServiceTest {
             ArrayList<NCMBRole> roles = generateRoles(numRoles);
             roleService.addRoleRelations(roleId, roles);
         } catch (NCMBException e) {
-            Assert.assertTrue("addRoleRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -326,7 +326,7 @@ public class NCMBRoleServiceTest {
             ArrayList<NCMBRole> roles = generateRoles(numRoles);
             roleService.removeRoleRelations(roleId, roles);
         } catch (NCMBException e) {
-            Assert.assertTrue("addRoleRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -378,7 +378,7 @@ public class NCMBRoleServiceTest {
             NCMBAcl acl = generateAcl();
             roleService.setAcl(roleId, acl);
         } catch (NCMBException e) {
-            Assert.assertTrue("setAcl throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
