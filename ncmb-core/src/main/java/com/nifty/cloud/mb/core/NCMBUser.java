@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -163,6 +164,22 @@ public class NCMBUser extends NCMBObject{
         }
     }
 
+    /**
+     * Get Specified Authentication Data
+     * @param provider String "facebook" or "twitter" or "google" or "anonymous"
+     * @return Specified Authentication Data or null
+     */
+    public JSONObject getAuthData(String provider) {
+        try {
+            if (mFields.isNull("authData") || mFields.getJSONObject("authData").isNull(provider)) {
+                return null;
+            }
+            return mFields.getJSONObject("authData").getJSONObject(provider);
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
     // action methods
 
     /**
@@ -252,7 +269,60 @@ public class NCMBUser extends NCMBObject{
             service.logoutInBackground(callback);
         } catch (NCMBException e) {
             if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
 
+    /**
+     * login with parameter that can be obtained after the OAuth authentication
+     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @return Authenticated user
+     * @throws NCMBException is thrown when authenticaiton failed
+     */
+    public static NCMBUser loginWith(Object authData) throws NCMBException {
+        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+
+        try {
+            if (authData.getClass().equals(NCMBFacebookParameters.class)) {
+                return service.registerByOauth(createFacebookAuthData((NCMBFacebookParameters)authData));
+            } else {
+                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or ");
+            }
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
+    }
+
+    private static JSONObject createFacebookAuthData(NCMBFacebookParameters params) throws JSONException {
+        JSONObject authDataJson = new JSONObject();
+        authDataJson.put("type", "facebook");
+        authDataJson.put("id", params.userId);
+        authDataJson.put("access_token", params.accessToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        authDataJson.put("expiration_date", df.format(params.expirationDate));
+
+        return authDataJson;
+    }
+
+    /**
+     * login asynchronously with parameter that can be obtained after the OAuth authentication
+     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param callback if login is succeeded, callback include authenticated user.
+     */
+    public static void loginInBackgroundWith(Object authData, LoginCallback callback) {
+        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        try {
+            if (authData.getClass().equals(NCMBFacebookParameters.class)) {
+                service.registerByOauthInBackground(createFacebookAuthData((NCMBFacebookParameters)authData), callback);
+            }
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(null, e);
+            }
+        } catch (JSONException e) {
+            if (callback != null) {
+                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
             }
         }
     }
