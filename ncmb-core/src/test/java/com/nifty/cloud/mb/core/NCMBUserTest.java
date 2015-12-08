@@ -24,12 +24,11 @@ import java.text.SimpleDateFormat;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBUserTest {
-    private MockWebServer mServer;
 
     @Before
     public void setup() throws Exception {
 
-        mServer = new MockWebServer();
+        MockWebServer mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
 
@@ -155,9 +154,10 @@ public class NCMBUserTest {
             user = NCMBUser.loginWith(facebookParams);
         } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
-            Assert.assertNull(user);
-            Assert.assertNull(NCMB.sCurrentContext.sessionToken);
         }
+
+        Assert.assertNull(user);
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class NCMBUserTest {
                 df.parse("2016-06-07T01:02:03.004Z")
         );
 
-        NCMBUser.loginInBackgroundWith(facebookParams, new LoginCallback(){
+        NCMBUser.loginInBackgroundWith(facebookParams, new LoginCallback() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 if (e != null) {
@@ -228,6 +228,132 @@ public class NCMBUserTest {
 
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
     }
+
+    @Test
+    public void login_with_twitter_account () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+        NCMBUser user = NCMBUser.loginWith(twitterParams);
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(twitterParams.userId, user.getAuthData("twitter").getString("id"));
+        Assert.assertEquals(twitterParams.screenName, user.getAuthData("twitter").getString("screen_name"));
+        Assert.assertEquals(twitterParams.consumerKey, user.getAuthData("twitter").getString("oauth_consumer_key"));
+        Assert.assertEquals(twitterParams.accessToken, user.getAuthData("twitter").getString("oauth_token"));
+        Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
+
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test
+    public void login_with_invalid_twitter_account () throws Exception {
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "invalidTwitterDummyId",
+                "invalidTwitterDummyScreenName",
+                "invalidTwitterDummyConsumerKey",
+                "invalidTwitterDummyConsumerSecret",
+                "invalidTwitterDummyOauthToken",
+                "invalidTwitterDummyOauthSecret"
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(twitterParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+        Assert.assertNull(user);
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+
+    @Test
+    public void login_with_twitter_in_background () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+
+        NCMBUser.loginInBackgroundWith(twitterParams, new LoginCallback(){
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        NCMBUser user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+
+        Assert.assertEquals(twitterParams.userId, user.getAuthData("twitter").getString("id"));
+        Assert.assertEquals(twitterParams.screenName, user.getAuthData("twitter").getString("screen_name"));
+        Assert.assertEquals(twitterParams.consumerKey, user.getAuthData("twitter").getString("oauth_consumer_key"));
+        Assert.assertEquals(twitterParams.accessToken, user.getAuthData("twitter").getString("oauth_token"));
+        Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
+
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void login_with_empty_twitter_auth_data () throws Exception{
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                null,
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+
+        NCMBUser.loginWith(twitterParams);
+    }
+
+    @Test
+    public void login_with_invalid_twitter_in_background () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "invalidTwitterDummyId",
+                "invalidTwitterDummyScreenName",
+                "invalidTwitterDummyConsumerKey",
+                "invalidTwitterDummyConsumerSecret",
+                "invalidTwitterDummyOauthToken",
+                "invalidTwitterDummyOauthSecret"
+        );
+
+        NCMBUser.loginInBackgroundWith(twitterParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+
 
     @Test
     public void logout () throws Exception {
