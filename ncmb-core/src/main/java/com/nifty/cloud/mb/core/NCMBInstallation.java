@@ -415,7 +415,15 @@ public class NCMBInstallation extends NCMBObject {
         }
 
         //端末にAPKがインストールされていない場合は処理を終了
-        if (!checkPlayServices(NCMB.sCurrentContext.context)) return;
+        try {
+            if (!checkPlayServices(NCMB.sCurrentContext.context)) return;
+        }catch (Exception error){
+            if(callback!=null){
+                callback.done(new NCMBException(error));
+                return;
+            }
+        }
+
 
         //registrationIdを非同期で取得
         new AsyncTask<String, Void, Void>() {
@@ -450,7 +458,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param context
      * @return bool
      */
-    protected boolean checkPlayServices(Context context) {
+    protected boolean checkPlayServices(Context context) throws Exception{
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
