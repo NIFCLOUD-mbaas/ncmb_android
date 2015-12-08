@@ -126,11 +126,11 @@ public class NCMBRoleServiceTest {
     }
 
     /**
-     * - 内容：getRole が成功する事を確認する
+     * - 内容：fetchRole が成功する事を確認する
      * - 結果：正しく作成された NCMBRole オブジェクトが返ること
      */
     @Test
-    public void getRole() throws Exception {
+    public void fetchRole() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
@@ -139,11 +139,11 @@ public class NCMBRoleServiceTest {
     }
 
     /**
-     * - 内容：getRoleInBackground が成功する事を確認する
+     * - 内容：fetchRoleInBackground が成功する事を確認する
      * - 結果：callback に正しく作成された NCMBRole オブジェクトが返ること
      */
     @Test
-    public void getRoleInBackground() throws Exception {
+    public void fetchRoleInBackground() throws Exception {
         NCMBRoleService roleService = getRoleService();
         final String roleId = "dummyRoleId";
 
