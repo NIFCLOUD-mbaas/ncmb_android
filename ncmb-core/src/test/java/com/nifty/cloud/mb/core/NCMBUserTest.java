@@ -353,7 +353,98 @@ public class NCMBUserTest {
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
     }
 
+    @Test
+    public void login_with_google_account () throws Exception {
 
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+        NCMBUser user = NCMBUser.loginWith(googleParams);
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(googleParams.userId, user.getAuthData("google").getString("id"));
+        Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
+
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test
+    public void login_with_invalid_google_account () throws Exception {
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "invalidGoogleDummyId",
+                "invalidGoogleDummyAccessToken"
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(googleParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertNull(user);
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test
+    public void login_with_google_in_background () throws Exception {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+
+        NCMBUser.loginInBackgroundWith(googleParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        NCMBUser user = NCMBUser.getCurrentUser();
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(googleParams.userId, user.getAuthData("google").getString("id"));
+        Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void login_with_empty_google_auth_data () throws Exception{
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                null,
+                "invalidGoogleDummyAccessToken"
+        );
+
+        NCMBUser.loginWith(googleParams);
+    }
+
+    @Test
+    public void login_with_invalid_google_in_background () throws Exception {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "invalidGoogleDummyId",
+                "invalidGoogleDummyAccessToken"
+        );
+
+        NCMBUser.loginInBackgroundWith(googleParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+    }
 
     @Test
     public void logout () throws Exception {

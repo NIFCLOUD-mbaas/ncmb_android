@@ -449,6 +449,18 @@
     method: POST
     body:
       authData:
+        google:
+          id: invalidGoogleDummyId
+          access_token: invalidGoogleDummyAccessToken
+  response:
+    status: 401
+    file: authentication_error_google.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         anonymous:
           id: anonymousDummyId
   response:
