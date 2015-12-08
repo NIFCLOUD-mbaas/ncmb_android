@@ -439,10 +439,8 @@ public class NCMBRoleService extends NCMBService {
             reqParams.url = mContext.baseUrl + mServicePath + "/" + roleId;
             reqParams.type = NCMBRequest.HTTP_METHOD_PUT;
 
-            JSONArray objects = new JSONArray();
             List<NCMBObject> objectList = new ArrayList<>();
             for (NCMBUser user : users) {
-                NCMBRelation.addUser(objects, user.getObjectId());
                 objectList.add(user);
             }
             JSONObject params = new JSONObject();
@@ -571,10 +569,8 @@ public class NCMBRoleService extends NCMBService {
             reqParams.url = mContext.baseUrl + mServicePath + "/" + roleId;
             reqParams.type = NCMBRequest.HTTP_METHOD_PUT;
 
-            JSONArray objects = new JSONArray();
             List<NCMBObject> roleArray = new ArrayList<>();
             for (NCMBRole role : roles) {
-                //NCMBRelation.addRole(objects, role.getObjectId());
                 roleArray.add(new NCMBObject("role", role.mFields));
             }
             JSONObject params = new JSONObject();
