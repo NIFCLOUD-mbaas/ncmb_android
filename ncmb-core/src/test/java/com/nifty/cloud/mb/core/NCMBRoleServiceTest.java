@@ -185,7 +185,8 @@ public class NCMBRoleServiceTest {
         try {
             int numUsers = 2;
             ArrayList<NCMBUser> users = generateUsers(numUsers);
-            roleService.addUserRelations(roleId, users);
+            JSONObject response = roleService.addUserRelations(roleId, users);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -209,6 +210,11 @@ public class NCMBRoleServiceTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
+                }
             }
         });
     }
@@ -226,7 +232,8 @@ public class NCMBRoleServiceTest {
         try {
             int numUsers = 2;
             ArrayList<NCMBUser> users = generateUsers(numUsers);
-            roleService.removeUserRelations(roleId, users);
+            JSONObject response = roleService.removeUserRelations(roleId, users);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -249,6 +256,11 @@ public class NCMBRoleServiceTest {
             public void done(JSONObject json, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
                 }
             }
         });
@@ -283,7 +295,8 @@ public class NCMBRoleServiceTest {
         try {
             int numRoles = 2;
             ArrayList<NCMBRole> roles = generateRoles(numRoles);
-            roleService.addRoleRelations(roleId, roles);
+            JSONObject response = roleService.addRoleRelations(roleId, roles);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -307,6 +320,11 @@ public class NCMBRoleServiceTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
+                }
             }
         });
     }
@@ -324,7 +342,8 @@ public class NCMBRoleServiceTest {
         try {
             int numRoles = 2;
             ArrayList<NCMBRole> roles = generateRoles(numRoles);
-            roleService.removeRoleRelations(roleId, roles);
+            JSONObject response = roleService.removeRoleRelations(roleId, roles);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -347,6 +366,11 @@ public class NCMBRoleServiceTest {
             public void done(JSONObject json, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
                 }
             }
         });
