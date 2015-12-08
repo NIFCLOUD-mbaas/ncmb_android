@@ -12,30 +12,30 @@ public class NCMBFacebookParameters {
     /**
      * User id of Facebook account
      */
-    @NonNull
-    public String userId;
+    protected String userId;
 
     /**
      * Access token that can be obtained in the OAuth authentication
      */
-    @NonNull
-    public String accessToken;
+    protected String accessToken;
 
     /**
      * Expiration date of access token
      */
-    @NonNull
-    public Date expirationDate;
+    protected Date expirationDate;
 
     /**
      *
-     * @param aUserId
-     * @param aAccessToken
-     * @param aExpirationDate
+     * @param aUserId User id of Facebook account
+     * @param anAccessToken Access token that can be obtained in the OAuth authentication
+     * @param anExpirationDate Expiration date of access token
      */
-    public NCMBFacebookParameters(String aUserId, String aAccessToken, Date aExpirationDate) {
+    public NCMBFacebookParameters(@NonNull String aUserId, @NonNull String anAccessToken, @NonNull Date anExpirationDate) {
+        if (aUserId == null || anAccessToken == null || anExpirationDate == null) {
+            throw new IllegalArgumentException("aUserId or anAccessToken or anExpirationDate must not be null.");
+        }
         userId = aUserId;
-        accessToken = aAccessToken;
-        expirationDate = aExpirationDate;
+        accessToken = anAccessToken;
+        expirationDate = anExpirationDate;
     }
 }

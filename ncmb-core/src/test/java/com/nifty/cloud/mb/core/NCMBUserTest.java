@@ -191,6 +191,19 @@ public class NCMBUserTest {
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void login_with_empty_facebook_auth_data () throws Exception{
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                null,
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+        NCMBUser.loginWith(facebookParams);
+    }
+
     @Test
     public void login_with_invalid_facebook_in_background () throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
