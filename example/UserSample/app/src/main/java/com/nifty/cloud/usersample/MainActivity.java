@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
         //初期化
         NCMB.initialize(
                 this,
-                "applicationKey",
-                "clientKey");
+                "YOUR_APPLICATION_KEY",
+                "YOUR_CLIENT_KEY");
 
         intent = new Intent(this, ResultActivity.class);
     }
