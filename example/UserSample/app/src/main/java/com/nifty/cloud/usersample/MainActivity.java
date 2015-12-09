@@ -146,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
     public void onMailSignUpClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            userService.inviteByMail("mailAddress");
+            NCMBUser.requestAuthenticationMail("TestMailAddress");
             result = "指定したアドレスに招待メールを送信しました。\n受信したメールから会員登録を行ってください。";
             Toast.makeText(this, "登録メール送信成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
@@ -160,15 +159,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * on mail signUp button clicked
+     * on mail signUp in background button clicked
      *
      * @param v view
      */
-    public void onMailLoginUpClicked(View v) {
+    public void onMailSignUpInBackgroundClicked(View v) {
+        final Context context = this;
+        NCMBUser.requestAuthenticationMailInBackground("TestMailAddress", new DoneCallback() {
+            @Override
+            public void done(NCMBException error) {
+                String result;
+                if (error == null) {
+                    Toast.makeText(context, "登録メール送信成功", Toast.LENGTH_SHORT).show();
+                    result = "指定したアドレスに招待メールを送信しました。\n受信したメールから会員登録を行ってください。";
+                } else {
+                    Toast.makeText(context, "登録メール送信失敗", Toast.LENGTH_SHORT).show();
+                    result = createFailedString(error);
+                }
+                intent.putExtra(INTENT_RESULT, result);
+                startActivityForResult(intent, 0);
+            }
+        });
+    }
+
+    /**
+     * on mail login button clicked
+     *
+     * @param v view
+     */
+    public void onMailLoginClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            NCMBUser user = userService.loginByMail("mailAddress", "TestPassword");
+            NCMBUser user = NCMBUser.loginWithMailAddress("TestMailAddress", "TestPassWord");
             result = createSuccessString(user);
             Toast.makeText(this, "メールログイン成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
@@ -180,7 +202,36 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 0);
     }
 
-    String createSuccessString(NCMBUser user) throws NCMBException {
+    /**
+     * on mail login in background button clicked
+     *
+     * @param v view
+     */
+    public void onMailLoginInBackgroundClicked(View v) {
+        final Context context = this;
+        NCMBUser.loginWithMailAddressInBackground("TestMailAddress", "TestPassWord", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException error) {
+                String result;
+                if (error == null) {
+                    try {
+                        result = MainActivity.createSuccessString(user);
+                        Toast.makeText(context, "メールログイン成功", Toast.LENGTH_SHORT).show();
+                    } catch (NCMBException e) {
+                        result = createFailedString(e);
+                        Toast.makeText(context, "メールログイン失敗", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "メールログイン失敗", Toast.LENGTH_SHORT).show();
+                    result = createFailedString(error);
+                }
+                intent.putExtra(INTENT_RESULT, result);
+                startActivityForResult(intent, 0);
+            }
+        });
+    }
+
+    static String createSuccessString(NCMBUser user) throws NCMBException {
         String successString;
 
         successString = "【Success】\n";
