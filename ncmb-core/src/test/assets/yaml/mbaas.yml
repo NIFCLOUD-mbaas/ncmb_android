@@ -577,8 +577,42 @@
     url: /2013-09-01/roles/dummyRoleId
     method: PUT
     body:
+      belongUser:
+        __op: RemoveRelation
+        objects:
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId1
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
       belongRole:
         __op: AddRelation
+        objects:
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId1
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      belongRole:
+        __op: RemoveRelation
         objects:
           - __type: Pointer
             className: role
