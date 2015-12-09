@@ -143,6 +143,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongUser"));
     }
 
     @Test
@@ -169,6 +170,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongUser"));
     }
 
 
@@ -228,6 +230,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongRole"));
     }
 
     @Test
@@ -254,6 +257,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongRole"));
     }
 
     @Test
