@@ -208,6 +208,64 @@ public class NCMBUser extends NCMBObject{
     }
 
     /**
+     * Invite new user by Email
+     *
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public static void requestAuthenticationMail(String mailAddress) throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        service.inviteByMail(mailAddress);
+    }
+
+    /**
+     * Invite new user by Email in background
+     *
+     * @param callback Callback is executed after mail signUp request
+     */
+    public static void requestAuthenticationMailInBackground(String mailAddress, DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        try {
+            service.inviteByMailInBackground(mailAddress, callback);
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+    /**
+     * Login with mailAddress and password
+     *
+     * @param mailAddress mailAddress
+     * @param password    password
+     * @return NCMBUser object that logged-in
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public static NCMBUser loginWithMailAddress(String mailAddress, String password) throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        return service.loginByMail(mailAddress, password);
+    }
+
+    /**
+     * Login with mailAddress and password in background
+     *
+     * @param mailAddress mailAddress
+     * @param password    password
+     * @param callback Callback is executed after login
+     */
+    public static void loginWithMailAddressInBackground(String mailAddress, String password,
+                                                        LoginCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        try {
+            service.loginByMailInBackground(mailAddress, password, callback);
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(null, e);
+            }
+        }
+    }
+
+    /**
      * login with username and password
      * @param userName user name
      * @param password password
