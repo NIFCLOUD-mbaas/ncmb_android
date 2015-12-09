@@ -1,5 +1,6 @@
 package com.nifty.cloud.usersample;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.nifty.cloud.mb.core.DoneCallback;
+import com.nifty.cloud.mb.core.LoginCallback;
 import com.nifty.cloud.mb.core.NCMB;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBUser;
-import com.nifty.cloud.mb.core.NCMBUserService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +42,10 @@ public class MainActivity extends AppCompatActivity {
     public void onSignUpClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            NCMBUser user = userService.registerByName("TestUser", "TestPassword");
+            NCMBUser user = new NCMBUser();
+            user.setUserName("TestUser");
+            user.setPassword("TestPassword");
+            user.signUp();
             result = createSuccessString(user);
             Toast.makeText(this, "新規登録成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
@@ -61,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public void onLoginClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            NCMBUser user = userService.loginByName("TestUser", "TestPassword");
+            NCMBUser user = NCMBUser.login("TestUser", "TestPassword");
             result = createSuccessString(user);
             Toast.makeText(this, "ログイン成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
@@ -82,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public void onLogoutClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            userService.logout();
+            NCMBUser.logout();
             NCMBUser user = NCMBUser.getCurrentUser();
             result = createSuccessString(user);
             Toast.makeText(this, "ログアウト成功", Toast.LENGTH_SHORT).show();
@@ -95,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(INTENT_RESULT, result);
         startActivityForResult(intent, 0);
     }
-
 
     /**
      * on currentUser button clicked
@@ -124,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
     public void onUserDeleteClicked(View v) {
         String result;
         try {
-            NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-            userService.deleteUser(NCMBUser.getCurrentUser().getObjectId());
-            NCMBUser user = NCMBUser.getCurrentUser();
+            NCMBUser user = new NCMBUser();
+            user.setObjectId(NCMBUser.getCurrentUser().getObjectId());
+            user.deleteObject();
             result = createSuccessString(user);
             Toast.makeText(this, "削除成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
