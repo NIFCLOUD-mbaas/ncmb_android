@@ -453,7 +453,7 @@ public class NCMBInstallation extends NCMBObject {
 
     /**
      * 端末にGooglePlay開発者サービスがインストールされているか確認
-     * インストールされていな場合はPlayストアへのダイアログを表示
+     * インストールされていな場合はエラーを返す
      *
      * @param context
      * @return bool
@@ -461,12 +461,7 @@ public class NCMBInstallation extends NCMBObject {
     protected boolean checkPlayServices(Context context) throws Exception{
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, (Activity) context, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
-            }
-            return false;
+            throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
         }
         return true;
     }
