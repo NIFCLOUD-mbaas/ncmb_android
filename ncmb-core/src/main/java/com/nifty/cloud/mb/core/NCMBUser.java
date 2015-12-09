@@ -223,7 +223,7 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * Invite new user by Email
+     * Mail request of user authentication
      *
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
@@ -233,7 +233,7 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * Invite new user by Email in background
+     * Mail request of user authentication in background
      *
      * @param callback Callback is executed after mail signUp request
      */
