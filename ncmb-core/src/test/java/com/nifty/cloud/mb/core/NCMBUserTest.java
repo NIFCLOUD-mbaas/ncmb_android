@@ -136,6 +136,8 @@ public class NCMBUserTest {
 
         Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
     }
 
     @Test
@@ -189,6 +191,8 @@ public class NCMBUserTest {
 
         Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -249,6 +253,8 @@ public class NCMBUserTest {
         Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
 
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
     }
 
     @Test
@@ -309,6 +315,8 @@ public class NCMBUserTest {
         Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
 
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -366,6 +374,8 @@ public class NCMBUserTest {
         Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
 
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("google"));
     }
 
     @Test
@@ -412,6 +422,8 @@ public class NCMBUserTest {
         Assert.assertEquals(googleParams.userId, user.getAuthData("google").getString("id"));
         Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("google"));
     }
 
     @Test(expected = IllegalArgumentException.class)

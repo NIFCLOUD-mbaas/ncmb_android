@@ -150,6 +150,24 @@ public class NCMBUser extends NCMBObject{
     }
 
     /**
+     * Check for specified provider's authentication data is linked
+     * @param provider facebook or twitter or google
+     * @return Return true if authentication data is linked
+     */
+    public boolean isLinkedWith(String provider) {
+
+        try {
+            if (mFields.has("authData") && mFields.getJSONObject("authData").has(provider)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (JSONException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
      * Get authData
      * @return JSONObject or null
      */
