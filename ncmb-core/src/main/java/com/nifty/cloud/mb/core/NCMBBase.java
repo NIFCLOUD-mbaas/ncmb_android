@@ -181,7 +181,7 @@ public class NCMBBase {
         JSONObject json = new JSONObject();
         for (String key: mUpdateKeys) {
             if (mFields.isNull(key)){
-                json.put(key, null);
+                json.put(key, JSONObject.NULL);
             } else {
                 json.put(key, mFields.get(key));
             }
