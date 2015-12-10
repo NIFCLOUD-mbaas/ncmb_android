@@ -616,6 +616,232 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void link_twitter_auth_data () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(twitterParams);
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertTrue(user.isLinkedWith("twitter"));
+    }
+
+    @Test
+    public void link_twitter_auth_data_in_background () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(twitterParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(user.isLinkedWith("twitter"));
+    }
+
+    @Test
+    public void link_invalid_twitter_auth_data () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "invalidTwitterDummyId",
+                "invalidTwitterDummyScreenName",
+                "invalidTwitterDummyConsumerKey",
+                "invalidTwitterDummyConsumerSecret",
+                "invalidTwitterDummyOauthToken",
+                "invalidTwitterDummyOauthSecret"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(twitterParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertFalse(user.isLinkedWith("twitter"));
+    }
+
+    @Test
+    public void link_invalid_twitter_auth_data_in_background () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "invalidTwitterDummyId",
+                "invalidTwitterDummyScreenName",
+                "invalidTwitterDummyConsumerKey",
+                "invalidTwitterDummyConsumerSecret",
+                "invalidTwitterDummyOauthToken",
+                "invalidTwitterDummyOauthSecret"
+        );
+
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(twitterParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertFalse(user.isLinkedWith("twitter"));
+    }
+
+    @Test
+    public void link_google_auth_data () throws Exception {
+
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(googleParams);
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertTrue(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void link_google_auth_data_in_background () throws Exception {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(googleParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void link_invalid_google_auth_data () throws Exception {
+
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "invalidGoogleDummyId",
+                "invalidGoogleDummyAccessToken"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(googleParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertFalse(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void link_invalid_google_auth_data_in_background () throws Exception {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "invalidGoogleDummyId",
+                "invalidGoogleDummyAccessToken"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(googleParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertFalse(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void login_with_twitter_and_link_google_auth_data () throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(twitterParams);
+            user.setObjectId("dummyUserId");
+
+            NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                    "googleDummyId",
+                    "googleDummyAccessToken"
+            );
+
+            user.linkWith(googleParams);
+            Assert.assertTrue(user.isLinkedWith("twitter"));
+            Assert.assertTrue(user.isLinkedWith("google"));
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+
+
+    }
+
+    @Test
     public void fetch () throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");

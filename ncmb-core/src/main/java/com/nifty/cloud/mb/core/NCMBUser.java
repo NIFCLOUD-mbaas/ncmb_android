@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -383,6 +384,7 @@ public class NCMBUser extends NCMBObject{
      * @throws NCMBException
      */
     public void linkWith(Object params) throws NCMBException {
+
         JSONObject currentAuthData = null;
         JSONObject linkedData;
         try {
@@ -392,8 +394,7 @@ public class NCMBUser extends NCMBObject{
             mFields.put("authData", linkedData.getJSONObject("authData"));
             mUpdateKeys.add("authData");
             save();
-
-            copyLinkedAuthData(currentAuthData, linkedData);
+            copyLinkedAuthData(currentAuthData, linkedData.getJSONObject("authData"));
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         } catch (NCMBException e) {
@@ -408,8 +409,9 @@ public class NCMBUser extends NCMBObject{
 
     private void copyLinkedAuthData (JSONObject currentAuthData, JSONObject linkedData) throws JSONException {
         if (currentAuthData != null) {
-            while (linkedData.keys().hasNext()) {
-                String key = linkedData.keys().next();
+            Iterator<String> keys = linkedData.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
                 currentAuthData.put(key, linkedData.getJSONObject(key));
             }
             mFields.put("authData", currentAuthData);
@@ -435,10 +437,10 @@ public class NCMBUser extends NCMBObject{
                         }
                     } else {
                         try {
-                            copyLinkedAuthData(currentAuthData, linkedData);
+                            copyLinkedAuthData(currentAuthData, linkedData.getJSONObject("authData"));
                         } catch (JSONException e1) {
                             if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
                             }
                         }
                     }

@@ -463,6 +463,38 @@
     file: authentication_error_twitter.json
 ---
   request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        twitter:
+          id: twitterDummyId
+          screen_name: twitterDummyScreenName
+          oauth_consumer_key: twitterDummyConsumerKey
+          consumer_secret: twitterDummyConsumerSecret
+          oauth_token: twitterDummyOauthToken
+          oauth_token_secret: twitterDummyOauthSecret
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        twitter:
+          id: invalidTwitterDummyId
+          screen_name: invalidTwitterDummyScreenName
+          oauth_consumer_key: invalidTwitterDummyConsumerKey
+          consumer_secret: invalidTwitterDummyConsumerSecret
+          oauth_token: invalidTwitterDummyOauthToken
+          oauth_token_secret: invalidTwitterDummyOauthSecret
+  response:
+    status: 401
+    file: authentication_error_twitter.json
+---
+  request:
     url: /2013-09-01/users
     method: POST
     body:
@@ -477,6 +509,30 @@
   request:
     url: /2013-09-01/users
     method: POST
+    body:
+      authData:
+        google:
+          id: invalidGoogleDummyId
+          access_token: invalidGoogleDummyAccessToken
+  response:
+    status: 401
+    file: authentication_error_google.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        google:
+          id: googleDummyId
+          access_token: googleDummyAccessToken
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
     body:
       authData:
         google:
