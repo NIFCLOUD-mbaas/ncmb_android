@@ -56,7 +56,7 @@ public class NCMBRoleTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void creat_role () throws Exception {
+    public void createRole() throws Exception {
         NCMBRole role = new NCMBRole("dummyRoleName");
         try {
             role.createRole();
@@ -69,7 +69,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void create_role_in_background () throws Exception {
+    public void createRoleInBackground() throws Exception {
         NCMBRole role = new NCMBRole();
         role.setRoleName("dummyRoleName");
         role.createRoleInBackground(new DoneCallback() {
@@ -88,7 +88,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_user () throws Exception {
+    public void addUser() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -104,7 +104,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_user_in_background () throws Exception {
+    public void addUserInBackground() throws Exception {
         NCMBUser user1 = new NCMBUser();
         user1.setObjectId("dummyUserObjectId1");
 
@@ -113,7 +113,7 @@ public class NCMBRoleTest {
 
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
-        role.addUserInBackground(Arrays.asList(user1, user2), new DoneCallback(){
+        role.addUserInBackground(Arrays.asList(user1, user2), new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
@@ -130,7 +130,52 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_role () throws Exception {
+    public void removeUser() throws Exception {
+        NCMBUser user1 = new NCMBUser();
+        user1.setObjectId("dummyUserObjectId1");
+
+        NCMBUser user2 = new NCMBUser();
+        user2.setObjectId("dummyUserObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeUser(Arrays.asList(user1, user2));
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongUser"));
+    }
+
+    @Test
+    public void removeUserInBackground() throws Exception {
+        NCMBUser user1 = new NCMBUser();
+        user1.setObjectId("dummyUserObjectId1");
+
+        NCMBUser user2 = new NCMBUser();
+        user2.setObjectId("dummyUserObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeUserInBackground(Arrays.asList(user1, user2), new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongUser"));
+    }
+
+
+    @Test
+    public void addRole() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -146,7 +191,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void add_role_in_background () throws Exception {
+    public void addRoleInBackground() throws Exception {
         NCMBRole role1 = new NCMBRole("testRole1");
         role1.setObjectId("dummyRoleObjectId1");
 
@@ -172,7 +217,51 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void fetch_role () throws Exception {
+    public void removeRole() throws Exception {
+        NCMBRole role1 = new NCMBRole("testRole1");
+        role1.setObjectId("dummyRoleObjectId1");
+
+        NCMBRole role2 = new NCMBRole("testRole2");
+        role2.setObjectId("dummyRoleObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeRole(Arrays.asList(role1, role2));
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongRole"));
+    }
+
+    @Test
+    public void removeRoleInBackground() throws Exception {
+        NCMBRole role1 = new NCMBRole("testRole1");
+        role1.setObjectId("dummyRoleObjectId1");
+
+        NCMBRole role2 = new NCMBRole("testRole2");
+        role2.setObjectId("dummyRoleObjectId2");
+
+        NCMBRole role = new NCMBRole("testRole");
+        role.setObjectId("dummyRoleId");
+        role.removeRoleInBackground(Arrays.asList(role1, role2), new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertNull(role.getString("belongRole"));
+    }
+
+    @Test
+    public void fetchObject() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         try {
@@ -188,7 +277,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void fetch_role_in_background () throws Exception {
+    public void fetchObjectInBackground() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         role.fetchObjectInBackground(new FetchCallback<NCMBRole>() {
@@ -210,7 +299,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void delete_role () throws Exception {
+    public void deleteObject() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         try {
@@ -223,7 +312,7 @@ public class NCMBRoleTest {
     }
 
     @Test
-    public void delete_role_in_background () throws Exception {
+    public void deleteObjectInBackground() throws Exception {
         NCMBRole role = new NCMBRole("testRole");
         role.setObjectId("dummyRoleId");
         role.deleteObjectInBackground(new DoneCallback() {

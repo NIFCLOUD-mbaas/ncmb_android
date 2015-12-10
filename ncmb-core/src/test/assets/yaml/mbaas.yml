@@ -390,6 +390,21 @@
     method: POST
     body:
       authData:
+        facebook:
+          id: invalidFacebookDummyId
+          access_token: invalidFacebookDummyAccessToken
+          expiration_date:
+            __type: Date
+            iso: "2016-06-07T01:02:03.004Z"
+  response:
+    status: 401
+    file: authentication_error_facebook.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         twitter:
           id: twitterDummyId
           screen_name: twitterDummyScreenName
@@ -616,8 +631,42 @@
     url: /2013-09-01/roles/dummyRoleId
     method: PUT
     body:
+      belongUser:
+        __op: RemoveRelation
+        objects:
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId1
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
       belongRole:
         __op: AddRelation
+        objects:
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId1
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      belongRole:
+        __op: RemoveRelation
         objects:
           - __type: Pointer
             className: role
