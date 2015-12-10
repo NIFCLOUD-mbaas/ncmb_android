@@ -131,7 +131,10 @@ public class NCMBDispatcher {
             for (String query: queryArray) {
                 String[] queryData = query.split("=", 0);
                 String key = queryData[0];
-                String value = queryData[1];
+                String value = "";
+                if(queryData.length == 2){
+                    value = queryData[1];
+                }
                 if (value.matches(NUMBER_PATTERN)){
                     realQueryMap.put(key, Integer.parseInt(value));
                 } else if (value.matches(BOOL_PATTERN)){
