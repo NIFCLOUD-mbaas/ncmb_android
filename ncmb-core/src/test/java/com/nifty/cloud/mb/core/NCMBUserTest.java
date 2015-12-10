@@ -38,6 +38,7 @@ public class NCMBUserTest {
                 "cliKey",
                 mServer.getUrl("/").toString(),
                 null);
+        NCMBUser.currentUser = null;
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
     }
@@ -117,6 +118,115 @@ public class NCMBUserTest {
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test
+    public void login_with_facebook_account () throws Exception {
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "facebookDummyId",
+                "facebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+        NCMBUser user = NCMBUser.loginWith(facebookParams);
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(facebookParams.userId, user.getAuthData("facebook").getString("id"));
+        Assert.assertEquals(facebookParams.accessToken, user.getAuthData("facebook").getString("access_token"));
+
+        Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test
+    public void login_with_invalid_facebook_account () throws Exception {
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "invalidFacebookDummyId",
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(facebookParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+            Assert.assertNull(user);
+            Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        }
+    }
+
+    @Test
+    public void login_with_facebook_in_background () throws Exception {
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "facebookDummyId",
+                "facebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+        NCMBUser.loginInBackgroundWith(facebookParams, new LoginCallback(){
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        NCMBUser user = NCMBUser.getCurrentUser();
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(facebookParams.userId, user.getAuthData("facebook").getString("id"));
+        Assert.assertEquals(facebookParams.accessToken, user.getAuthData("facebook").getString("access_token"));
+
+        Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
+        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void login_with_empty_facebook_auth_data () throws Exception{
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                null,
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+        NCMBUser.loginWith(facebookParams);
+    }
+
+    @Test
+    public void login_with_invalid_facebook_in_background () throws Exception {
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "invalidFacebookDummyId",
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+        NCMBUser.loginInBackgroundWith(facebookParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
     }
 
     @Test
