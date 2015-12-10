@@ -302,23 +302,31 @@ public class NCMBUser extends NCMBObject{
         NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
 
         try {
-            if (authData.getClass().equals(NCMBFacebookParameters.class)) {
-                return service.registerByOauth(createFacebookAuthData((NCMBFacebookParameters) authData));
-            } else if (authData.getClass().equals(NCMBTwitterParameters.class)) {
-                return service.registerByOauth(createTwitterAuthData((NCMBTwitterParameters) authData));
-            } else if (authData.getClass().equals(NCMBGoogleParameters.class)) {
-                return service.registerByOauth(createGoogleAuthData((NCMBGoogleParameters) authData));
-            } else {
-                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
-            }
+           return service.registerByOauth(createAuthData(authData));
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
         }
     }
 
+    private static JSONObject createAuthData (Object params) throws JSONException {
+        JSONObject authDataJSON = null;
+        if (params.getClass().equals(NCMBFacebookParameters.class)) {
+            authDataJSON = createFacebookAuthData((NCMBFacebookParameters) params);
+            authDataJSON.put("type", "facebook");
+        } else if (params.getClass().equals(NCMBTwitterParameters.class)) {
+            authDataJSON = createTwitterAuthData((NCMBTwitterParameters) params);
+            authDataJSON.put("type", "twitter");
+        } else if (params.getClass().equals(NCMBGoogleParameters.class)) {
+            authDataJSON = createGoogleAuthData((NCMBGoogleParameters) params);
+            authDataJSON.put("type", "google");
+        } else {
+            throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
+        }
+        return authDataJSON;
+    }
+
     private static JSONObject createFacebookAuthData(NCMBFacebookParameters params) throws JSONException {
         JSONObject authDataJson = new JSONObject();
-        authDataJson.put("type", "facebook");
         authDataJson.put("id", params.userId);
         authDataJson.put("access_token", params.accessToken);
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -357,15 +365,7 @@ public class NCMBUser extends NCMBObject{
     public static void loginInBackgroundWith(Object authData, LoginCallback callback) {
         NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
         try {
-            if (authData.getClass().equals(NCMBFacebookParameters.class)) {
-                service.registerByOauthInBackground(createFacebookAuthData((NCMBFacebookParameters)authData), callback);
-            } else if (authData.getClass().equals(NCMBTwitterParameters.class)) {
-                service.registerByOauthInBackground(createTwitterAuthData((NCMBTwitterParameters) authData), callback);
-            } else if (authData.getClass().equals(NCMBGoogleParameters.class)) {
-                service.registerByOauthInBackground(createGoogleAuthData((NCMBGoogleParameters) authData), callback);
-            } else {
-                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
-            }
+            service.registerByOauthInBackground(createAuthData(authData), callback);
         } catch (NCMBException e) {
             if (callback != null) {
                 callback.done(null, e);
@@ -373,6 +373,71 @@ public class NCMBUser extends NCMBObject{
         } catch (JSONException e) {
             if (callback != null) {
                 callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+            }
+        }
+    }
+
+    /**
+     * link specified authentication data for current user
+     * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @throws NCMBException
+     */
+    public void linkWith(Object params) throws NCMBException {
+        try {
+            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            JSONObject linkedData = service.registerByOauthSetup(createAuthData(params));
+            JSONObject currentAuthData = getJSONObject("authData");
+            mFields.put("authData", linkedData.getJSONObject("authData"));
+            mUpdateKeys.add("authData");
+            save();
+
+            copyLinkedAuthData(currentAuthData, linkedData);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
+        }
+    }
+
+    private void copyLinkedAuthData (JSONObject currentAuthData, JSONObject linkedData) throws JSONException {
+        if (currentAuthData != null) {
+            while (linkedData.keys().hasNext()) {
+                String key = linkedData.keys().next();
+                currentAuthData.put(key, linkedData.getJSONObject(key));
+            }
+            mFields.put("authData", currentAuthData);
+        }
+    }
+
+    public void linkInBackgroundWith (Object params, final DoneCallback callback) {
+        try {
+            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            final JSONObject linkedData = service.registerByOauthSetup(createAuthData(params));
+            final JSONObject currentAuthData = getJSONObject("authData");
+            mFields.put("authData", linkedData.getJSONObject("authData"));
+            mUpdateKeys.add("authData");
+            saveInBackground(new DoneCallback() {
+                @Override
+                public void done(NCMBException e) {
+                    if (e != null && callback != null) {
+                        callback.done(e);
+                    } else {
+                        try {
+                            copyLinkedAuthData(currentAuthData, linkedData);
+                        } catch (JSONException e1) {
+                            if (callback != null) {
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                            }
+                        }
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            if (callback != null) {
+                callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+            }
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
             }
         }
     }
@@ -405,13 +470,17 @@ public class NCMBUser extends NCMBObject{
                 service.updateUserInBackground(getObjectId(), createUpdateJsonData(), new ExecuteServiceCallback() {
                     @Override
                     public void done(JSONObject json, NCMBException e) {
-                        if (!json.isNull("updateDate")) {
+                        if (json != null && !json.isNull("updateDate")) {
                             try {
                                 mFields.put("updateDate", json.getString("updateDate"));
                             } catch (JSONException e1) {
                                 if (callback != null) {
                                     callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
                                 }
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.done(e);
                             }
                         }
                     }
