@@ -837,8 +837,44 @@ public class NCMBUserTest {
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
+    }
 
+    @Test
+    public void unlink_authentication_data () throws Exception {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+        NCMBUser user = NCMBUser.loginWith(googleParams);
+        Assert.assertTrue(user.isLinkedWith("google"));
 
+        user.unlink("google");
+
+        Assert.assertFalse(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void unlink_authentication_data_in_background () throws NCMBException {
+        NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
+                "googleDummyId",
+                "googleDummyAccessToken"
+        );
+        NCMBUser user = NCMBUser.loginWith(googleParams);
+        Assert.assertTrue(user.isLinkedWith("google"));
+
+        user.unlinkInBackground("google", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertFalse(user.isLinkedWith("google"));
     }
 
     @Test

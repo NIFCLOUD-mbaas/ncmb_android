@@ -1,5 +1,7 @@
 package com.nifty.cloud.mb.core;
 
+import android.support.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -433,20 +435,23 @@ public class NCMBUser extends NCMBObject{
             saveInBackground(new DoneCallback() {
                 @Override
                 public void done(NCMBException e) {
-                    if (e != null && callback != null) {
+                    if (e != null) {
                         try {
                             mFields.put("authData", currentAuthData);
-                            callback.done(e);
                         } catch (JSONException e1) {
-                            callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                            throw new IllegalArgumentException(e1.getMessage());
+                        }
+                        if (callback != null) {
+                            callback.done(e);
                         }
                     } else {
                         try {
                             copyLinkedAuthData(currentAuthData, linkedData.getJSONObject("authData"));
                         } catch (JSONException e1) {
-                            if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
-                            }
+                            throw new IllegalArgumentException(e1.getMessage());
+                        }
+                        if (callback != null) {
+                            callback.done(null);
                         }
                     }
 
@@ -461,6 +466,83 @@ public class NCMBUser extends NCMBObject{
                 callback.done(e);
             }
         }
+    }
+
+    public void unlink(@NonNull String provider) throws NCMBException {
+        JSONObject currentAuthData;
+        if (provider != null && ( provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+            currentAuthData = getJSONObject("authData");
+            JSONObject unlinkData = new JSONObject();
+            try {
+                unlinkData.put(provider, JSONObject.NULL);
+                mFields.put("authData", unlinkData);
+                mUpdateKeys.add("authData");
+                save();
+
+                mFields.put("authData", currentAuthData.remove(provider));
+            } catch (JSONException e) {
+                try {
+                    mFields.put("authData", currentAuthData);
+                } catch (JSONException e1) {
+                    throw new NCMBException(NCMBException.INVALID_JSON, e1.getMessage());
+                }
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
+            }
+        } else {
+            throw new IllegalArgumentException("provider must be facebook or twitter or google");
+        }
+    }
+
+    public void unlinkInBackground(@NonNull final String provider, final DoneCallback callback) {
+
+        final JSONObject currentAuthData;
+
+        if (provider != null && ( provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+            currentAuthData = getJSONObject("authData");
+            JSONObject unlinkData = new JSONObject();
+            try {
+                unlinkData.put(provider, JSONObject.NULL);
+                mFields.put("authData", unlinkData);
+                mUpdateKeys.add("authData");
+
+                saveInBackground(new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        System.out.print("after save...\n");
+                        if (e != null) {
+                            try {
+                                mFields.put("authData", currentAuthData);
+                            } catch (JSONException jsonError) {
+                                throw new IllegalArgumentException(jsonError.getMessage());
+                            }
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            System.out.print("no error...\n");
+                            try {
+                                JSONObject newAuthData = copyFrom(currentAuthData);
+                                mFields.put("authData", newAuthData.remove(provider));
+                            } catch (JSONException jsonError) {
+                                throw new IllegalArgumentException(jsonError.getMessage());
+                            }
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+                    }
+                });
+
+            } catch (JSONException e) {
+                if (callback != null) {
+                    callback.done( new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("provider must be facebook or twitter or google");
+
+        }
+
     }
 
     @Override
@@ -486,6 +568,7 @@ public class NCMBUser extends NCMBObject{
         if (getObjectId() == null) {
             signUpInBackground(callback);
         } else {
+
             NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
             try {
                 service.updateUserInBackground(getObjectId(), createUpdateJsonData(), new ExecuteServiceCallback() {
@@ -494,10 +577,12 @@ public class NCMBUser extends NCMBObject{
                         if (json != null && !json.isNull("updateDate")) {
                             try {
                                 mFields.put("updateDate", json.getString("updateDate"));
+
                             } catch (JSONException e1) {
-                                if (callback != null) {
-                                    callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
-                                }
+                                throw new IllegalArgumentException(e1.getMessage());
+                            }
+                            if (callback != null) {
+                                callback.done(e);
                             }
                         } else {
                             if (callback != null) {
