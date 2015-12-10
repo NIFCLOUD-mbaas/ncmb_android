@@ -418,6 +418,11 @@ public class NCMBUser extends NCMBObject{
         }
     }
 
+    /**
+     * link specified authentication data asynchronously for current user
+     * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param callback Callback is executed after link or throw Exception
+     */
     public void linkInBackgroundWith (Object params, final DoneCallback callback) {
         try {
             NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
