@@ -434,6 +434,15 @@
     file: valid_post_inviteByMail_response.json
 ---
   request:
+    url: /2013-09-01/requestMailAddressUserEntry
+    method: POST
+    body:
+      mailAddress:
+  response:
+    status: 400
+    file: valid_error_empty_mailAddress_response.json
+---
+  request:
     url: /2013-09-01/users/dummyUserId
     method: GET
   response:
@@ -477,6 +486,36 @@
   response:
     status: 200
     file: valid_get_login_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: dummyPassword
+    method: GET
+  response:
+    status: 200
+    file: valid_get_login_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: "incorrectPassword"
+    method: GET
+  response:
+    status: 401
+    file: valid_error_incorrect_password_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password:
+    method: GET
+  response:
+    status: 400
+    file: valid_error_empty_password_response.json
 ---
   request:
     url: /2013-09-01/logout
