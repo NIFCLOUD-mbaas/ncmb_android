@@ -383,10 +383,12 @@ public class NCMBUser extends NCMBObject{
      * @throws NCMBException
      */
     public void linkWith(Object params) throws NCMBException {
+        JSONObject currentAuthData = null;
+        JSONObject linkedData;
         try {
             NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
-            JSONObject linkedData = service.registerByOauthSetup(createAuthData(params));
-            JSONObject currentAuthData = getJSONObject("authData");
+            linkedData = service.registerByOauthSetup(createAuthData(params));
+            currentAuthData = getJSONObject("authData");
             mFields.put("authData", linkedData.getJSONObject("authData"));
             mUpdateKeys.add("authData");
             save();
@@ -394,6 +396,13 @@ public class NCMBUser extends NCMBObject{
             copyLinkedAuthData(currentAuthData, linkedData);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
+        } catch (NCMBException e) {
+            try {
+                mFields.put("authData", currentAuthData);
+            } catch (JSONException e1) {
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
+            }
+            throw e;
         }
     }
 
@@ -418,7 +427,12 @@ public class NCMBUser extends NCMBObject{
                 @Override
                 public void done(NCMBException e) {
                     if (e != null && callback != null) {
-                        callback.done(e);
+                        try {
+                            mFields.put("authData", currentAuthData);
+                            callback.done(e);
+                        } catch (JSONException e1) {
+                            callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                        }
                     } else {
                         try {
                             copyLinkedAuthData(currentAuthData, linkedData);

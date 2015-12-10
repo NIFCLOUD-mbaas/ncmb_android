@@ -565,6 +565,57 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void link_invalid_facebook_auth_data () throws Exception {
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "invalidFacebookDummyId",
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(facebookParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertFalse(user.isLinkedWith("facebook"));
+    }
+
+    @Test
+    public void link_invalid_facebook_auth_data_in_background () throws Exception {
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+        NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
+                "invalidFacebookDummyId",
+                "invalidFacebookDummyAccessToken",
+                df.parse("2016-06-07T01:02:03.004Z")
+        );
+
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(facebookParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertFalse(user.isLinkedWith("facebook"));
+    }
+
+    @Test
     public void fetch () throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
