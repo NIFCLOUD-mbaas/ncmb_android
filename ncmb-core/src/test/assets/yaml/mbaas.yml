@@ -421,6 +421,22 @@
     method: POST
     body:
       authData:
+        twitter:
+          id: invalidTwitterDummyId
+          screen_name: invalidTwitterDummyScreenName
+          oauth_consumer_key: invalidTwitterDummyConsumerKey
+          consumer_secret: invalidTwitterDummyConsumerSecret
+          oauth_token: invalidTwitterDummyOauthToken
+          oauth_token_secret: invalidTwitterDummyOauthSecret
+  response:
+    status: 401
+    file: authentication_error_twitter.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         google:
           id: googleDummyId
           access_token: googleDummyAccessToken
