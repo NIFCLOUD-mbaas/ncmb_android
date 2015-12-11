@@ -585,7 +585,6 @@ public class NCMBUser extends NCMBObject {
                 saveInBackground(new DoneCallback() {
                     @Override
                     public void done(NCMBException e) {
-                        System.out.print("after save...\n");
                         if (e != null) {
                             try {
                                 mFields.put("authData", currentAuthData);
@@ -596,7 +595,6 @@ public class NCMBUser extends NCMBObject {
                                 callback.done(e);
                             }
                         } else {
-                            System.out.print("no error...\n");
                             try {
                                 JSONObject newAuthData = currentAuthData;
                                 mFields.put("authData", newAuthData.remove(provider));
