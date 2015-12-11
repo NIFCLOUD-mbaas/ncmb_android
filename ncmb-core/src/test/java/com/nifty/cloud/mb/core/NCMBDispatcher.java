@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -85,7 +86,8 @@ public class NCMBDispatcher {
                             requestBody = request.getBody().readString(request.getBodySize(), Charset.forName("UTF-8"));
                         }
                         Object mockBody = requestMap.get("body");
-                        String mockBodyStr = new Gson().toJson(mockBody);
+                        Gson gson = new GsonBuilder().serializeNulls().create();
+                        String mockBodyStr = gson.toJson(mockBody);
                         System.out.println("mock:" + mockBodyStr);
                         System.out.println("req:" + requestBody);
                         if (checkRequestBody(mockBodyStr, requestBody)) {
@@ -131,7 +133,10 @@ public class NCMBDispatcher {
             for (String query: queryArray) {
                 String[] queryData = query.split("=", 0);
                 String key = queryData[0];
-                String value = queryData[1];
+                String value = "";
+                if(queryData.length == 2){
+                    value = queryData[1];
+                }
                 if (value.matches(NUMBER_PATTERN)){
                     realQueryMap.put(key, Integer.parseInt(value));
                 } else if (value.matches(BOOL_PATTERN)){

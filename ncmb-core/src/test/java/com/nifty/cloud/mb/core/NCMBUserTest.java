@@ -90,6 +90,30 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void requestAuthenticationMail () throws Exception {
+        try{
+            NCMBUser.requestAuthenticationMail("sample@example.com");
+        }catch (Exception error){
+            Assert.fail(error.getMessage());
+        }
+    }
+
+    @Test
+    public void requestAuthenticationMailInBackground () throws Exception {
+        NCMBUser.requestAuthenticationMailInBackground("sample@example.com", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+    }
+
+    @Test
     public void login () throws Exception {
         NCMBUser user = NCMBUser.login("Nifty Tarou", "dummyPassword");
 
@@ -106,6 +130,8 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                Assert.assertEquals("dummyObjectId", user.getObjectId());
+                Assert.assertEquals("Nifty Tarou", user.getUserName());
             }
         });
 
@@ -120,6 +146,40 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void loginWithMailAddress () throws Exception {
+        try {
+            NCMBUser user = NCMBUser.loginWithMailAddress("sample@example.com", "dummyPassword");
+            Assert.assertEquals("dummyObjectId", user.getObjectId());
+            Assert.assertEquals("Nifty Tarou", user.getUserName());
+        }catch (Exception error){
+            Assert.fail(error.getMessage());
+        }
+
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Nifty Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    @Test
+    public void loginWithMailAddressInBackground () throws Exception {
+        NCMBUser.loginWithMailAddressInBackground("sample@example.com", "dummyPassword", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Nifty Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+
+    @Test
     public void login_with_facebook_account () throws Exception {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -129,6 +189,7 @@ public class NCMBUserTest {
                 "facebookDummyAccessToken",
                 df.parse("2016-06-07T01:02:03.004Z")
         );
+
         NCMBUser user = NCMBUser.loginWith(facebookParams);
         Assert.assertEquals(user.getObjectId(), "dummyObjectId");
         Assert.assertEquals(facebookParams.userId, user.getAuthData("facebook").getString("id"));
