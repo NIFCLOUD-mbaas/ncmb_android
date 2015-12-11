@@ -417,7 +417,6 @@ public class NCMBUser extends NCMBObject {
 
     private static JSONObject createTwitterAuthData(NCMBTwitterParameters params) throws JSONException {
         JSONObject authDataJson = new JSONObject();
-        authDataJson.put("type", "twitter");
         authDataJson.put("id", params.userId);
         authDataJson.put("screen_name", params.screenName);
         authDataJson.put("oauth_consumer_key", params.consumerKey);
@@ -430,7 +429,6 @@ public class NCMBUser extends NCMBObject {
 
     private static JSONObject createGoogleAuthData(NCMBGoogleParameters params) throws JSONException {
         JSONObject authDataJson = new JSONObject();
-        authDataJson.put("type", "google");
         authDataJson.put("id", params.userId);
         authDataJson.put("access_token", params.accessToken);
 
