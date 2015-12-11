@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/facebooksample/facebooksample.iml" filepath="$PROJECT_DIR$/facebooksample/facebooksample.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../ncmb-core/ncmb-core.iml" filepath="$PROJECT_DIR$/../../ncmb-core/ncmb-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/twittersample/twittersample.iml" filepath="$PROJECT_DIR$/twittersample/twittersample.iml" />
     </modules>
   </component>
 </project>
