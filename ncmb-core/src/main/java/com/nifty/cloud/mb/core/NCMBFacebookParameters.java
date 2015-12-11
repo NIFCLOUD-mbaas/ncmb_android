@@ -25,7 +25,7 @@ public class NCMBFacebookParameters {
     protected Date expirationDate;
 
     /**
-     *
+     * Constructor
      * @param aUserId User id of Facebook account
      * @param anAccessToken Access token that can be obtained in the OAuth authentication
      * @param anExpirationDate Expiration date of access token
