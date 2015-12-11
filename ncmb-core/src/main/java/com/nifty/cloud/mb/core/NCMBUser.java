@@ -362,9 +362,11 @@ public class NCMBUser extends NCMBObject {
 
         try {
             if (authData.getClass().equals(NCMBFacebookParameters.class)) {
-                return service.registerByOauth(createFacebookAuthData((NCMBFacebookParameters)authData));
+                return service.registerByOauth(createFacebookAuthData((NCMBFacebookParameters) authData));
+            } else if (authData.getClass().equals(NCMBTwitterParameters.class)) {
+                return service.registerByOauth(createTwitterAuthData((NCMBTwitterParameters) authData));
             } else {
-                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or ");
+                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
             }
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
@@ -382,6 +384,19 @@ public class NCMBUser extends NCMBObject {
         return authDataJson;
     }
 
+    private static JSONObject createTwitterAuthData(NCMBTwitterParameters params) throws JSONException {
+        JSONObject authDataJson = new JSONObject();
+        authDataJson.put("type", "twitter");
+        authDataJson.put("id", params.userId);
+        authDataJson.put("screen_name", params.screenName);
+        authDataJson.put("oauth_consumer_key", params.consumerKey);
+        authDataJson.put("consumer_secret", params.consumerSecret);
+        authDataJson.put("oauth_token", params.accessToken);
+        authDataJson.put("oauth_token_secret", params.accessTokenSecret);
+
+        return authDataJson;
+    }
+
     /**
      * login asynchronously with parameter that can be obtained after the OAuth authentication
      * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
@@ -392,6 +407,10 @@ public class NCMBUser extends NCMBObject {
         try {
             if (authData.getClass().equals(NCMBFacebookParameters.class)) {
                 service.registerByOauthInBackground(createFacebookAuthData((NCMBFacebookParameters)authData), callback);
+            } else if (authData.getClass().equals(NCMBTwitterParameters.class)) {
+                service.registerByOauthInBackground(createTwitterAuthData((NCMBTwitterParameters)authData), callback);
+            } else {
+                throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
             }
         } catch (NCMBException e) {
             if (callback != null) {
