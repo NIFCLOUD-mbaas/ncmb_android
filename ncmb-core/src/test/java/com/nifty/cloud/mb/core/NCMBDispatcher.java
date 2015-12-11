@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -85,7 +86,8 @@ public class NCMBDispatcher {
                             requestBody = request.getBody().readString(request.getBodySize(), Charset.forName("UTF-8"));
                         }
                         Object mockBody = requestMap.get("body");
-                        String mockBodyStr = new Gson().toJson(mockBody);
+                        Gson gson = new GsonBuilder().serializeNulls().create();
+                        String mockBodyStr = gson.toJson(mockBody);
                         System.out.println("mock:" + mockBodyStr);
                         System.out.println("req:" + requestBody);
                         if (checkRequestBody(mockBodyStr, requestBody)) {
