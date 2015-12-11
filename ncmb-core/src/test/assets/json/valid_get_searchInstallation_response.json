@@ -9,7 +9,7 @@
       "updateDate": "2015-08-11T10:14:37.331Z",
       "channels": [],
       "timeZone": "Asia\/Tokyo",
-      "applicationName": "2.0.0",
+      "applicationName": "2.1.0",
       "sdkVersion": "AndroidSDK_v2",
       "deviceToken": "dummyDeviceToken01",
       "acl": {
@@ -28,8 +28,8 @@
       "updateDate": "2015-08-12T10:14:37.331Z",
       "channels": [],
       "timeZone": "Asia\/Tokyo",
-      "applicationName": "2.0.0",
-      "sdkVersion": "AndroidSDK_v2",
+      "applicationName": "UnitTestApp",
+      "sdkVersion": "2.1.0",
       "deviceToken": "dummyDeviceToken02",
       "acl": {
         "*": {
