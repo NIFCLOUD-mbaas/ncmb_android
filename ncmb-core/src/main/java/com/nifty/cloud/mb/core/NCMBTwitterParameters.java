@@ -3,7 +3,7 @@ package com.nifty.cloud.mb.core;
 import android.support.annotation.NonNull;
 
 /**
- * Parameters Object for login to NIFTY Cloud mobile backend with Facebook Account
+ * Parameters Object for login to NIFTY Cloud mobile backend with Twitter Account
  */
 public class NCMBTwitterParameters {
 
@@ -43,7 +43,7 @@ public class NCMBTwitterParameters {
                 aConsumerSecret == null ||
                 anAccessToken == null ||
                 anAccessTokenSecret == null ) {
-            throw new IllegalArgumentException("aUserId or anAccessToken or anExpirationDate must not be null.");
+            throw new IllegalArgumentException("constructor parameters must not be null.");
         }
         userId = aUserId;
         screenName = aScreenName;

@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -286,6 +287,39 @@ public class NCMBUserServiceTest {
     }
 
     /**
+     * - 内容：引数にnullを指定した際にinviteByMail が失敗する事を確認する
+     * - 結果：エラー が発生すること
+     */
+    @Test
+    public void inviteByMail_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        try {
+            userService.inviteByMail(null);
+            Assert.fail("This test case to error test");
+        } catch (NCMBException e) {
+            Assert.assertEquals("E400003",e.getCode());
+            Assert.assertEquals("mailAddress is empty.", e.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：引数にnullを指定した際にinviteByMailInBackground が失敗する事を確認する
+     * - 結果：DoneCallback にエラーが返ること
+     */
+    @Test
+    public void inviteByMailInBackground_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.inviteByMailInBackground(null, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertEquals("mailAddress is empty.",e.getMessage());
+            }
+        });
+    }
+
+    /**
      * - 内容：getUser が成功する事を確認する
      * - 結果：NCMBUser オブジェクトが正しく生成されること
      */
@@ -393,6 +427,156 @@ public class NCMBUserServiceTest {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals(userName, user.getUserName());
+            }
+        });
+    }
+
+    /**
+     * - 内容：loginByMail が成功する事を確認する
+     * - 結果：NCMBUser オブジェクトが正しく生成されること
+     */
+    @Test
+    public void loginByMail() throws Exception {
+        String mailAddress = "sample@example.com";
+        String password = "dummyPassword";
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail(mailAddress, password);
+            Assert.assertEquals("dummyObjectId", user.getObjectId());
+            Date resultDate = NCMBDateFormat.getIso8601().parse("2013-08-28T07:46:09.801Z");
+            Assert.assertEquals(resultDate, user.getCreateDate());
+            resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
+            Assert.assertEquals(resultDate, user.getUpdateDate());
+        }catch (NCMBException error){
+            Assert.fail(error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：loginByMailInBackground が成功する事を確認する
+     * - 結果：NCMBUser オブジェクトが正しく生成されること
+     */
+    @Test
+    public void loginByMailInBackground() throws Exception {
+        String mailAddress = "sample@example.com";
+        String password = "dummyPassword";
+
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground(mailAddress, password, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                try {
+                    Assert.assertNull(e);
+                    Assert.assertEquals("dummyObjectId", user.getObjectId());
+                    Date resultDate = NCMBDateFormat.getIso8601().parse("2013-08-28T07:46:09.801Z");
+                    Assert.assertEquals(resultDate, user.getCreateDate());
+                    resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
+                    Assert.assertEquals(resultDate, user.getUpdateDate());
+                } catch (ParseException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * - 内容：パスワードにnullを指定した際にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_paramsIsNull() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", null);
+            Assert.fail("This test case to error test");
+        }catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E400003", error.getCode());
+            Assert.assertNotNull("password is empty.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードにnullを指定した際にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", null, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertNotNull("password is empty.", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * - 内容：パスワードが異なる際にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_passwordIsIncorrect() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", "incorrectPassword");
+            Assert.fail("This test case to error test");
+        }catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E401002", error.getCode());
+            Assert.assertNotNull("Authentication error with ID/PASS incorrect.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードが異なる際にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_passwordIsIncorrect() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", "incorrectPassword", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E401002", e.getCode());
+                Assert.assertNotNull("Authentication error with ID/PASS incorrect.", e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * - 内容：パスワードが空文字の時にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_paramsIsEmpty() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", "");
+            Assert.fail("This test case to error test");
+        }catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E400003", error.getCode());
+            Assert.assertNotNull("password is empty.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードが空文字の時にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_paramsIsEmpty() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", "", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertNotNull("password is empty.", e.getMessage());
             }
         });
     }

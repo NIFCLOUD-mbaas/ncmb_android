@@ -41,7 +41,8 @@ public class NCMBRoleServiceTest {
                 "clientKKey",
                 mocServerUrl,
                 null);
-         ShadowLog.stream = System.out;
+
+        ShadowLog.stream = System.out;
     }
 
     @After
@@ -53,7 +54,7 @@ public class NCMBRoleServiceTest {
 
 
     protected NCMBRoleService getRoleService() {
-        return (NCMBRoleService)NCMB.factory(NCMB.ServiceType.ROLE);
+        return (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
     }
 
     /**
@@ -103,7 +104,7 @@ public class NCMBRoleServiceTest {
         try {
             roleService.deleteRole(roleId);
         } catch (NCMBException e) {
-            Assert.assertTrue("Exception throwed", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -125,11 +126,11 @@ public class NCMBRoleServiceTest {
     }
 
     /**
-     * - 内容：getRole が成功する事を確認する
+     * - 内容：fetchRole が成功する事を確認する
      * - 結果：正しく作成された NCMBRole オブジェクトが返ること
      */
     @Test
-    public void getRole() throws Exception {
+    public void fetchRole() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
@@ -138,11 +139,11 @@ public class NCMBRoleServiceTest {
     }
 
     /**
-     * - 内容：getRoleInBackground が成功する事を確認する
+     * - 内容：fetchRoleInBackground が成功する事を確認する
      * - 結果：callback に正しく作成された NCMBRole オブジェクトが返ること
      */
     @Test
-    public void getRoleInBackground() throws Exception {
+    public void fetchRoleInBackground() throws Exception {
         NCMBRoleService roleService = getRoleService();
         final String roleId = "dummyRoleId";
 
@@ -184,9 +185,10 @@ public class NCMBRoleServiceTest {
         try {
             int numUsers = 2;
             ArrayList<NCMBUser> users = generateUsers(numUsers);
-            roleService.addUserRelations(roleId, users);
+            JSONObject response = roleService.addUserRelations(roleId, users);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
-            Assert.assertTrue("addUserRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -207,6 +209,58 @@ public class NCMBRoleServiceTest {
             public void done(JSONObject json, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * - 内容：removeUserRelations が成功する事を確認する
+     * - 結果：例外が発生しないこと
+     */
+    @Test
+    public void removeUserRelations() throws Exception {
+
+        NCMBRoleService roleService = getRoleService();
+        String roleId = "dummyRoleId";
+
+        try {
+            int numUsers = 2;
+            ArrayList<NCMBUser> users = generateUsers(numUsers);
+            JSONObject response = roleService.removeUserRelations(roleId, users);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：removeUserRelationsInBackground が成功する事を確認する
+     * - 結果：callback に例外が返らないこと
+     */
+    @Test
+    public void removeUserRelationsInBackground() throws Exception {
+
+        NCMBRoleService roleService = getRoleService();
+        String roleId = "dummyRoleId";
+        int numUsers = 2;
+        ArrayList<NCMBUser> users = generateUsers(numUsers);
+
+        roleService.removeUserRelationsInBackground(roleId, users, new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject json, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
                 }
             }
         });
@@ -241,9 +295,10 @@ public class NCMBRoleServiceTest {
         try {
             int numRoles = 2;
             ArrayList<NCMBRole> roles = generateRoles(numRoles);
-            roleService.addRoleRelations(roleId, roles);
+            JSONObject response = roleService.addRoleRelations(roleId, roles);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
         } catch (NCMBException e) {
-            Assert.assertTrue("addRoleRelations throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -264,6 +319,58 @@ public class NCMBRoleServiceTest {
             public void done(JSONObject json, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * - 内容：removeRoleRelations が成功する事を確認する
+     * - 結果：例外が発生しないこと
+     */
+    @Test
+    public void removeRoleRelations() throws Exception {
+
+        NCMBRoleService roleService = getRoleService();
+        String roleId = "dummyRoleId";
+
+        try {
+            int numRoles = 2;
+            ArrayList<NCMBRole> roles = generateRoles(numRoles);
+            JSONObject response = roleService.removeRoleRelations(roleId, roles);
+            Assert.assertEquals("2014-06-04T11:28:30.348Z", response.getString("updateDate"));
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：removeRoleRelationsInBackground が成功する事を確認する
+     * - 結果：callback に例外が返らないこと
+     */
+    @Test
+    public void removeRoleRelationsInBackground() throws Exception {
+
+        NCMBRoleService roleService = getRoleService();
+        String roleId = "dummyRoleId";
+        int numRoles = 2;
+        ArrayList<NCMBRole> roles = generateRoles(numRoles);
+
+        roleService.removeRoleRelationsInBackground(roleId, roles, new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject json, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                try {
+                    Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
+                } catch (JSONException error) {
+                    Assert.fail(error.getMessage());
                 }
             }
         });
@@ -295,7 +402,7 @@ public class NCMBRoleServiceTest {
             NCMBAcl acl = generateAcl();
             roleService.setAcl(roleId, acl);
         } catch (NCMBException e) {
-            Assert.assertTrue("setAcl throws excepiton", false);
+            Assert.fail(e.getMessage());
         }
     }
 

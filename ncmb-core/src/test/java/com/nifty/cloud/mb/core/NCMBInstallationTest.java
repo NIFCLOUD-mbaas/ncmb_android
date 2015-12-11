@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import org.junit.After;
@@ -17,6 +18,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
 
 import java.text.DateFormat;
 
@@ -69,6 +71,25 @@ public class NCMBInstallationTest {
     public void teardown() throws Exception {
         NCMBInstallationService.clearCurrentInstallation();
         mServer.shutdown();
+    }
+
+    /**
+     * - 内容：GooglePlay開発者サービスが古い状態で端末登録を行った際にエラーが発生することを確認する
+     * - 結果：エラーが発生すること
+     */
+    @Test
+    public void checkPlayServices() throws Exception {
+        //isGooglePlayServicesAvailableメソッドの結果をSERVICE_VERSION_UPDATE_REQUIRED(開発者サービスが古い)に固定する
+        ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
+
+        NCMBInstallation installation = new NCMBInstallation();
+        installation.getRegistrationIdInBackground("dummySenderId",new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("java.lang.IllegalArgumentException: This device is not supported google-play-services-APK.",e.getMessage());
+            }
+        });
     }
 
     /**
