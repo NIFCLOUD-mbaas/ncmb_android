@@ -1,10 +1,14 @@
 package com.nifty.cloud.mb.googlesample;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -28,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String AUTH_SCOPE = "oauth2:profile email";
     private static final int REQUEST_SIGN_IN = 10000;
 
-    private String mAccountName;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,30 +46,59 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getGoogleToken(mAccountName);
+                getGoogleToken();
             }
         });
 
-        // Get google account
-        AccountManager accountManager = AccountManager.get(this);
-        Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE_GOOGLE);
-        mAccountName = accounts[0].name;
-
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.GET_ACCOUNTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.GET_ACCOUNTS},
+                        1);
+            }
+        }
     }
 
-    private void getGoogleToken(final String accountName) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults)
+    {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "ACCESS_GET_ACCOUNTS is granted!");
+                } else {
+                    Log.d(TAG, "ACCESS_GET_ACCOUNTS is denied!");
+                }
+            }
+        }
+    }
+
+    private void getGoogleToken() {
 
         AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String> () {
             @Override
             protected String doInBackground(String... accounts) {
+
                 String scopes = AUTH_SCOPE;
                 String token = null;
                 String id = null;
                 try {
+                    // Get google account
+                    AccountManager accountManager = AccountManager.get(getApplicationContext());
+                    Account[] getAccounts = accountManager.getAccountsByType(ACCOUNT_TYPE_GOOGLE);
+                    String accountName = getAccounts[0].name;
+
                     id = GoogleAuthUtil.getAccountId(getApplicationContext(), accountName);
-                    token = GoogleAuthUtil.getToken(getApplicationContext(), accounts[0], scopes);
-                    Log.d("MAIN", "id: " + id);
-                    Log.d("MAIN","token: " + token);
+                    token = GoogleAuthUtil.getToken(getApplicationContext(), accountName, scopes);
+                    Log.d(TAG, "id: " + id);
+                    Log.d(TAG, "token: " + token);
 
                     NCMBGoogleParameters parameters = new NCMBGoogleParameters(
                             id,
@@ -76,11 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
                     NCMBUser.loginWith(parameters);
 
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage());
                 } catch (UserRecoverableAuthException e) {
                     startActivityForResult(e.getIntent(), REQUEST_SIGN_IN);
-                } catch (GoogleAuthException e) {
+                } catch (IOException | GoogleAuthException | ArrayIndexOutOfBoundsException e) {
                     Log.e(TAG, e.getMessage());
                 } catch (NCMBException e) {
                     e.printStackTrace();
@@ -94,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        task.execute(accountName);
+        task.execute();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGN_IN && resultCode == RESULT_OK) {
-            getGoogleToken(mAccountName);
+            getGoogleToken();
         }
     }
 
