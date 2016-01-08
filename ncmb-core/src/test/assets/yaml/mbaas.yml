@@ -361,6 +361,29 @@
     file: valid_search_response.json
 ---
   request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"key":"value"}'
+      count: 1
+  response:
+    status: 200
+    file: valid_count_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"key":"value"}'
+      limit: 50
+      skip: 3
+      include: 'pointerKey'
+      order: 'ascendingKey,-descendingKey'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
     url: /2013-09-01/users
     method: POST
     body:
