@@ -1,5 +1,9 @@
 package com.nifty.cloud.mb.core;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
@@ -13,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLog;
 
 import java.text.DateFormat;
@@ -642,6 +647,22 @@ public class NCMBPushTest {
     }
 
     //endregion
+
+    @Test
+    public void NCMBGcmReceiverSavedRecentPushNotoficationId () {
+
+        String testPushId = "testPushId";
+
+        NCMBGcmReceiver receiver = new NCMBGcmReceiver();
+        Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), NCMBGcmListenerService.class);
+        intent.putExtra("com.nifty.PushId", testPushId);
+        receiver.onReceive(ShadowApplication.getInstance().getApplicationContext(), intent);
+
+
+
+        SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
+        Assert.assertEquals(testPushId, sp.getString("recentPushId", ""));
+    }
 
     void checkGetResponse(NCMBPush push) throws Exception {
         //check String
