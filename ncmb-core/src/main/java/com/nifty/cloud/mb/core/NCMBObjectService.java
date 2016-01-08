@@ -31,6 +31,10 @@ public class NCMBObjectService extends NCMBService{
             super(service, (CallbackBase)callback);
         }
 
+        ObjectServiceCallback(NCMBObjectService service, CountCallback callback) {
+            super(service, (CallbackBase)callback);
+        }
+
         protected NCMBObjectService getObjectService() {
             return (NCMBObjectService)mService;
         }
@@ -328,6 +332,69 @@ public class NCMBObjectService extends NCMBService{
             //Exception handling for NCMBRequest
             if (callback != null) {
                 callback.done(null, e);
+            }
+
+        }
+    }
+
+    public int countObject (String className, JSONObject conditions) throws NCMBException  {
+        if (!validateClassName(className)){
+            throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
+        }
+
+        String url = mContext.baseUrl + mServicePath + className;
+        String type = NCMBRequest.HTTP_METHOD_GET;
+        NCMBResponse response = sendRequest(url, type, null, conditions);
+        if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+        }
+
+        try {
+            return response.responseData.getInt("count");
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        }
+    }
+
+    public void countObjectInBackground(final String className, JSONObject conditions, CountCallback callback) {
+        if (!validateClassName(className)){
+            callback.done(0, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
+        }
+
+        String url = mContext.baseUrl + mServicePath + className;
+        String type = NCMBRequest.HTTP_METHOD_GET;
+        RequestParams reqParams = new RequestParams();
+        reqParams.url = url;
+        reqParams.type = type;
+        reqParams.query = conditions;
+        try {
+            sendRequestAsync(reqParams, new ObjectServiceCallback(this, callback){
+                @Override
+                public void handleResponse(NCMBResponse response) {
+
+                    CountCallback callback = (CountCallback) mCallback;
+                    if (callback != null) {
+                        try {
+                            callback.done(response.responseData.getInt("count"), null);
+                        } catch (JSONException e) {
+                            callback.done(0, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                        }
+
+                    }
+                }
+
+                @Override
+                public void handleError(NCMBException e) {
+                    CountCallback callback = (CountCallback) mCallback;
+                    if (callback != null) {
+                        callback.done(0, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                    }
+                }
+            });
+        } catch (NCMBException e) {
+            //Exception handling for NCMBRequest
+            if (callback != null) {
+                callback.done(0, e);
             }
 
         }
