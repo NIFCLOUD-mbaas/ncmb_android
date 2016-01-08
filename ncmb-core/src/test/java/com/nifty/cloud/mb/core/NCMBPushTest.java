@@ -1,9 +1,5 @@
 package com.nifty.cloud.mb.core;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
@@ -646,64 +642,6 @@ public class NCMBPushTest {
     }
 
     //endregion
-
-    /**
-     * 内容：NCMBGcmListenerServiceのonMessagedメソッドを実行
-     * 結果：SharedPreferenceにプッシュ通知のIDが保存されていること
-     */
-    @Test
-    public void testNCMBGcmListenerService () {
-        SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
-
-        NCMBGcmListenerService service = new NCMBGcmListenerService();
-        String testPushId = "testPushId";
-        Bundle pushBundle = new Bundle();
-        pushBundle.putString("com.nifty.PushId", testPushId);
-        service.onMessageReceived("ncmb", pushBundle);
-
-        Assert.assertEquals(testPushId, sp.getString("recentPushId", ""));
-    }
-
-    /**
-     * 内容：NCMBGcmListenerServiceのonMessagedメソッドを実行
-     * 結果：SharedPreferenceにプッシュ通知のIDが保存されていること
-     */
-    @Test
-    public void testCustomGcmListenerService () {
-        SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
-
-        CustomGcmListenerService service = new CustomGcmListenerService();
-        String updatedPushId = "updatedPushId";
-        String testPushId = "testPushId";
-        Bundle pushBundle = new Bundle();
-        pushBundle.putString("com.nifty.PushId", testPushId);
-        service.onMessageReceived("ncmb", pushBundle);
-
-        Assert.assertEquals(updatedPushId, sp.getString("recentPushId", ""));
-    }
-
-    /**
-     * 内容：NCMBGcmListenerServiceとCustomGcmListenerServiceを実行
-     * 結果：CustomGcmListenerServiceの処理が停止されていること
-     */
-    @Test
-    public void testGcmListenerServiceStopping () {
-        SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
-
-        NCMBGcmListenerService service = new NCMBGcmListenerService();
-        String testPushId = "testPushId";
-        Bundle pushBundle = new Bundle();
-        pushBundle.putString("com.nifty.PushId", testPushId);
-        service.onMessageReceived("ncmb", pushBundle);
-
-        Assert.assertEquals(testPushId, sp.getString("recentPushId", ""));
-
-        CustomGcmListenerService customService = new CustomGcmListenerService();
-        customService.onMessageReceived("ncmb", pushBundle);
-
-        Assert.assertEquals(testPushId, sp.getString("recentPushId", ""));
-    }
-
 
     void checkGetResponse(NCMBPush push) throws Exception {
         //check String
