@@ -337,12 +337,28 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
+    private String createUrlForCount (String className) {
+        if (className.equals("user")) {
+            return mContext.baseUrl + "users";
+        } else if (className.equals("role")) {
+            return mContext.baseUrl + "roles";
+        } else if (className.equals("push")) {
+            return mContext.baseUrl + "push";
+        } else if (className.equals("installation")) {
+            return mContext.baseUrl + "installations";
+        } else if (className.equals("files")) {
+            return mContext.baseUrl + "files";
+        } else {
+            return mContext.baseUrl + mServicePath + className;
+        }
+    }
+
     public int countObject (String className, JSONObject conditions) throws NCMBException  {
         if (!validateClassName(className)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
         }
 
-        String url = mContext.baseUrl + mServicePath + className;
+        String url = createUrlForCount(className);
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type, null, conditions);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -361,7 +377,7 @@ public class NCMBObjectService extends NCMBService{
             callback.done(0, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
         }
 
-        String url = mContext.baseUrl + mServicePath + className;
+        String url = createUrlForCount(className);
         String type = NCMBRequest.HTTP_METHOD_GET;
         RequestParams reqParams = new RequestParams();
         reqParams.url = url;

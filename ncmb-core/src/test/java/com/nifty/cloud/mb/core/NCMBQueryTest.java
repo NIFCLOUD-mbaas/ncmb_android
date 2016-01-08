@@ -503,6 +503,24 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void count_installation () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("installation");
+
+        query.whereEqualTo("deviceType", "android");
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals(result, 50);
+                }
+            }
+        });
+    }
+
+    @Test
     public void find_with_operand () throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.whereEqualTo("key", "value");

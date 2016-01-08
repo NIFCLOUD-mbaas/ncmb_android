@@ -277,6 +277,16 @@
     file: valid_get_searchInstallation_response.json
 ---
   request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
+      count: 1
+  response:
+    status: 200
+    file: valid_count_response.json
+---
+  request:
     url: /2013-09-01/installations/errorObjectId
     method: PUT
   response:
