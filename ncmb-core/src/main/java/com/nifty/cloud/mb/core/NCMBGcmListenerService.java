@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
@@ -32,19 +31,7 @@ public class NCMBGcmListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-
-        SharedPreferences recentPushIdPref = getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
-        String recentPushId = recentPushIdPref.getString("recentPushId", "");
-        String currentPushId = data.getString("com.nifty.PushId");
-        if (recentPushId.equals(currentPushId)) {
-            stopSelf();
-        } else {
-            SharedPreferences.Editor editor = recentPushIdPref.edit();
-            editor.putString("recentPushId", currentPushId);
-            editor.commit();
-
-            sendNotification(data);
-        }
+        sendNotification(data);
     }
 
     private void sendNotification(Bundle pushData) {
