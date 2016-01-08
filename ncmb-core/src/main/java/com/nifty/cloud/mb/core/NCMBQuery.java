@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,7 +19,12 @@ import java.util.List;
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;
 
-    private JSONObject mWhereConditions;
+    private JSONObject mWhereConditions = new JSONObject();
+    private int limitNumber = 0;
+    private int skipNumber = 0;
+    private String includeKey = "";
+    private List<String> order = new ArrayList<>();
+    private boolean countFlag = false;
 
     /**
      * Constructor
@@ -122,6 +128,27 @@ public class NCMBQuery<T extends NCMBBase> {
         try {
             if (mWhereConditions != null && mWhereConditions.length() > 0){
                 conditions.put("where", mWhereConditions);
+            }
+            if (limitNumber != 0) {
+                conditions.put("limit", limitNumber);
+            }
+            if (skipNumber != 0) {
+                conditions.put("skip", skipNumber);
+            }
+            if (includeKey != null && !includeKey.isEmpty()) {
+                conditions.put("include", includeKey);
+            }
+            if (order != null && order.size() != 0) {
+                String orderString = "";
+                Iterator iterator = order.iterator();
+                while(iterator.hasNext()) {
+                    orderString = orderString + iterator.next() + ",";
+                }
+
+                conditions.put("order", orderString.replaceAll(",$", ""));
+            }
+            if (countFlag) {
+                conditions.put("count", 1);
             }
             return conditions;
         } catch (JSONException e) {
@@ -609,6 +636,72 @@ public class NCMBQuery<T extends NCMBBase> {
         } catch (JSONException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    /**
+     * set the number of acquisition of search results
+     * @param number number of acquisition (0 ~ 1000)
+     */
+    public void limit (int number) {
+        limitNumber = number;
+    }
+
+    /**
+     * set the number to skip the search results
+     * @param number number for skipping
+     */
+    public void skip (int number) {
+        skipNumber = number;
+    }
+
+    /**
+     * set to include nested Object of the specified key in the search results
+     * @param key key with pointer to a nested object
+     */
+    public void include (String key) {
+        if (key != null && !key.isEmpty()) {
+            includeKey = key;
+        }
+    }
+
+    public void addOrderByAscending (String key) {
+        if (key != null && !key.isEmpty()) {
+            order.add(key);
+        }
+    }
+
+    public void addOrderByDescending (String key) {
+        if (key != null && !key.isEmpty()) {
+            order.add("-" + key);
+        }
+    }
+
+    public void deleteOrder (String key) {
+        String descendingKey = "-" + key;
+        if (order.contains(key)) {
+            order.remove(key);
+        } else if (order.contains(descendingKey)) {
+            order.remove(descendingKey);
+        }
+    }
+
+    /**
+     * return the number of search results
+     */
+    public int count () throws NCMBException {
+        countFlag = true;
+        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+        return objServ.countObject(mClassName, getConditions());
+    }
+
+    /**
+     * return number of search results asynchronously
+     * @param callback
+     */
+    public void countInBackground(CountCallback callback) {
+        countFlag = true;
+        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+        objServ.countObjectInBackground(mClassName, getConditions(), callback);
     }
 
 }
