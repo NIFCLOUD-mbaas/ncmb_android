@@ -379,7 +379,7 @@ public class NCMBQueryTest {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
         query.whereEqualTo("key", "value");
-        query.limit(3);
+        query.setLimit(3);
         JSONAssert.assertEquals(
                 query.getConditions(),
                 new JSONObject("{\"where\":{\"key\":\"value\"}, \"limit\":3}"),
@@ -392,7 +392,7 @@ public class NCMBQueryTest {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
         query.whereEqualTo("key", "value");
-        query.skip(3);
+        query.setSkip(3);
         JSONAssert.assertEquals(
                 query.getConditions(),
                 new JSONObject("{\"where\":{\"key\":\"value\"}, \"skip\":3}"),
@@ -405,7 +405,7 @@ public class NCMBQueryTest {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
         query.whereEqualTo("key", "value");
-        query.include("pointer");
+        query.setIncludeKey("pointer");
         JSONAssert.assertEquals(
                 query.getConditions(),
                 new JSONObject("{\"where\":{\"key\":\"value\"}, \"include\":\"pointer\"}"),
@@ -524,9 +524,9 @@ public class NCMBQueryTest {
     public void find_with_operand () throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.whereEqualTo("key", "value");
-        query.limit(50);
-        query.skip(3);
-        query.include("pointerKey");
+        query.setLimit(50);
+        query.setSkip(3);
+        query.setIncludeKey("pointerKey");
         query.addOrderByAscending("ascendingKey");
         query.addOrderByDescending("descendingKey");
 

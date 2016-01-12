@@ -642,7 +642,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * set the number of acquisition of search results
      * @param number number of acquisition (0 ~ 1000)
      */
-    public void limit (int number) {
+    public void setLimit (int number) {
         limitNumber = number;
     }
 
@@ -650,7 +650,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * set the number to skip the search results
      * @param number number for skipping
      */
-    public void skip (int number) {
+    public void setSkip (int number) {
         skipNumber = number;
     }
 
@@ -658,7 +658,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * set to include nested Object of the specified key in the search results
      * @param key key with pointer to a nested object
      */
-    public void include (String key) {
+    public void setIncludeKey (String key) {
         if (key != null && !key.isEmpty()) {
             includeKey = key;
         }
