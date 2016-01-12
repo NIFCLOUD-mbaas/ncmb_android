@@ -664,18 +664,31 @@ public class NCMBQuery<T extends NCMBBase> {
         }
     }
 
+    /**
+     * add Order by ascending with specified key
+     * Search Results is sorted in order which key was added.
+     * @param key key for order by ascending
+     */
     public void addOrderByAscending (String key) {
         if (key != null && !key.isEmpty()) {
             order.add(key);
         }
     }
 
+    /**
+     * add Order by descending with specified key
+     * @param key key for order by descending
+     */
     public void addOrderByDescending (String key) {
         if (key != null && !key.isEmpty()) {
             order.add("-" + key);
         }
     }
 
+    /**
+     * remove the specified key sort conditions
+     * @param key key for remove sort conditions
+     */
     public void deleteOrder (String key) {
         String descendingKey = "-" + key;
         if (order.contains(key)) {
