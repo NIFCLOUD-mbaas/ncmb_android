@@ -421,7 +421,7 @@ public class NCMBObjectService extends NCMBService{
      */
     public int countObject (String className, JSONObject conditions) throws NCMBException  {
         if (!validateClassName(className)){
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
+            throw new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty");
         }
 
         String url = createUrlForCount(className);
