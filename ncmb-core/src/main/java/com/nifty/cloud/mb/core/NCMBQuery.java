@@ -700,6 +700,8 @@ public class NCMBQuery<T extends NCMBBase> {
 
     /**
      * return the number of search results
+     * @return number of search results
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public int count () throws NCMBException {
         countFlag = true;
@@ -709,7 +711,7 @@ public class NCMBQuery<T extends NCMBBase> {
 
     /**
      * return number of search results asynchronously
-     * @param callback
+     * @param callback callback for after object search and count results
      */
     public void countInBackground(CountCallback callback) {
         countFlag = true;

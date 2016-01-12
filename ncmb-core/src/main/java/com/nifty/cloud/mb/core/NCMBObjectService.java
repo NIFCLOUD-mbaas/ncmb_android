@@ -43,7 +43,7 @@ public class NCMBObjectService extends NCMBService{
     /**
      * Constructor
      *
-     * @param context
+     * @param context runtime context
      */
     NCMBObjectService(NCMBContext context) {
         super(context);
@@ -118,6 +118,13 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
+    /**
+     * Fetching JSONObject data from Nifty cloud mobile backend
+     * @param className Datastore class name which to fetch the object
+     * @param objectId Datastore object id of fetch data
+     * @return NCMBObject of fetch data
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
     public NCMBObject fetchObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
@@ -132,6 +139,12 @@ public class NCMBObjectService extends NCMBService{
         return new NCMBObject(className, response.responseData);
     }
 
+    /**
+     * Fetching JSONObject data from Nifty cloud mobile backend in background thread
+     * @param className Datastore class name which to fetch the object
+     * @param objectId Datastore object id of fetch data
+     * @param callback callback for after object fetch
+     */
     public void fetchObjectInBackground(final String className, String objectId, final FetchCallback callback){
         if (!validateClassName(className) || !validateObjectId(objectId)){
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
@@ -172,6 +185,14 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
+    /**
+     * Updating JSONObject data to Nifty cloud mobile backend
+     * @param className Datastore class name which to update the object
+     * @param objectId Datastore object id of update data
+     * @param params JSONObject of update data
+     * @return JSONObject of update result
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
     public JSONObject updateObject(String className, String objectId, JSONObject params) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
@@ -186,6 +207,13 @@ public class NCMBObjectService extends NCMBService{
         return response.responseData;
     }
 
+    /**
+     * Updating JSONObject data to Nifty cloud mobile backend in background thread
+     * @param className Datastore class name which to update the object
+     * @param objectId Datastore object id of update data
+     * @param params JSONObject of update data
+     * @param callback callback for after object update
+     */
     public void updateObjectInBackground(String className, String objectId, JSONObject params, ExecuteServiceCallback callback) {
         if (!validateClassName(className) || !validateObjectId(objectId)){
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
@@ -224,6 +252,13 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
+    /**
+     * Deleting JSONObject data from Nifty cloud mobile backend
+     * @param className Datastore class name which to delete the object
+     * @param objectId Datastore object id of delete data
+     * @return JSONObject of delete result
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
     public JSONObject deleteObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
@@ -238,6 +273,12 @@ public class NCMBObjectService extends NCMBService{
         return response.responseData;
     }
 
+    /**
+     * Deleting JSONObject data from Nifty cloud mobile backend in background thread
+     * @param className Datastore class name which to delete the object
+     * @param objectId Datastore object id of delete data
+     * @param callback callback for after object delete
+     */
     public void deleteObjectInBackground(String className, String objectId, ExecuteServiceCallback callback){
         if (!validateClassName(className) || !validateObjectId(objectId)){
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty"));
@@ -278,6 +319,13 @@ public class NCMBObjectService extends NCMBService{
 
     }
 
+    /**
+     * Searching JSONObject data from Nifty cloud mobile backend
+     * @param className Datastore class name which to search the object
+     * @param conditions JSONObject of search conditions
+     * @return List of NCMBObject of search results
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
     public List searchObject (String className, JSONObject conditions) throws NCMBException {
         if (!validateClassName(className)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
@@ -293,6 +341,12 @@ public class NCMBObjectService extends NCMBService{
         return createSearchResults(className, response.responseData);
     }
 
+    /**
+     * Searching JSONObject data to Nifty cloud mobile backend in background thread
+     * @param className Datastore class name which to search the object
+     * @param conditions JSONObject of search conditions
+     * @param callback callback for after object search
+     */
     public void searchObjectInBackground(final String className, JSONObject conditions, SearchObjectCallback callback) {
         if (!validateClassName(className)){
             callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
@@ -337,6 +391,11 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
+    /**
+     * create url to request object search api
+     * @param className class name for search object
+     * @return Request URL string of object search api
+     */
     private String createUrlForCount (String className) {
         if (className.equals("user")) {
             return mContext.baseUrl + "users";
@@ -353,6 +412,13 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
+    /**
+     * Counting search object results from Nifty cloud mobile backend
+     * @param className Datastore class name which to search the object
+     * @param conditions JSONObject of search conditions
+     * @return number of search results
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
     public int countObject (String className, JSONObject conditions) throws NCMBException  {
         if (!validateClassName(className)){
             throw new NCMBException(NCMBException.GENERIC_ERROR, "className / objectId is must not be null or empty");
@@ -372,6 +438,12 @@ public class NCMBObjectService extends NCMBService{
         }
     }
 
+    /**
+     * Counting search object results from Nifty cloud mobile backend
+     * @param className Datastore class name which to search the object
+     * @param conditions JSONObject of search conditions
+     * @param callback callback for after object search and count data
+     */
     public void countObjectInBackground(final String className, JSONObject conditions, CountCallback callback) {
         if (!validateClassName(className)){
             callback.done(0, new NCMBException(NCMBException.GENERIC_ERROR, "className is must not be null or empty"));
@@ -421,7 +493,7 @@ public class NCMBObjectService extends NCMBService{
      *
      * @param responseData API response data
      * @return JSONArray
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     List<NCMBObject> createSearchResults(String className, JSONObject responseData) throws NCMBException {
         try {
