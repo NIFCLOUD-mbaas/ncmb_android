@@ -583,7 +583,6 @@ public class NCMBBase {
     }
 
     public <T extends NCMBBase> T getIncludeObject(String key) {
-        T object = null;
         if (mFields.has(key)) {
             try {
                 JSONObject json = mFields.getJSONObject(key);
