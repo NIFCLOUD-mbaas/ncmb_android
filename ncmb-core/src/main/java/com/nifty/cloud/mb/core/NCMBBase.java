@@ -581,4 +581,39 @@ public class NCMBBase {
         }
 
     }
+
+    public <T extends NCMBBase> T getIncludeObject(String key) {
+        T object = null;
+        if (mFields.has(key)) {
+            try {
+                JSONObject json = mFields.getJSONObject(key);
+                if (json.has("__type") && json.getString("__type").equals("Object")) {
+                    String className = json.getString("className");
+                    json.remove("__type");
+                    json.remove("className");
+                    switch (className) {
+                        case "user":
+                            return (T) new NCMBUser(json);
+                        case "installation":
+                            return (T) new NCMBInstallation(json);
+                        case "role":
+                            return (T) new NCMBRole(json);
+                        case "push":
+                            return (T) new NCMBPush(json);
+                        default:
+                            return (T) new NCMBObject(className, json);
+                    }
+                } else {
+                    return null;
+                }
+            } catch (JSONException e) {
+                return null;
+            } catch (NCMBException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
 }
