@@ -600,6 +600,15 @@ public class NCMBPush extends NCMBBase {
 
     //endregion
 
+
+    /**
+     * Create query for push class
+     * @return NCMBQuery for push class
+     */
+    public static NCMBQuery<NCMBPush> getQuery() {
+        return new NCMBQuery<>("push");
+    }
+
     /**
      * Constructor
      */

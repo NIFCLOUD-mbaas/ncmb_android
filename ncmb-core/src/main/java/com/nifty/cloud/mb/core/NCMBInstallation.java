@@ -384,6 +384,14 @@ public class NCMBInstallation extends NCMBObject {
     }
 
     /**
+     * Create query for installation class
+     * @return NCMBQuery for installation class
+     */
+    public static NCMBQuery<NCMBInstallation> getQuery() {
+        return new NCMBQuery<>("installation");
+    }
+
+    /**
      * Constructor
      */
     public NCMBInstallation() {

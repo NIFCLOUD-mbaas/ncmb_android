@@ -19,6 +19,14 @@ public class NCMBRole extends NCMBBase {
     );
 
     /**
+     * Create query for role class
+     * @return NCMBQuery for role class
+     */
+    public static NCMBQuery<NCMBRole> getQuery() {
+        return new NCMBQuery<>("role");
+    }
+
+    /**
      * Constructor
      */
     public NCMBRole() {
