@@ -282,6 +282,7 @@
     query:
       where: '{"deviceType":"android"}'
       count: 1
+      limit: 1
   response:
     status: 200
     file: valid_count_response.json
@@ -376,6 +377,7 @@
     query:
       where: '{"key":"value"}'
       count: 1
+      limit: 1
   response:
     status: 200
     file: valid_count_response.json
@@ -681,6 +683,16 @@
     url: /2013-09-01/login
     query:
       mailAddress: "sample@example.com"
+    method: GET
+  response:
+    status: 400
+    file: valid_error_empty_password_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: ""
     method: GET
   response:
     status: 400
