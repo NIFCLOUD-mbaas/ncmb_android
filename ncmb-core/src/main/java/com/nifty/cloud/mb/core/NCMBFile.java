@@ -77,6 +77,14 @@ public class NCMBFile extends NCMBBase {
     }
 
     /**
+     * Create query for file class
+     * @return NCMBQuery for file class
+     */
+    public static NCMBQuery<NCMBFile> getQuery() {
+        return new NCMBQuery<>("file");
+    }
+
+    /**
      * Constructor
      */
     public NCMBFile() {

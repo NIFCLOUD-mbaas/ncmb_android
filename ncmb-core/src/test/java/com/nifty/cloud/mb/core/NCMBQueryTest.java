@@ -560,7 +560,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_user_class () throws Exception {
-        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
         List<NCMBUser> result = query.find();
 
         Assert.assertEquals("Nifty Tarou", result.get(0).getUserName());
@@ -568,7 +568,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_push_class () throws Exception {
-        NCMBQuery<NCMBPush> query = new NCMBQuery<>("push");
+        NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
         List<NCMBPush> result = query.find();
 
         Assert.assertEquals("message1", result.get(0).getMessage());
@@ -576,7 +576,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_installation_class () throws Exception {
-        NCMBQuery<NCMBInstallation> query = new NCMBQuery<>("installation");
+        NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
         List<NCMBInstallation> result = query.find();
 
         Assert.assertEquals("dummyDeviceToken01", result.get(0).getDeviceToken());
@@ -584,10 +584,18 @@ public class NCMBQueryTest {
 
     @Test
     public void find_role_class () throws Exception {
-        NCMBQuery<NCMBRole> query = new NCMBQuery<>("role");
+        NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
         List<NCMBRole> result = query.find();
 
         Assert.assertEquals("testRole", result.get(0).getRoleName());
+    }
+
+    @Test
+    public void find_file_class () throws Exception {
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+        List<NCMBFile> result = query.find();
+
+        Assert.assertEquals("testFile", result.get(0).getFileName());
     }
 
     @Test
@@ -608,7 +616,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_users_class () throws Exception {
-        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
         query.findInBackground(new FindCallback<NCMBUser>() {
             @Override
             public void done(List<NCMBUser> results, NCMBException e) {
@@ -625,7 +633,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_push_class () throws Exception {
-        NCMBQuery<NCMBPush> query = new NCMBQuery<>("push");
+        NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
         query.findInBackground(new FindCallback<NCMBPush>() {
             @Override
             public void done(List<NCMBPush> results, NCMBException e) {
@@ -641,7 +649,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_installation_class () throws Exception {
-        NCMBQuery<NCMBInstallation> query = new NCMBQuery<>("installation");
+        NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
         query.findInBackground(new FindCallback<NCMBInstallation>() {
             @Override
             public void done(List<NCMBInstallation> results, NCMBException e) {
@@ -657,7 +665,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_role_class () throws Exception {
-        NCMBQuery<NCMBRole> query = new NCMBQuery<>("role");
+        NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
         query.findInBackground(new FindCallback<NCMBRole>() {
             @Override
             public void done(List<NCMBRole> results, NCMBException e) {
@@ -666,6 +674,22 @@ public class NCMBQueryTest {
                 } else {
 
                     Assert.assertEquals("testRole", results.get(0).getRoleName());
+                }
+            }
+        });
+    }
+
+    @Test
+    public void find_in_background_file_class () throws Exception {
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+        query.findInBackground(new FindCallback<NCMBFile>() {
+            @Override
+            public void done(List<NCMBFile> results, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals("testFile", results.get(0).getFileName());
                 }
             }
         });

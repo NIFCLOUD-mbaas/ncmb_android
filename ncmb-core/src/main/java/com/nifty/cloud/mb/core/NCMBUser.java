@@ -34,6 +34,14 @@ public class NCMBUser extends NCMBObject {
     );
 
     /**
+     * Create query for file class
+     * @return NCMBQuery for file class
+     */
+    public static NCMBQuery<NCMBUser> getQuery() {
+        return new NCMBQuery<>("user");
+    }
+
+    /**
      * Constructor
      */
     public NCMBUser() {

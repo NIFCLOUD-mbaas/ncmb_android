@@ -53,7 +53,7 @@ public class NCMBQuery<T extends NCMBBase> {
         } else if (mClassName.equals("installation")){
             NCMBInstallationService installationServ = (NCMBInstallationService)NCMB.factory(NCMB.ServiceType.INSTALLATION);
             return (List<T>)installationServ.searchInstallation(getConditions());
-        } else if (mClassName.equals("files")){
+        } else if (mClassName.equals("file")){
             NCMBFileService fileServ = (NCMBFileService)NCMB.factory(NCMB.ServiceType.FILE);
             return (List<T>)fileServ.searchFile(getConditions());
         } else {
@@ -100,7 +100,7 @@ public class NCMBQuery<T extends NCMBBase> {
                     callback.done((List<T>) users, e);
                 }
             });
-        } else if (mClassName.equals("files")) {
+        } else if (mClassName.equals("file")) {
             NCMBFileService fileServ = (NCMBFileService)NCMB.factory(NCMB.ServiceType.FILE);
             fileServ.searchFileInBackground(getConditions(), new SearchFileCallback() {
                 @Override

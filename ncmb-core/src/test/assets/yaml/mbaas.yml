@@ -874,3 +874,10 @@
   response:
     status: 200
     file: valid_get_searchRole_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+  response:
+    status: 200
+    file: valid_search_file_response.json
