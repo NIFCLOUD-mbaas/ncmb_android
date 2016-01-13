@@ -396,6 +396,15 @@
     file: valid_search_response.json
 ---
   request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      include: 'post.author'
+  response:
+    status: 200
+    file: valid_get_include_response.json
+---
+  request:
     url: /2013-09-01/users
     method: POST
     body:

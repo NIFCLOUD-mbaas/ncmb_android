@@ -544,6 +544,21 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void find_include_object () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        query.setIncludeKey("post.author");
+        List<NCMBObject> result = query.find();
+
+        Assert.assertEquals("aaaaa", result.get(0).getObjectId());
+
+        NCMBObject post = result.get(0).getIncludeObject("post");
+        Assert.assertEquals("000", post.getObjectId());
+
+        NCMBUser author = post.getIncludeObject("author");
+        Assert.assertEquals("testUser", author.getUserName());
+    }
+
+    @Test
     public void find_user_class () throws Exception {
         NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
         List<NCMBUser> result = query.find();
