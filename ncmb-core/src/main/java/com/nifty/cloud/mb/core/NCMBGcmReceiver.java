@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 
 import com.google.android.gms.gcm.GcmReceiver;
 
+/**
+ * Custom GcmReceiver for Google Cloud Messaging
+ */
 public class NCMBGcmReceiver extends GcmReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -270,7 +270,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Mail request of user authentication
-     *
+     * @param mailAddress e-mail address for user authentication
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public static void requestAuthenticationMail(String mailAddress) throws NCMBException {
@@ -280,7 +280,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Mail request of user authentication in background
-     *
+     * @param mailAddress e-mail address for user authentication
      * @param callback Callback is executed after mail signUp request
      */
     public static void requestAuthenticationMailInBackground(String mailAddress, DoneCallback callback) {
@@ -384,7 +384,7 @@ public class NCMBUser extends NCMBObject {
      * login with parameter that can be obtained after the OAuth authentication
      * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @return Authenticated user
-     * @throws NCMBException is thrown when authenticaiton failed
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public static NCMBUser loginWith(Object authData) throws NCMBException {
         NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
@@ -466,7 +466,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * link specified authentication data for current user
      * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public void linkWith(Object params) throws NCMBException {
 
