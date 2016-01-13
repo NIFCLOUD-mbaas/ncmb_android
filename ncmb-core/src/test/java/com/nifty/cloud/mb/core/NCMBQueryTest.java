@@ -375,11 +375,187 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void set_condition_limit () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.setLimit(3);
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"limit\":3}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_skip () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.setSkip(3);
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"skip\":3}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_include () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.setIncludeKey("pointer");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"include\":\"pointer\"}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_ascending () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.addOrderByAscending("testKey");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"order\":\"testKey\"}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_descending () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.addOrderByDescending("testKey");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"order\":\"-testKey\"}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_multiple_order () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.addOrderByAscending("ascendingKey");
+        query.addOrderByDescending("descendingKey");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"order\":\"ascendingKey,-descendingKey\"}"),
+                true
+        );
+    }
+
+    @Test
+    public void set_condition_delete_order () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.addOrderByAscending("ascendingKey");
+        query.addOrderByDescending("descendingKey");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"order\":\"ascendingKey,-descendingKey\"}"),
+                true
+        );
+
+        query.deleteOrder("ascendingKey");
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"key\":\"value\"}, \"order\":\"-descendingKey\"}"),
+                true
+        );
+    }
+
+
+    @Test
+    public void count_search_result () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        int result = query.count();
+        Assert.assertEquals(result, 50);
+    }
+
+    @Test
+    public void count_search_result_in_background () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        query.whereEqualTo("key", "value");
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals(result, 50);
+                }
+            }
+        });
+    }
+
+    @Test
+    public void count_installation () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("installation");
+
+        query.whereEqualTo("deviceType", "android");
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals(result, 50);
+                }
+            }
+        });
+    }
+
+    @Test
+    public void find_with_operand () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        query.whereEqualTo("key", "value");
+        query.setLimit(50);
+        query.setSkip(3);
+        query.setIncludeKey("pointerKey");
+        query.addOrderByAscending("ascendingKey");
+        query.addOrderByDescending("descendingKey");
+
+        List<NCMBObject> result = query.find();
+
+        Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
+    }
+
+    @Test
     public void find_valid_class () throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         List<NCMBObject> result = query.find();
 
         Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
+    }
+
+    @Test
+    public void find_include_object () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        query.setIncludeKey("post.author");
+        List<NCMBObject> result = query.find();
+
+        Assert.assertEquals("aaaaa", result.get(0).getObjectId());
+
+        NCMBObject post = result.get(0).getIncludeObject("post");
+        Assert.assertEquals("000", post.getObjectId());
+
+        NCMBUser author = post.getIncludeObject("author");
+        Assert.assertEquals("testUser", author.getUserName());
     }
 
     @Test
