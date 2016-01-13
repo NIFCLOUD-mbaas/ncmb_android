@@ -150,7 +150,7 @@ public class NCMBDispatcher {
 
             System.out.println("mockQuery:" + mockQuery.toString());
             System.out.println("realQuery:" + realQuery.toString());
-            if (!compareJSON(mockQuery, realQuery, JSONCompareMode.LENIENT).passed()){
+            if (!compareJSON(mockQuery, realQuery, JSONCompareMode.NON_EXTENSIBLE).passed()){
                 return false;
             }
         } catch (JSONException e) {

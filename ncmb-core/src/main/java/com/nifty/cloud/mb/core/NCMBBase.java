@@ -440,7 +440,7 @@ public class NCMBBase {
     /**
      * get string value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or null
      */
     public String getString(String key) {
         try {
@@ -453,7 +453,7 @@ public class NCMBBase {
     /**
      * get boolean value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key (defalut value is false)
      */
     public boolean getBoolean(String key) {
         try {
@@ -466,7 +466,7 @@ public class NCMBBase {
     /**
      * get int value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public int getInt(String key) {
         try {
@@ -479,7 +479,7 @@ public class NCMBBase {
     /**
      * get long value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public long getLong(String key) {
         try {
@@ -493,7 +493,7 @@ public class NCMBBase {
     /**
      * get double value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public double getDouble(String key) {
         try {
@@ -506,7 +506,7 @@ public class NCMBBase {
     /**
      * Get Date object from given key
      * @param key key name for getting object
-     * @return Date object from given key
+     * @return Date object from given key or null
      */
     public Date getDate(String key) {
         SimpleDateFormat sdf = NCMBDateFormat.getIso8601();
@@ -530,7 +530,7 @@ public class NCMBBase {
     /**
      * Get Location object from given key
      * @param key key name for getting object
-     * @return Location object from given key
+     * @return Location object from given key or null
      */
     public Location getGeolocation(String key) {
         try {
@@ -549,6 +549,11 @@ public class NCMBBase {
 
     }
 
+    /**
+     * Get JSONObject from given key
+     * @param key key name for getting object
+     * @return JSONObject from given key or null
+     */
     public JSONObject getJSONObject(String key) {
         try {
             return mFields.getJSONObject(key);
@@ -557,6 +562,11 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * Get JSONArray from given key
+     * @param key key name for getting object
+     * @return JSONArray from given key or null
+     */
     public JSONArray getJSONArray(String key) {
         try {
             return mFields.getJSONArray(key);
@@ -565,6 +575,11 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * Get List object from given key
+     * @param key key name for getting object
+     * @return List object from given key or null
+     */
     public List getList(String key) {
         if (mFields.has(key)){
             return new Gson().fromJson(getJSONArray(key).toString(), List.class);
@@ -573,6 +588,11 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * Get Map object from given key
+     * @param key key name for getting object
+     * @return Map object from given key or null
+     */
     public Map getMap(String key) {
         if (mFields.has(key)){
             return new Gson().fromJson(getJSONObject(key).toString(), Map.class);
@@ -581,4 +601,43 @@ public class NCMBBase {
         }
 
     }
+
+    /***
+     * Get NCMBObject if given key data include pointer object data
+     * @param key key name for getting include object
+     * @return instance of NCMBObject / NCMBUser / NCMBPush / NCMBInstallation / NCMBRole or null
+     */
+    public <T extends NCMBBase> T getIncludeObject(String key) {
+        if (mFields.has(key)) {
+            try {
+                JSONObject json = mFields.getJSONObject(key);
+                if (json.has("__type") && json.getString("__type").equals("Object")) {
+                    String className = json.getString("className");
+                    json.remove("__type");
+                    json.remove("className");
+                    switch (className) {
+                        case "user":
+                            return (T) new NCMBUser(json);
+                        case "installation":
+                            return (T) new NCMBInstallation(json);
+                        case "role":
+                            return (T) new NCMBRole(json);
+                        case "push":
+                            return (T) new NCMBPush(json);
+                        default:
+                            return (T) new NCMBObject(className, json);
+                    }
+                } else {
+                    return null;
+                }
+            } catch (JSONException e) {
+                return null;
+            } catch (NCMBException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
 }

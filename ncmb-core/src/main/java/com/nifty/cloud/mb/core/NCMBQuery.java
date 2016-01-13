@@ -705,6 +705,7 @@ public class NCMBQuery<T extends NCMBBase> {
      */
     public int count () throws NCMBException {
         countFlag = true;
+        limitNumber = 1;
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         return objServ.countObject(mClassName, getConditions());
     }
@@ -715,6 +716,7 @@ public class NCMBQuery<T extends NCMBBase> {
      */
     public void countInBackground(CountCallback callback) {
         countFlag = true;
+        limitNumber = 1;
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.countObjectInBackground(mClassName, getConditions(), callback);
     }
