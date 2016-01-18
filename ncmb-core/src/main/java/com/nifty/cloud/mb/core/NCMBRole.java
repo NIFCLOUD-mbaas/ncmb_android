@@ -345,6 +345,9 @@ public class NCMBRole extends NCMBBase {
                         if (json != null) {
                             mFields = json;
                         }
+                        if (callback != null) {
+                            callback.done(null);
+                        }
                     }
                 }
             });
