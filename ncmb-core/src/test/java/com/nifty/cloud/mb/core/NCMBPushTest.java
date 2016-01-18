@@ -14,11 +14,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +33,7 @@ import java.util.SimpleTimeZone;
 public class NCMBPushTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -48,6 +51,9 @@ public class NCMBPushTest {
 
         //log stream
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -151,6 +157,7 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_post() throws Exception {
+        callbackFlag = false;
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message");
@@ -160,8 +167,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("message", push.getMessage());
@@ -177,17 +190,12 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_put() throws Exception {
+        callbackFlag = false;
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message1");
         push.setTitle("title1");
-        push.sendInBackground(new DoneCallback() {
-
-            @Override
-            public void done(NCMBException e) {
-                Assert.assertNull(e);
-            }
-        });
+        push.send();
 
         //check
         Assert.assertEquals("message1", push.getMessage());
@@ -204,8 +212,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("message_update", push.getMessage());
@@ -225,6 +239,10 @@ public class NCMBPushTest {
         push.setMessage("message");
         push.setTitle("title");
         push.sendInBackground();
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
 
         //check
         Assert.assertEquals("message", push.getMessage());
@@ -313,6 +331,7 @@ public class NCMBPushTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
+        callbackFlag = false;
         //get
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
@@ -320,8 +339,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBPush fetchedPush, NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         checkGetResponse(push);
@@ -337,6 +362,9 @@ public class NCMBPushTest {
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
         push.fetchInBackground();
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         //check
         checkGetResponse(push);
@@ -360,6 +388,10 @@ public class NCMBPushTest {
                 }
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
     }
 
     /**
@@ -408,6 +440,7 @@ public class NCMBPushTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
+        callbackFlag = false;
         //delete
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
@@ -415,8 +448,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertNull(push.getObjectId());
@@ -432,6 +471,10 @@ public class NCMBPushTest {
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
         push.deleteInBackground();
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
 
         //check
         Assert.assertNull(push.getObjectId());

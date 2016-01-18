@@ -11,10 +11,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBPushServiceTest {
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -41,6 +44,9 @@ public class NCMBPushServiceTest {
                 null);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -72,6 +78,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void sendPushInBackground() throws Exception {
+        callbackFlag = false;
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.sendPushInBackground(new JSONObject(), new ExecuteServiceCallback() {
             @Override
@@ -83,8 +90,14 @@ public class NCMBPushServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -115,6 +128,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void updatePushInBackground() throws Exception {
+        callbackFlag = false;
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         JSONObject params = new JSONObject();
         params.put("title", "title_update");
@@ -129,8 +143,14 @@ public class NCMBPushServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -156,14 +176,21 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void deletePushInBackground() throws Exception {
+        callbackFlag = true;
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.deletePushInBackground("7FrmPTBKSNtVjajm", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -192,6 +219,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void getPushInBackground() throws Exception {
+        callbackFlag = false;
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.fetchPushInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBPush>() {
             @Override
@@ -200,8 +228,15 @@ public class NCMBPushServiceTest {
                 Assert.assertNull(e);
                 Assert.assertEquals("7FrmPTBKSNtVjajm", push.getString("objectId"));
                 Assert.assertEquals("http://www.yahoo.co.jp/", push.getString("richUrl"));
+
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -231,6 +266,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void searchPushInBackground() throws Exception {
+        callbackFlag = false;
         NCMBPushService pushService = new NCMBPushService(NCMB.sCurrentContext);
         //Search condition
         JSONObject query = new JSONObject();
@@ -250,8 +286,14 @@ public class NCMBPushServiceTest {
                         Assert.fail(error.getMessage());
                     }
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -260,6 +302,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void sendPushReceiptStatusBackground() throws Exception {
+        callbackFlag = false;
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.sendPushReceiptStatusInBackground("7FrmPTBKSNtVjajm", new ExecuteServiceCallback() {
             @Override
@@ -271,7 +314,13 @@ public class NCMBPushServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 }
