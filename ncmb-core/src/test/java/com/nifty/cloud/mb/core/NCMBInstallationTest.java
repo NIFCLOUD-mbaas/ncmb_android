@@ -13,11 +13,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
 
 import java.text.DateFormat;
@@ -35,6 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 public class NCMBInstallationTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -65,6 +68,9 @@ public class NCMBInstallationTest {
         MockitoAnnotations.initMocks(this);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -100,6 +106,8 @@ public class NCMBInstallationTest {
     @Test
     public void getRegistrationID_with_valid_senderID() throws Exception {
 
+        callbackFlag = false;
+
         NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
         NCMBInstallation mockInstallation = spy(current);
         doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromGCM(anyString());
@@ -111,9 +119,16 @@ public class NCMBInstallationTest {
                 if (e != null) {
                     e.printStackTrace();
                 }
+                callbackFlag = true;
 
             }
         });
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("testDeviceToken", mockInstallation.getDeviceToken());
     }
@@ -191,6 +206,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_post() throws Exception {
+        callbackFlag = false;
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
@@ -198,8 +214,15 @@ public class NCMBInstallationTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -214,16 +237,12 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_put() throws Exception {
+        callbackFlag = false;
         //post
         NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.put("key", "value1");
-        installation.saveInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                Assert.assertNull(e);
-            }
-        });
+        installation.save();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -239,8 +258,14 @@ public class NCMBInstallationTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -260,6 +285,10 @@ public class NCMBInstallationTest {
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.put("key", "value1");
         installation.saveInBackground();
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -324,6 +353,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
+        callbackFlag = false;
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
@@ -331,8 +361,14 @@ public class NCMBInstallationTest {
             @Override
             public void done(NCMBInstallation fetchedInstallation, NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -352,6 +388,10 @@ public class NCMBInstallationTest {
         NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
         installation.fetchInBackground();
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -432,6 +472,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
+        callbackFlag = false;
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
@@ -440,8 +481,14 @@ public class NCMBInstallationTest {
             public void done(NCMBException e) {
                 //check
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
     }
 
     /**
