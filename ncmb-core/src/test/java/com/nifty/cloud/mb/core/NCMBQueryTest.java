@@ -47,6 +47,8 @@ public class NCMBQueryTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -492,7 +494,7 @@ public class NCMBQueryTest {
 
     @Test
     public void count_search_result_in_background () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
         query.whereEqualTo("key", "value");
@@ -613,7 +615,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background () {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.findInBackground(new FindCallback<NCMBObject>() {
             @Override
@@ -636,7 +638,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_users_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
         query.findInBackground(new FindCallback<NCMBUser>() {
             @Override
@@ -660,7 +662,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_push_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
         query.findInBackground(new FindCallback<NCMBPush>() {
             @Override
@@ -683,7 +685,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_installation_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
         query.findInBackground(new FindCallback<NCMBInstallation>() {
             @Override
@@ -706,7 +708,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_role_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
         query.findInBackground(new FindCallback<NCMBRole>() {
             @Override
@@ -729,7 +731,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background_file_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
         query.findInBackground(new FindCallback<NCMBFile>() {
             @Override
