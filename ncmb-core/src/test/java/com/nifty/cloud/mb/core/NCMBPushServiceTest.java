@@ -47,6 +47,8 @@ public class NCMBPushServiceTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -78,7 +80,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void sendPushInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.sendPushInBackground(new JSONObject(), new ExecuteServiceCallback() {
             @Override
@@ -128,7 +130,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void updatePushInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         JSONObject params = new JSONObject();
         params.put("title", "title_update");
@@ -176,7 +178,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void deletePushInBackground() throws Exception {
-        callbackFlag = true;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.deletePushInBackground("7FrmPTBKSNtVjajm", new DoneCallback() {
             @Override
@@ -219,7 +221,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void getPushInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.fetchPushInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBPush>() {
             @Override
@@ -266,7 +268,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void searchPushInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = new NCMBPushService(NCMB.sCurrentContext);
         //Search condition
         JSONObject query = new JSONObject();
@@ -302,7 +304,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void sendPushReceiptStatusBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
         pushService.sendPushReceiptStatusInBackground("7FrmPTBKSNtVjajm", new ExecuteServiceCallback() {
             @Override

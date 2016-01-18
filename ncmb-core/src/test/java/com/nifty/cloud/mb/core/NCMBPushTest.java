@@ -54,6 +54,8 @@ public class NCMBPushTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -157,7 +159,7 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_post() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message");
@@ -190,7 +192,7 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_put() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message1");
@@ -331,7 +333,7 @@ public class NCMBPushTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //get
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
@@ -440,7 +442,7 @@ public class NCMBPushTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //delete
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
