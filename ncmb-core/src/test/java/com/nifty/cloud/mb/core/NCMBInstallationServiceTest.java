@@ -94,6 +94,8 @@ public class NCMBInstallationServiceTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -121,7 +123,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void createInstallationInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.createInstallationInBackground("xxxxxxxxxxxxxxxxxxx", new JSONObject(), new ExecuteServiceCallback() {
             @Override
@@ -171,7 +173,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void updateInstallationInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         JSONObject json = new JSONObject();
         json.put("key", "value_update");
@@ -219,7 +221,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void deleteInstallationInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.deleteInstallationInBackground("7FrmPTBKSNtVjajm", new DoneCallback() {
             @Override
@@ -256,7 +258,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void fetchInstallationInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.fetchInstallationInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBInstallation>() {
             @Override
@@ -303,7 +305,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void searchInstallationInBackground() throws Exception {
-        callbackFlag = true;
+        Assert.assertFalse(callbackFlag);
         //search condition
         JSONObject query = new JSONObject();
         query.put("where", new JSONObject("{deviceType:android}"));

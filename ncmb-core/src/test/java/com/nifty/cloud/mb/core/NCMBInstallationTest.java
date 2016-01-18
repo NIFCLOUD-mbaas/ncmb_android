@@ -71,6 +71,8 @@ public class NCMBInstallationTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -206,7 +208,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_post() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
@@ -237,7 +239,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_put() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
@@ -353,7 +355,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
@@ -472,7 +474,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
