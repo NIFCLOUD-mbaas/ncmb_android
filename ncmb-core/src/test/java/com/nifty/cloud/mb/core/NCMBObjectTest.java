@@ -49,6 +49,8 @@ public class NCMBObjectTest {
                 null);
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -86,8 +88,7 @@ public class NCMBObjectTest {
 
     @Test
     public void save_object_asynchronously_valid_class() throws Exception {
-
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("SaveObjectTest");
         obj.put("key", "value");
         obj.saveInBackground(new DoneCallback() {
@@ -233,7 +234,7 @@ public class NCMBObjectTest {
 
     @Test
     public void update_object_in_background_with_update_value() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("updateTestObjectId");
         obj.put("updateKey", "updateValue");
@@ -367,7 +368,7 @@ public class NCMBObjectTest {
 
     @Test
     public void fetch_object_in_background() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
         obj.fetchInBackground(new FetchCallback<NCMBObject>() {
@@ -476,7 +477,7 @@ public class NCMBObjectTest {
 
     @Test
     public void delete_object_in_background() throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("deleteTestObjectId");
         obj.deleteObjectInBackground(new DoneCallback() {

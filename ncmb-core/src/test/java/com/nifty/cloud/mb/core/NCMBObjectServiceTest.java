@@ -47,6 +47,8 @@ public class NCMBObjectServiceTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -70,7 +72,7 @@ public class NCMBObjectServiceTest {
 
     @Test
     public void saveObjectToNcmbInBackground_valid_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.saveObjectInBackground(
                 "TestClass",
@@ -109,7 +111,7 @@ public class NCMBObjectServiceTest {
 
     @Test
     public void fetchObjectInBackground_valid_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.fetchObjectInBackground(
                 "TestClass",
@@ -142,7 +144,7 @@ public class NCMBObjectServiceTest {
 
     @Test
     public void updateObjectInBackground_valid_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.updateObjectInBackground(
                 "TestClass",
@@ -177,7 +179,7 @@ public class NCMBObjectServiceTest {
 
     @Test
     public void deleteObjectInBackground_valid_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         objServ.deleteObjectInBackground(
                 "TestClass",
@@ -209,7 +211,7 @@ public class NCMBObjectServiceTest {
 
     @Test
     public void searchObjectInBackground_valid_class () throws Exception {
-        callbackFlag = false;
+        Assert.assertFalse(callbackFlag);
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
         JSONObject conditions = new JSONObject("{\"where\":{\"key\":\"value\"},\"limit\":1}");
         objServ.searchObjectInBackground("TestClass", conditions, new SearchObjectCallback() {
