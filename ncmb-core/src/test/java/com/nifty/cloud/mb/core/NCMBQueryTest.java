@@ -13,9 +13,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Arrays;
@@ -28,6 +30,7 @@ import java.util.List;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBQueryTest {
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -41,6 +44,9 @@ public class NCMBQueryTest {
                 "cliKey",
                 mServer.getUrl("/").toString(),
                 null);
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
     }
 
     @After
@@ -486,6 +492,7 @@ public class NCMBQueryTest {
 
     @Test
     public void count_search_result_in_background () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
         query.whereEqualTo("key", "value");
@@ -498,8 +505,14 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals(result, 50);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -600,6 +613,7 @@ public class NCMBQueryTest {
 
     @Test
     public void find_in_background () {
+        callbackFlag = false;
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.findInBackground(new FindCallback<NCMBObject>() {
             @Override
@@ -610,12 +624,19 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("8FgKqFlH8dZRDrBJ", results.get(0).getObjectId());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
     public void find_in_background_users_class () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
         query.findInBackground(new FindCallback<NCMBUser>() {
             @Override
@@ -626,13 +647,20 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("Nifty Tarou", results.get(0).getUserName());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
     }
 
     @Test
     public void find_in_background_push_class () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
         query.findInBackground(new FindCallback<NCMBPush>() {
             @Override
@@ -643,12 +671,19 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("message1", results.get(0).getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
     public void find_in_background_installation_class () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
         query.findInBackground(new FindCallback<NCMBInstallation>() {
             @Override
@@ -659,12 +694,19 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("dummyDeviceToken01", results.get(0).getDeviceToken());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
     public void find_in_background_role_class () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
         query.findInBackground(new FindCallback<NCMBRole>() {
             @Override
@@ -675,12 +717,19 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("testRole", results.get(0).getRoleName());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
     public void find_in_background_file_class () throws Exception {
+        callbackFlag = false;
         NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
         query.findInBackground(new FindCallback<NCMBFile>() {
             @Override
@@ -691,7 +740,13 @@ public class NCMBQueryTest {
 
                     Assert.assertEquals("testFile", results.get(0).getFileName());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 }
