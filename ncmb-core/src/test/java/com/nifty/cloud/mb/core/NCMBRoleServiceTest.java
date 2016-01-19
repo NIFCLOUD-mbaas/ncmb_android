@@ -12,10 +12,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.util.ArrayList;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 public class NCMBRoleServiceTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -43,6 +46,11 @@ public class NCMBRoleServiceTest {
                 null);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -88,8 +96,14 @@ public class NCMBRoleServiceTest {
                 } catch (JSONException e1) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -121,8 +135,14 @@ public class NCMBRoleServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -152,8 +172,14 @@ public class NCMBRoleServiceTest {
             public void done(NCMBRole role, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals(role.getObjectId(), roleId);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     protected ArrayList<NCMBUser> generateUsers(int count) throws JSONException, NCMBException {
@@ -215,8 +241,14 @@ public class NCMBRoleServiceTest {
                 } catch (JSONException error) {
                     Assert.fail(error.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -262,8 +294,14 @@ public class NCMBRoleServiceTest {
                 } catch (JSONException error) {
                     Assert.fail(error.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     protected ArrayList<NCMBRole> generateRoles(int count) throws JSONException, NCMBException {
@@ -325,8 +363,14 @@ public class NCMBRoleServiceTest {
                 } catch (JSONException error) {
                     Assert.fail(error.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -372,8 +416,14 @@ public class NCMBRoleServiceTest {
                 } catch (JSONException error) {
                     Assert.fail(error.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     protected NCMBAcl generateAcl() {
@@ -420,7 +470,13 @@ public class NCMBRoleServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 }
