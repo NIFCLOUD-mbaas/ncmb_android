@@ -709,10 +709,6 @@ public class NCMBUserServiceTest {
 
         Assert.assertNull(userService.mContext.sessionToken);
         Assert.assertNull(userService.mContext.userId);
-
-        Robolectric.flushBackgroundThreadScheduler();
-        ShadowLooper.runUiThreadTasks();
-
         Assert.assertTrue(callbackFlag);
     }
 
