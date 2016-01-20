@@ -128,6 +128,11 @@ public class NCMBObjectServiceTest {
                     }
                 }
         );
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
