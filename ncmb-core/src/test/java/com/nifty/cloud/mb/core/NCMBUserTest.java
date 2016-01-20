@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBUserTest {
 
+    private boolean callbackFlag;
+
     @Before
     public void setup() throws Exception {
 
@@ -40,6 +42,8 @@ public class NCMBUserTest {
         NCMBUser.currentUser = null;
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -78,6 +82,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail("save Background is failed.");
                 }
+                callbackFlag = true;
             }
         });
 
@@ -87,6 +92,7 @@ public class NCMBUserTest {
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -106,11 +112,13 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -132,6 +140,7 @@ public class NCMBUserTest {
                 }
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals("Nifty Tarou", user.getUserName());
+                callbackFlag = true;
             }
         });
 
@@ -143,6 +152,7 @@ public class NCMBUserTest {
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -168,6 +178,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -176,6 +187,7 @@ public class NCMBUserTest {
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Nifty Tarou", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertTrue(callbackFlag);
     }
 
 
@@ -239,6 +251,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -254,6 +267,7 @@ public class NCMBUserTest {
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -285,6 +299,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -292,6 +307,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -360,6 +376,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -378,6 +395,7 @@ public class NCMBUserTest {
         Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -413,6 +431,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -420,6 +439,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -510,6 +530,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -517,6 +538,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -539,8 +561,14 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail("save Background is failed.");
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -565,6 +593,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -573,6 +602,7 @@ public class NCMBUserTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -616,6 +646,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -623,6 +654,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(user.isLinkedWith("facebook"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -667,6 +699,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -674,6 +707,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertFalse(user.isLinkedWith("facebook"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -720,6 +754,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -727,6 +762,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(user.isLinkedWith("twitter"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -774,6 +810,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -781,6 +818,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertFalse(user.isLinkedWith("twitter"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -818,6 +856,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -825,6 +864,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(user.isLinkedWith("google"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -862,6 +902,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -869,6 +910,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertFalse(user.isLinkedWith("google"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -929,6 +971,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -936,6 +979,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertFalse(user.isLinkedWith("google"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -959,6 +1003,7 @@ public class NCMBUserTest {
                 } else {
                     Assert.assertEquals("Nifty Tarou", user.getUserName());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -966,6 +1011,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("Nifty Tarou", user.getUserName());
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -996,6 +1042,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -1005,6 +1052,7 @@ public class NCMBUserTest {
         Assert.assertNull(user.getUserName());
         Assert.assertNull(NCMB.sCurrentContext.sessionToken);
         Assert.assertNull(NCMB.sCurrentContext.userId);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1036,6 +1084,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -1045,6 +1094,7 @@ public class NCMBUserTest {
         Assert.assertNull(user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
         Assert.assertEquals("dummyObjectId", NCMB.sCurrentContext.userId);
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
