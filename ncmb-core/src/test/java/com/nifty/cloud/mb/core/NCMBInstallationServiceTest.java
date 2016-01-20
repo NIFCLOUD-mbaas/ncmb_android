@@ -663,7 +663,7 @@ public class NCMBInstallationServiceTest {
         JSONObject updateJson = installationService.updateInstallation(currentInstallation.getObjectId(), null);
         Assert.assertEquals("2014-06-04T11:28:30.348Z", updateJson.getString("updateDate"));
         currentInstallation = NCMBInstallation.getCurrentInstallation();
-        Assert.assertEquals("2.1.1", currentInstallation.getSDKVersion());
+        Assert.assertEquals("2.1.2", currentInstallation.getSDKVersion());
     }
 
     /*
