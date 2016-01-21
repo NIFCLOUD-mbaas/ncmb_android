@@ -4,7 +4,6 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +11,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.skyscreamer.jsonassert.JSONAssert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
@@ -44,21 +41,22 @@ public class NCMBLogicTest {
     @Test
     public void script_execute_and_return_byte () throws Exception {
         NCMBLogic logic = new NCMBLogic("testLogic.js");
-        byte[] result;
+
+        byte[] result = null;
         try {
-            result = logic.execute();
+            result = logic.execute(NCMBLogic.MethodType.GET,null);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
         String expected = "hello";
-        Assert.assertTrue(result.equals(expected.getBytes()));
+        Assert.assertTrue(Arrays.equals(result, expected.getBytes()));
     }
 
     @Test
     public void script_execute_and_return_error () {
         NCMBLogic logic = new NCMBLogic("errorTestLogic.js");
         try {
-            logic.execute();
+            logic.execute(NCMBLogic.MethodType.GET,null);
         } catch (NCMBException e) {
             Assert.assertEquals(e.getCode(), NCMBException.DATA_NOT_FOUND);
         }
@@ -67,14 +65,14 @@ public class NCMBLogicTest {
     @Test
     public void script_execute_asynchronously () {
         NCMBLogic logic = new NCMBLogic("testLogic.js");
-        logic.executeInBackground(new ExecuteScriptCallback (){
+        logic.executeInBackground(NCMBLogic.MethodType.GET, null, new ExecuteScriptCallback(){
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 } else {
                     String expected = "hello";
-                    Assert.assertTrue(result.equals(expected.getBytes()));
+                    Assert.assertTrue(Arrays.equals(result, expected.getBytes()));
                 }
             }
         });
@@ -83,11 +81,11 @@ public class NCMBLogicTest {
     @Test
     public void script_execute_asynchronously_and_return_error () {
         NCMBLogic logic = new NCMBLogic("errorTestLogic.js");
-        logic.executeInBackground(new ExecuteScriptCallback (){
+        logic.executeInBackground(NCMBLogic.MethodType.GET, null, new ExecuteScriptCallback (){
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e == null) {
-                    Assert.fail(e.getMessage());
+                    Assert.fail();
                 } else {
                     Assert.assertEquals(e.getCode(), NCMBException.DATA_NOT_FOUND);
                 }
@@ -95,4 +93,3 @@ public class NCMBLogicTest {
         });
     }
 }
-=
