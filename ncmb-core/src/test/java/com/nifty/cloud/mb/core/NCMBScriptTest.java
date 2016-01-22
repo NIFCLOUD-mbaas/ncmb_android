@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
-public class NCMBLogicTest {
+public class NCMBScriptTest {
     private MockWebServer mServer;
 
     @Before
@@ -39,12 +39,12 @@ public class NCMBLogicTest {
     }
 
     @Test
-    public void script_execute_and_return_byte () throws Exception {
-        NCMBLogic logic = new NCMBLogic("testLogic.js");
+    public void script_execute_and_return_byte() throws Exception {
+        NCMBScript script = new NCMBScript("testScript.js");
 
         byte[] result = null;
         try {
-            result = logic.execute(NCMBLogic.MethodType.GET,null);
+            result = script.execute(NCMBScript.MethodType.GET, null);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -53,19 +53,19 @@ public class NCMBLogicTest {
     }
 
     @Test
-    public void script_execute_and_return_error () {
-        NCMBLogic logic = new NCMBLogic("errorTestLogic.js");
+    public void script_execute_and_return_error() {
+        NCMBScript script = new NCMBScript("errorTestScript.js");
         try {
-            logic.execute(NCMBLogic.MethodType.GET,null);
+            script.execute(NCMBScript.MethodType.GET, null);
         } catch (NCMBException e) {
             Assert.assertEquals(e.getCode(), NCMBException.DATA_NOT_FOUND);
         }
     }
 
     @Test
-    public void script_execute_asynchronously () {
-        NCMBLogic logic = new NCMBLogic("testLogic.js");
-        logic.executeInBackground(NCMBLogic.MethodType.GET, null, new ExecuteScriptCallback(){
+    public void script_execute_asynchronously() {
+        NCMBScript script = new NCMBScript("testScript.js");
+        script.executeInBackground(NCMBScript.MethodType.GET, null, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e != null) {
@@ -79,9 +79,9 @@ public class NCMBLogicTest {
     }
 
     @Test
-    public void script_execute_asynchronously_and_return_error () {
-        NCMBLogic logic = new NCMBLogic("errorTestLogic.js");
-        logic.executeInBackground(NCMBLogic.MethodType.GET, null, new ExecuteScriptCallback (){
+    public void script_execute_asynchronously_and_return_error() {
+        NCMBScript script = new NCMBScript("errorTestScript.js");
+        script.executeInBackground(NCMBScript.MethodType.GET, null, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e == null) {
