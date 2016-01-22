@@ -4,6 +4,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +41,11 @@ public class NCMBScriptTest {
 
     @Test
     public void script_execute_and_return_byte() throws Exception {
-        NCMBScript script = new NCMBScript("testScript.js");
+        NCMBScript script = new NCMBScript("testScript.js", NCMBScript.MethodType.GET);
 
         byte[] result = null;
         try {
-            result = script.execute(NCMBScript.MethodType.GET, null);
+            result = script.execute(null);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -54,24 +55,26 @@ public class NCMBScriptTest {
 
     @Test
     public void script_execute_and_return_error() {
-        NCMBScript script = new NCMBScript("errorTestScript.js");
+        NCMBScript script = new NCMBScript("errorTestScript.js",NCMBScript.MethodType.GET);
         try {
-            script.execute(NCMBScript.MethodType.GET, null);
+            script.execute(null);
         } catch (NCMBException e) {
             Assert.assertEquals(e.getCode(), NCMBException.DATA_NOT_FOUND);
         }
     }
 
     @Test
-    public void script_execute_asynchronously() {
-        NCMBScript script = new NCMBScript("testScript.js");
-        script.executeInBackground(NCMBScript.MethodType.GET, null, new ExecuteScriptCallback() {
+    public void script_execute_asynchronously() throws Exception {
+        NCMBScript script = new NCMBScript("testScript.js",NCMBScript.MethodType.GET);
+        JSONObject query = new JSONObject("{name:tarou}");
+        byte[] params = query.toString().getBytes();
+        script.executeInBackground(params, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 } else {
-                    String expected = "hello";
+                    String expected = "hello, tarou";
                     Assert.assertTrue(Arrays.equals(result, expected.getBytes()));
                 }
             }
@@ -80,8 +83,8 @@ public class NCMBScriptTest {
 
     @Test
     public void script_execute_asynchronously_and_return_error() {
-        NCMBScript script = new NCMBScript("errorTestScript.js");
-        script.executeInBackground(NCMBScript.MethodType.GET, null, new ExecuteScriptCallback() {
+        NCMBScript script = new NCMBScript("errorTestScript.js",NCMBScript.MethodType.GET);
+        script.executeInBackground(null, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {
                 if (e == null) {
