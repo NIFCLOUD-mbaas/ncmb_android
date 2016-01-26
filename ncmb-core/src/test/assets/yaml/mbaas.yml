@@ -271,6 +271,15 @@
     method: GET
     query:
       where: '{"deviceType":"android"}'
+  response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
       limit: 2
   response:
     status: 200
@@ -343,6 +352,15 @@
     query:
       where: '{"target":["android"]}'
       limit: 2
+  response:
+    status: 200
+    file: valid_get_searchPush_response.json
+---
+  request:
+    url: /2013-09-01/push
+    method: GET
+    query:
+      where: '{"target":["android"]}'
   response:
     status: 200
     file: valid_get_searchPush_response.json
@@ -876,8 +894,26 @@
     file: valid_get_searchRole_response.json
 ---
   request:
+    url: /2013-09-01/roles
+    method: GET
+    query:
+      where: '{"roleName":"testRole"}'
+  response:
+    status: 200
+    file: valid_get_searchRole_response.json
+---
+  request:
     url: /2013-09-01/files
     method: GET
+  response:
+    status: 200
+    file: valid_search_file_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+      where: '{"fileName":"testFile"}'
   response:
     status: 200
     file: valid_search_file_response.json
