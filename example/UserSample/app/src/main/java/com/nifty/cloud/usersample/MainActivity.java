@@ -4,16 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.nifty.cloud.mb.core.DoneCallback;
+import com.nifty.cloud.mb.core.FindCallback;
 import com.nifty.cloud.mb.core.LoginCallback;
 import com.nifty.cloud.mb.core.NCMB;
 import com.nifty.cloud.mb.core.NCMBException;
+import com.nifty.cloud.mb.core.NCMBQuery;
 import com.nifty.cloud.mb.core.NCMBUser;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,6 +72,21 @@ public class MainActivity extends AppCompatActivity {
         try {
             NCMBUser user = NCMBUser.login("TestUser", "TestPassword");
             result = createSuccessString(user);
+            NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
+
+            query.whereEqualTo("userName", NCMBUser.getCurrentUser().getUserName());
+            Log.d("MAIN", "Query:" + query.getConditions().toString());
+            query.findInBackground(new FindCallback<NCMBUser>() {
+                @Override
+                public void done(List<NCMBUser> results, NCMBException e) {
+                    if (results.size() == 0) {
+                        //Log.e("MAIN",e.getMessage());
+                        Log.d("MAIN", "search faild.");
+                    } else {
+                        Log.d("MAIN", results.get(0).getUserName());
+                    }
+                }
+            });
             Toast.makeText(this, "ログイン成功", Toast.LENGTH_SHORT).show();
         } catch (NCMBException error) {
             Toast.makeText(this, "ログイン失敗", Toast.LENGTH_SHORT).show();
