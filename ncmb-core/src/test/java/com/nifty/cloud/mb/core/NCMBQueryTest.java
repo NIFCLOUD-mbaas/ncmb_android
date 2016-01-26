@@ -20,8 +20,13 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SimpleTimeZone;
 
 /**
  * NCMBQueryTest
@@ -555,6 +560,28 @@ public class NCMBQueryTest {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         List<NCMBObject> result = query.find();
 
+        Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
+    }
+
+    @Test
+    public void check_searchCondition_data_type () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        query.whereEqualTo("stringKey", "string");
+        query.whereEqualTo("intKey", 10);
+        query.whereEqualTo("longKey", 10000000000000000L);
+        query.whereEqualTo("floatKey", 1.23F);
+        query.whereEqualTo("doubleKey", 1.23);
+        query.whereEqualTo("boolKey", true);
+        query.whereEqualTo("arrayKey", Arrays.asList("array"));
+        Map<String, String> map = new HashMap<>();
+        map.put("key", "value");
+        query.whereEqualTo("mapKey", map);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS", Locale.JAPAN);
+        df.setTimeZone(new SimpleTimeZone(0, "UTC"));
+        query.whereEqualTo("dateKey", df.parse("2016/01/26-00:00:00.000"));
+        //位置情報は別途位置情報検索でテスト済み
+
+        List<NCMBObject> result = query.find();
         Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
     }
 

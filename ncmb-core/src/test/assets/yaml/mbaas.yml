@@ -417,6 +417,15 @@
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
+      where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
       include: 'post.author'
   response:
     status: 200
