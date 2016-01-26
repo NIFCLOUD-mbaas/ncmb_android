@@ -576,6 +576,7 @@ public class NCMBQueryTest {
     @Test
     public void find_user_class () throws Exception {
         NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
+        query.whereEqualTo("userName", "Nifty Tarou");
         List<NCMBUser> result = query.find();
 
         Assert.assertEquals("Nifty Tarou", result.get(0).getUserName());
@@ -584,6 +585,7 @@ public class NCMBQueryTest {
     @Test
     public void find_push_class () throws Exception {
         NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
+        query.whereEqualTo("target", Arrays.asList("android"));
         List<NCMBPush> result = query.find();
 
         Assert.assertEquals("message1", result.get(0).getMessage());
@@ -592,6 +594,7 @@ public class NCMBQueryTest {
     @Test
     public void find_installation_class () throws Exception {
         NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
+        query.whereEqualTo("deviceType", "android");
         List<NCMBInstallation> result = query.find();
 
         Assert.assertEquals("dummyDeviceToken01", result.get(0).getDeviceToken());
@@ -600,6 +603,7 @@ public class NCMBQueryTest {
     @Test
     public void find_role_class () throws Exception {
         NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
+        query.whereEqualTo("roleName", "testRole");
         List<NCMBRole> result = query.find();
 
         Assert.assertEquals("testRole", result.get(0).getRoleName());
@@ -608,6 +612,7 @@ public class NCMBQueryTest {
     @Test
     public void find_file_class () throws Exception {
         NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+        query.whereEqualTo("fileName", "testFile");
         List<NCMBFile> result = query.find();
 
         Assert.assertEquals("testFile", result.get(0).getFileName());
