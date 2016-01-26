@@ -2,6 +2,8 @@ package com.nifty.cloud.mb.core;
 
 import android.location.Location;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * NCMBQuery is used to search data from NIFTY Cloud mobile backend
@@ -168,6 +171,12 @@ public class NCMBQuery<T extends NCMBBase> {
             locationJson.put("latitude", ((Location) value).getLatitude());
             locationJson.put("longitude", ((Location) value).getLongitude());
             return locationJson;
+        } else if (value instanceof List) {
+            Gson gson = new Gson();
+            return new JSONArray(gson.toJson(value));
+        }else if (value instanceof Map) {
+            Gson gson = new Gson();
+            return new JSONObject(gson.toJson(value));
         } else {
             return value;
         }
