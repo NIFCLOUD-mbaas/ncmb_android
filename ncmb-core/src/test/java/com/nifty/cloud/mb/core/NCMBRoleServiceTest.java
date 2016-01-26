@@ -479,4 +479,52 @@ public class NCMBRoleServiceTest {
 
         Assert.assertTrue(callbackFlag);
     }
+
+    /**
+     * - 内容：searchRole が成功する事を確認する
+     * - 結果：result に NCMBRole が正しく格納されていること
+     */
+    @Test
+    public void searchRole() throws Exception {
+        NCMBQuery<NCMBRole> query = new NCMBQuery<>("role");
+        query.whereEqualTo("roleName", "testRole");
+
+        NCMBRoleService roleService = getRoleService();
+
+        ArrayList<NCMBRole> result = roleService.searchRole(query.getConditions());
+        Assert.assertEquals(result.size(), 1);
+
+        NCMBRole role = result.get(0);
+        Assert.assertEquals(role.getObjectId(), "oc8bJVuEWmKgNydn");
+        Assert.assertEquals(role.getRoleName(), "testRole");
+    }
+
+    /**
+     * - 内容：searchRoleInBackground が全件取得で成功する事を確認する
+     * - 結果：result に NCMBRole が正しく格納されていること
+     */
+    @Test
+    public void searchRoleInBackground() throws Exception {
+        NCMBQuery<NCMBRole> query = new NCMBQuery<>("role");
+        query.whereEqualTo("roleName", "testRole");
+
+        NCMBRoleService roleService = getRoleService();
+        roleService.searchRoleInBackground(query.getConditions(), new SearchRoleCallback() {
+            @Override
+            public void done(ArrayList<NCMBRole> result, NCMBException e) {
+                Assert.assertEquals(e, null);
+                Assert.assertEquals(result.size(), 1);
+
+                NCMBRole role = result.get(0);
+                Assert.assertEquals(role.getObjectId(), "oc8bJVuEWmKgNydn");
+                Assert.assertEquals(role.getRoleName(), "testRole");
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
 }
