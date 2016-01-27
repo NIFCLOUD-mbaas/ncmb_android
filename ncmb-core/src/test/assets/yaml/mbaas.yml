@@ -133,7 +133,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -147,7 +147,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       timeZone: "Etc/UTC"
       key: "value"
   response:
@@ -163,7 +163,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -178,7 +178,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       timeZone: "Etc/UTC"
   response:
     status: 201
@@ -205,7 +205,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -218,7 +218,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -232,7 +232,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -245,7 +245,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.1.2"
+      sdkVersion: "2.1.3"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -265,6 +265,15 @@
   response:
     status: 200
     file: valid_delete_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
+  response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
 ---
   request:
     url: /2013-09-01/installations
@@ -348,6 +357,15 @@
     file: valid_get_searchPush_response.json
 ---
   request:
+    url: /2013-09-01/push
+    method: GET
+    query:
+      where: '{"target":["android"]}'
+  response:
+    status: 200
+    file: valid_get_searchPush_response.json
+---
+  request:
     url: /2013-09-01/push/7FrmPTBKSNtVjajm
     method: DELETE
   response:
@@ -391,6 +409,15 @@
       skip: 3
       include: 'pointerKey'
       order: 'ascendingKey,-descendingKey'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
   response:
     status: 200
     file: valid_search_response.json
@@ -876,8 +903,26 @@
     file: valid_get_searchRole_response.json
 ---
   request:
+    url: /2013-09-01/roles
+    method: GET
+    query:
+      where: '{"roleName":"testRole"}'
+  response:
+    status: 200
+    file: valid_get_searchRole_response.json
+---
+  request:
     url: /2013-09-01/files
     method: GET
+  response:
+    status: 200
+    file: valid_search_file_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+      where: '{"fileName":"testFile"}'
   response:
     status: 200
     file: valid_search_file_response.json

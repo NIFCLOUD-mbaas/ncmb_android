@@ -20,8 +20,13 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SimpleTimeZone;
 
 /**
  * NCMBQueryTest
@@ -559,6 +564,28 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void check_searchCondition_data_type () throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        query.whereEqualTo("stringKey", "string");
+        query.whereEqualTo("intKey", 10);
+        query.whereEqualTo("longKey", 10000000000000000L);
+        query.whereEqualTo("floatKey", 1.23F);
+        query.whereEqualTo("doubleKey", 1.23);
+        query.whereEqualTo("boolKey", true);
+        query.whereEqualTo("arrayKey", Arrays.asList("array"));
+        Map<String, String> map = new HashMap<>();
+        map.put("key", "value");
+        query.whereEqualTo("mapKey", map);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS", Locale.JAPAN);
+        df.setTimeZone(new SimpleTimeZone(0, "UTC"));
+        query.whereEqualTo("dateKey", df.parse("2016/01/26-00:00:00.000"));
+        //位置情報は別途位置情報検索でテスト済み
+
+        List<NCMBObject> result = query.find();
+        Assert.assertEquals("8FgKqFlH8dZRDrBJ", result.get(0).getObjectId());
+    }
+
+    @Test
     public void find_include_object () throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.setIncludeKey("post.author");
@@ -576,6 +603,7 @@ public class NCMBQueryTest {
     @Test
     public void find_user_class () throws Exception {
         NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
+        query.whereEqualTo("userName", "Nifty Tarou");
         List<NCMBUser> result = query.find();
 
         Assert.assertEquals("Nifty Tarou", result.get(0).getUserName());
@@ -584,6 +612,7 @@ public class NCMBQueryTest {
     @Test
     public void find_push_class () throws Exception {
         NCMBQuery<NCMBPush> query = NCMBPush.getQuery();
+        query.whereEqualTo("target", Arrays.asList("android"));
         List<NCMBPush> result = query.find();
 
         Assert.assertEquals("message1", result.get(0).getMessage());
@@ -592,6 +621,7 @@ public class NCMBQueryTest {
     @Test
     public void find_installation_class () throws Exception {
         NCMBQuery<NCMBInstallation> query = NCMBInstallation.getQuery();
+        query.whereEqualTo("deviceType", "android");
         List<NCMBInstallation> result = query.find();
 
         Assert.assertEquals("dummyDeviceToken01", result.get(0).getDeviceToken());
@@ -600,6 +630,7 @@ public class NCMBQueryTest {
     @Test
     public void find_role_class () throws Exception {
         NCMBQuery<NCMBRole> query = NCMBRole.getQuery();
+        query.whereEqualTo("roleName", "testRole");
         List<NCMBRole> result = query.find();
 
         Assert.assertEquals("testRole", result.get(0).getRoleName());
@@ -608,6 +639,7 @@ public class NCMBQueryTest {
     @Test
     public void find_file_class () throws Exception {
         NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+        query.whereEqualTo("fileName", "testFile");
         List<NCMBFile> result = query.find();
 
         Assert.assertEquals("testFile", result.get(0).getFileName());

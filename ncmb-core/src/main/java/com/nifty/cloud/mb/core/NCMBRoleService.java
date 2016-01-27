@@ -295,7 +295,7 @@ public class NCMBRoleService extends NCMBService {
      * @return result list of role search
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public List<NCMBRole> searchRole(JSONObject conditions) throws NCMBException {
+    public ArrayList<NCMBRole> searchRole(JSONObject conditions) throws NCMBException {
 
         String url = mContext.baseUrl + mServicePath;
         String type = NCMBRequest.HTTP_METHOD_GET;

@@ -768,12 +768,12 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUser() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
 
-        ArrayList<NCMBUser> result = userService.searchUser(conditions);
+        ArrayList<NCMBUser> result = userService.searchUser(query.getConditions());
         Assert.assertEquals(result.size(), 1);
 
         NCMBUser user1 = result.get(0);
@@ -787,11 +787,11 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUserInBackground() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
-        userService.searchUserInBackground(conditions, new SearchUserCallback() {
+        userService.searchUserInBackground(query.getConditions(), new SearchUserCallback() {
             @Override
             public void done(ArrayList<NCMBUser> result, NCMBException e) {
                 Assert.assertEquals(e, null);

@@ -908,23 +908,17 @@ public class NCMBUserService extends NCMBService {
      *
      * @param conditions search conditions
      * @return request params in object
-     * @throws NCMBException
      */
-    protected RequestParams searchUserParams(JSONObject conditions) throws NCMBException {
-        try {
-            RequestParams params = new RequestParams();
+    protected RequestParams searchUserParams(JSONObject conditions) {
+        RequestParams params = new RequestParams();
 
-            params.url = mContext.baseUrl + mServicePath;
-            params.type = NCMBRequest.HTTP_METHOD_GET;
+        params.url = mContext.baseUrl + mServicePath;
+        params.type = NCMBRequest.HTTP_METHOD_GET;
 
-            if (conditions != null && conditions.length() > 0) {
-                params.query = new JSONObject();
-                params.query.put("where", conditions.toString());
-            }
-            return params;
-        } catch (JSONException e) {
-            throw new NCMBException(NCMBException.INVALID_JSON, "Bad conditions in search user");
+        if (conditions != null && conditions.length() > 0) {
+            params.query = conditions;
         }
+        return params;
     }
 
     /**
