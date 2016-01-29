@@ -256,8 +256,6 @@ public class NCMBRequest {
         this.applicationKey = applicationKey;
         this.clientKey = clientKey;
 
-        //無効値チェック
-        invalidCheck(url, method, content, queryParam, sessionToken, applicationKey, clientKey);
         //その他プロパティ設定
         this.content = content;
         this.queryParam = queryParam;
@@ -344,29 +342,6 @@ public class NCMBRequest {
         this.content = content;
 
     }
-
-    private void invalidCheck(String url, String method, String content, JSONObject queryString, String sessionToken, String applicationKey, String clientKey) {
-        //オブジェクト作成、更新時のクエリ文字列は不正。コンテントは必ず設定する
-        if (method.equals("POST") || method.equals("PUT")) {
-            if (queryString != null && queryString.length() > 0) {
-                throw new IllegalArgumentException("Can not set the queryString in the POST or PUT.");
-            }
-            if (content == null) {
-                throw new IllegalArgumentException("Please set the content in the POST or PUT.");
-            }
-            //オブジェクト取得、検索時のコンテントは不正。クエリ文字列は取得時のnullを許容する
-        } else if (method.equals("GET")) {
-            if (content != null && content.length() > 0) {
-                throw new IllegalArgumentException("Can not set the content in the GET.");
-            }
-            //オブジェクト削除時のコンテント及びクエリ文字列は不正
-        } else if (method.equals("DELETE")) {
-            if (content != null && content.length() > 0 || queryString != null && queryString.length() > 0) {
-                throw new IllegalArgumentException("Can not set the queryString&content in the DELETE.");
-            }
-        }
-    }
-
     //endregion
 
     // region Method
