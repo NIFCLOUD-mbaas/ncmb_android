@@ -1,5 +1,7 @@
 package com.nifty.cloud.mb.core;
 
+import android.os.AsyncTask;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import static com.nifty.cloud.mb.core.NCMBScript.MethodType;
 
@@ -33,7 +36,7 @@ public class NCMBScriptService extends NCMBService {
     /**
      * script API version
      */
-    public static final String DEFAULT_SCRIPT_API_VERSION = "2015-08-03";
+    public static final String DEFAULT_SCRIPT_API_VERSION = "2015-09-01";
 
     /**
      * Inner class for callback
@@ -60,7 +63,6 @@ public class NCMBScriptService extends NCMBService {
     NCMBScriptService(NCMBContext context) {
         super(context);
         mServicePath = SERVICE_PATH;
-        mContext.baseUrl = DEFAULT_SCRIPT_DOMAIN_URL + "/" + DEFAULT_SCRIPT_API_VERSION + "/";
     }
 
     /**
@@ -68,35 +70,35 @@ public class NCMBScriptService extends NCMBService {
      *
      * @param scriptName script name
      * @param method     HTTP method
-     * @param params     ContentData or queryString
+     * @param header     header data
+     * @param body       content data
+     * @param query      query params
+     * @param baseUrl    script base url
      * @return Result to script
      * @throws NCMBException
      */
-    public byte[] execute(String scriptName, MethodType method, byte[] params) throws NCMBException {
+    public byte[] executeScript(String scriptName, MethodType method, Map<String, String> header, JSONObject body, JSONObject query, String baseUrl) throws NCMBException {
+
+        String scriptUrl;
+        if (baseUrl != null && baseUrl.length() > 0) {
+            scriptUrl = baseUrl + "/" + scriptName;
+        } else {
+            scriptUrl = DEFAULT_SCRIPT_DOMAIN_URL + "/" + DEFAULT_SCRIPT_API_VERSION + "/" + mServicePath + "/" + scriptName;
+        }
+
         byte[] responseByte = null;
-        String urlStr = mContext.baseUrl + mServicePath + scriptName;
-        String type = "";
-        String content = null;
-        JSONObject queryParam = null;
+        HttpURLConnection urlConnection = null;
+        String type;
         try {
             switch (method) {
                 case POST:
                     type = NCMBRequest.HTTP_METHOD_POST;
-                    if (params != null) {
-                        content = new String(params, "UTF-8");
-                    }
                     break;
                 case PUT:
                     type = NCMBRequest.HTTP_METHOD_PUT;
-                    if (params != null) {
-                        content = new String(params, "UTF-8");
-                    }
                     break;
                 case GET:
                     type = NCMBRequest.HTTP_METHOD_GET;
-                    if (params != null) {
-                        queryParam = new JSONObject(new String(params, "UTF-8"));
-                    }
                     break;
                 case DELETE:
                     type = NCMBRequest.HTTP_METHOD_DELETE;
@@ -105,26 +107,41 @@ public class NCMBScriptService extends NCMBService {
                     throw new IllegalArgumentException("Invalid methodType");
             }
 
+            String content = null;
+            if (body != null) {
+                content = body.toString();
+            }
+
             if (mContext.sessionToken == null) {
                 mContext.sessionToken = NCMBUser.getSessionToken();
             }
             String sessionToken = mContext.sessionToken;
             String applicationKey = mContext.applicationKey;
             String clientKey = mContext.clientKey;
+            NCMBRequest request = new NCMBRequest(scriptUrl, type, content, query, sessionToken, applicationKey, clientKey);
 
-            NCMBRequest request = new NCMBRequest(urlStr, type, content, queryParam, sessionToken, applicationKey, clientKey);
-
+            // query連結済みURLでコネクション作成
             URL url = request.getUrl();
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // メソッド設定
             urlConnection.setRequestMethod(request.getMethod());
-            // リクエストヘッダー設定
+
+            // NCMB定義のヘッダー設定
             for (String requestKey : request.getAllRequestProperties().keySet()) {
                 urlConnection.setRequestProperty(requestKey, request.getRequestProperty(requestKey));
             }
 
-            // コンテントデータ設定
-            if (urlConnection.getRequestMethod().equals("POST")
-                    || urlConnection.getRequestMethod().equals("PUT")) {
+            // User定義のヘッダー設定
+            if (header != null && !header.isEmpty()) {
+                for (String requestKey : header.keySet()) {
+                    urlConnection.setRequestProperty(requestKey, header.get(requestKey));
+                }
+            }
+
+            // body設定
+            if (content != null) {
+                urlConnection.setDoOutput(true);
                 DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
                 writer.write(request.getContent());
@@ -135,6 +152,7 @@ public class NCMBScriptService extends NCMBService {
             // 通信
             urlConnection.connect();
 
+            // 判定
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_CREATED
                     || urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 // 成功
@@ -156,21 +174,73 @@ public class NCMBScriptService extends NCMBService {
                 }
                 br.close();
 
-                if (sb.length() > 0) {
-                    JSONObject responseData = new JSONObject(new String(sb));
-                    String statusCode = "";
+                String statusCode = String.valueOf(urlConnection.getResponseCode());
+                String message = sb.toString();
+                if (message.length() > 0 && isJSONString(message)) {
+                    JSONObject responseData = new JSONObject(message);
                     if (responseData.has("status")) {
                         statusCode = responseData.getString("status");
                     } else if (responseData.has("code")) {
                         statusCode = responseData.getString("code");
                     }
-                    throw new NCMBException(statusCode, responseData.getString("error"));
+                    if (responseData.has("error")) {
+                        message = responseData.getString("error");
+                    }
                 }
+                throw new NCMBException(statusCode, message);
             }
         } catch (IOException | JSONException e) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
         return responseByte;
+    }
+
+    /**
+     * execute script to Nifty cloud mobile backend in background thread
+     *
+     * @param scriptName script name
+     * @param method     HTTP method
+     * @param header     header
+     * @param body       content data
+     * @param query      query params
+     * @param baseUrl    script base url
+     * @param callback   callback for after script execute
+     */
+    public void executeScriptInBackground(final String scriptName, final MethodType method, final Map<String, String> header, final JSONObject body, final JSONObject query, final String baseUrl, final ExecuteScriptCallback callback) {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+
+            byte[] res = null;
+            NCMBException error = null;
+
+            @Override
+            protected Void doInBackground(Void... param) {
+
+                try {
+                    res = executeScript(scriptName, method, header, body, query, baseUrl);
+                } catch (NCMBException e) {
+                    error = e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void o) {
+                callback.done(res, error);
+            }
+        }.execute();
+    }
+
+    boolean isJSONString(String str){
+        try {
+            new JSONObject(str);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
     }
 }
 
