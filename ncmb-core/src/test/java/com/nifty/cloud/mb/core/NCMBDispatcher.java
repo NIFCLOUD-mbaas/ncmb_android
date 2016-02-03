@@ -2,6 +2,7 @@ package com.nifty.cloud.mb.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -21,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
@@ -102,6 +104,31 @@ public class NCMBDispatcher {
                         return defaultErrorResponse();
                     }
                 }
+
+                if (requestMap.containsKey("header")) {
+                    Headers requestHeaders = request.getHeaders();
+                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    String mock = gson.toJson(requestMap.get("header"));
+                    try {
+                        JSONObject mockHeaders = new JSONObject(requestMap.get("header").toString());
+                        //System.out.println("mock:" + mockHeaders);
+                        //System.out.println("req:" + requestHeaders);
+
+                        Iterator keys = mockHeaders.keys();
+                        while(keys.hasNext() ) {
+                            String key = (String)keys.next();
+                            if (requestHeaders.get(key) != null && requestHeaders.get(key).equals(mockHeaders.getString(key))) {
+                                return new MockResponse().setResponseCode((int)responseMap.get("status"))
+                                        .setHeader("Content-Type", "application/json")
+                                        .setBody(readJsonResponse(responseMap.get("file").toString()));
+                            }
+                        }
+                    } catch (JSONException e) {
+                        return defaultErrorResponse();
+                    }
+                    continue;
+                }
+
                 return new MockResponse().setResponseCode((int)responseMap.get("status"))
                         .setHeader("Content-Type", "application/json")
                         .setBody(readJsonResponse(responseMap.get("file").toString()));
