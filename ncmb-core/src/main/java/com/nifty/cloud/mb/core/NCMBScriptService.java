@@ -26,7 +26,7 @@ public class NCMBScriptService extends NCMBService {
     /**
      * execute api path
      */
-    public static final String SERVICE_PATH = "logic";
+    public static final String SERVICE_PATH = "script";
 
     /**
      * script end point
@@ -140,7 +140,7 @@ public class NCMBScriptService extends NCMBService {
             }
 
             // body設定
-            if (content != null) {
+            if (request.getContent() != null) {
                 urlConnection.setDoOutput(true);
                 DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));

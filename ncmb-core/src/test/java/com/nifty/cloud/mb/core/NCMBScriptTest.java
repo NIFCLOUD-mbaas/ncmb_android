@@ -16,8 +16,12 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowLooper;
 
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
+/**
+ * NCMBScriptTest
+ */
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBScriptTest {
@@ -51,6 +55,10 @@ public class NCMBScriptTest {
 
     }
 
+    /**
+     * - 内容：executeが成功することを確認する
+     * - 結果：エラーが発生しないこと
+     */
     @Test
     public void script_execute_and_return_byte() throws Exception {
         NCMBScript script = new NCMBScript("testScript.js", NCMBScript.MethodType.GET, mScriptUrl);
@@ -60,10 +68,13 @@ public class NCMBScriptTest {
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
-        String expected = "hello";
-        Assert.assertTrue(Arrays.equals(result, expected.getBytes()));
+        Assert.assertEquals("hello", new String(result, "UTF-8"));
     }
 
+    /**
+     * - 内容：executeが失敗することを確認する
+     * - 結果：エラーが発生すること
+     */
     @Test
     public void script_execute_and_return_error() {
         NCMBScript script = new NCMBScript("errorTestScript.js", NCMBScript.MethodType.GET, mScriptUrl);
@@ -74,6 +85,10 @@ public class NCMBScriptTest {
         }
     }
 
+    /**
+     * - 内容：executeInBackgroundが成功することを確認する
+     * - 結果：エラーが発生しないこと
+     */
     @Test
     public void script_execute_asynchronously() throws Exception {
         NCMBScript script = new NCMBScript("testScript.js", NCMBScript.MethodType.GET, mScriptUrl);
@@ -84,8 +99,11 @@ public class NCMBScriptTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 } else {
-                    String expected = "hello,tarou";
-                    Assert.assertTrue(Arrays.equals(result, expected.getBytes()));
+                    try {
+                        Assert.assertEquals("hello,tarou", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
                 }
                 mCallbackFlag = true;
             }
@@ -97,6 +115,10 @@ public class NCMBScriptTest {
         Assert.assertTrue(mCallbackFlag);
     }
 
+    /**
+     * - 内容：executeInBackgroundが失敗することを確認する
+     * - 結果：エラーが発生すること
+     */
     @Test
     public void script_execute_asynchronously_and_return_error() {
         NCMBScript script = new NCMBScript("errorTestScript.js", NCMBScript.MethodType.GET, mScriptUrl);
@@ -107,6 +129,188 @@ public class NCMBScriptTest {
                     Assert.fail();
                 } else {
                     Assert.assertEquals(e.getCode(), "404");
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：bodyが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_content() throws Exception {
+        NCMBScript script = new NCMBScript("testScript.js", NCMBScript.MethodType.POST, mScriptUrl);
+        JSONObject body = new JSONObject("{name:tarou}");
+        script.executeInBackground(null, body, null, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello,tarou", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：headerが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_header() throws Exception {
+        NCMBScript script = new NCMBScript("testScript.js", NCMBScript.MethodType.GET, mScriptUrl);
+        HashMap<String, String> header = new HashMap<String, String>();
+        header.put("key", "value");
+        script.executeInBackground(header, null, null, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：MethodにPOSTが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_POST() throws Exception {
+        NCMBScript script = new NCMBScript("testScript_POST.js", NCMBScript.MethodType.POST, mScriptUrl);
+        JSONObject body = new JSONObject();
+        body.put("message","hello,tarou");
+        script.executeInBackground(null, body, null, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello,tarou", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：MethodにPUTが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_PUT() throws Exception {
+        NCMBScript script = new NCMBScript("testScript_PUT.js", NCMBScript.MethodType.PUT, mScriptUrl);
+        JSONObject body = new JSONObject();
+        body.put("message","hello,tarou");
+        script.executeInBackground(null, body, null, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello,tarou", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：MethodにGETが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_GET() throws Exception {
+        NCMBScript script = new NCMBScript("testScript_GET.js", NCMBScript.MethodType.GET, mScriptUrl);
+        JSONObject query = new JSONObject("{name:tarou}");
+        script.executeInBackground(null, null, query, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello,tarou", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                mCallbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(mCallbackFlag);
+    }
+
+    /**
+     * - 内容：MethodにDELETEが指定出来ることを確認する
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void script_execute_DELETE() throws Exception {
+        NCMBScript script = new NCMBScript("testScript_DELETE.js", NCMBScript.MethodType.DELETE, mScriptUrl);
+        script.executeInBackground(null, null, null, new ExecuteScriptCallback() {
+            @Override
+            public void done(byte[] result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    try {
+                        Assert.assertEquals("hello", new String(result, "UTF-8"));
+                    } catch (UnsupportedEncodingException error) {
+                        Assert.fail(error.getMessage());
+                    }
                 }
                 mCallbackFlag = true;
             }
