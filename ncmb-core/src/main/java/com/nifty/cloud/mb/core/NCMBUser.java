@@ -294,11 +294,20 @@ public class NCMBUser extends NCMBObject {
         }
     }
 
+    /**
+     * Send Email for the password reset
+     * @param mailAddress mail address
+     */
     public static void requestPasswordReset(String mailAddress) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         service.requestPasswordReset(mailAddress);
     }
 
+    /**
+     * Send Email for the password reset in background thread
+     * @param mailAddress mail address
+     * @param callback callback when process finished
+     */
     public static void requestPasswordResetInBackground(String mailAddress, DoneCallback callback){
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
