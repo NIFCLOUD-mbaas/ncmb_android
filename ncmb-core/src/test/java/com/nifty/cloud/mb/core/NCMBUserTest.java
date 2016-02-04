@@ -122,6 +122,32 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void requestPasswordResetSynchronously () throws Exception {
+        try{
+            NCMBUser.requestPasswordReset("sample@example.com");
+        }catch (Exception error){
+            Assert.fail(error.getMessage());
+        }
+    }
+
+    @Test
+    public void requestPasswordResetInBackground () throws Exception {
+        NCMBUser.requestPasswordResetInBackground("sample@example.com", new DoneCallback(){
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
     public void login () throws Exception {
         NCMBUser user = NCMBUser.login("Nifty Tarou", "dummyPassword");
 

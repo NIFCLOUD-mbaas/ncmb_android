@@ -294,6 +294,23 @@ public class NCMBUser extends NCMBObject {
         }
     }
 
+    public static void requestPasswordReset(String mailAddress) throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        service.requestPasswordReset(mailAddress);
+    }
+
+    public static void requestPasswordResetInBackground(String mailAddress, DoneCallback callback){
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        try {
+            service.requestPasswordResetInBackground(mailAddress, callback);
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+
     /**
      * Login with mailAddress and password
      *
