@@ -644,6 +644,33 @@
     file: valid_post_inviteByMail_response.json
 ---
   request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: "sample@example.com"
+  response:
+    status: 201
+    file: valid_post_requestPasswordReset_response.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: ""
+  response:
+    status: 400
+    file: valid_error_invalid_format.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: null
+  response:
+    status: 400
+    file: valid_error_missing_value.json
+---
+  request:
     url: /2013-09-01/requestMailAddressUserEntry
     method: POST
   response:

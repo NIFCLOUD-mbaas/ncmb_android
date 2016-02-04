@@ -369,6 +369,79 @@ public class NCMBUserServiceTest {
     }
 
     /**
+     * - 内容：指定したメールアドレスでパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackが実行されること
+     */
+    @Test
+    public void requestPasswordResetInBackground_with_callback() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("sample@example.com", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this should not be happen.");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスを指定せずにパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_no_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground(null, new DoneCallback(){
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.MISSING_VALUE);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスに空文字を指定してパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_empty_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("", new DoneCallback(){
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.INVALID_FORMAT);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
      * - 内容：getUser が成功する事を確認する
      * - 結果：NCMBUser オブジェクトが正しく生成されること
      */
