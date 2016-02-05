@@ -290,6 +290,78 @@ public class NCMBUserService extends NCMBService {
         });
     }
 
+    protected RequestParams requestPasswordResetParams(String mailAddress) throws Exception {
+        if (mailAddress == null) {
+            //throw new NCMBException(NCMBException.MISSING_VALUE, "mail address required.");
+            throw new IllegalArgumentException("mail address required.");
+        } else {
+            RequestParams reqParams = new RequestParams();
+
+            reqParams.url = mContext.baseUrl + "requestPasswordReset";
+            reqParams.type = NCMBRequest.HTTP_METHOD_POST;
+
+            JSONObject params = new JSONObject();
+            try {
+                params.put("mailAddress", mailAddress);
+            } catch (JSONException e) {
+                throw new NCMBException(NCMBException.INVALID_JSON, "invalid JSON data.");
+            }
+            reqParams.content = params.toString();
+            return reqParams;
+        }
+    }
+
+    /**
+     * Send Email for the password reset in background thread
+     * @param mailAddress mail address
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void requestPasswordReset(String mailAddress) throws NCMBException{
+        RequestParams reqParams = null;
+        try {
+            reqParams = requestPasswordResetParams(mailAddress);
+        } catch (Exception e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, e.getMessage());
+        }
+        sendRequest(reqParams);
+    }
+
+    /**
+     * Send Email for the password reset in background thread
+     * @param mailAddress mail address
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void requestPasswordResetInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
+        RequestParams reqParams = null;
+        try {
+            reqParams = requestPasswordResetParams(mailAddress);
+        } catch (Exception e) {
+            if (callback != null) {
+                callback.done(new NCMBException(NCMBException.MISSING_VALUE, e.getMessage()));
+            }
+            return;
+        }
+
+        sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+                DoneCallback callback = (DoneCallback) mCallback;
+                if (callback != null) {
+                    callback.done(null);
+                }
+            }
+
+            @Override
+            public void handleError(NCMBException e) {
+                DoneCallback callback = (DoneCallback) mCallback;
+                if (callback != null) {
+                    callback.done(e);
+                }
+            }
+        });
+    }
+
     /**
      * Setup params to register new user
      *
