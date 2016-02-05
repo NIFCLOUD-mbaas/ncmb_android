@@ -295,8 +295,9 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * Send Email for the password reset
+     * Request Email for the password reset
      * @param mailAddress mail address
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public static void requestPasswordReset(String mailAddress) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -304,7 +305,7 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * Send Email for the password reset in background thread
+     * Request Email for the password reset in background thread
      * @param mailAddress mail address
      * @param callback callback when process finished
      */
