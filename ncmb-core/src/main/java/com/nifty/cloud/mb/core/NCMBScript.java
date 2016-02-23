@@ -88,7 +88,7 @@ public class NCMBScript {
     }
 
     /**
-     * Constructor with script name
+     * Constructor with script name and base url
      *
      * @param scriptName script name
      * @param method     HTTP method
@@ -101,7 +101,7 @@ public class NCMBScript {
     }
 
     /**
-     * Run the specified script in the constructor
+     * Run the script with request parameters
      *
      * @param header header data
      * @param body   content data
@@ -115,7 +115,7 @@ public class NCMBScript {
     }
 
     /**
-     * Run the specified script in the constructor is asynchronously
+     * Run the script asynchronously with request parameters
      *
      * @param header   header data
      * @param body     content data
