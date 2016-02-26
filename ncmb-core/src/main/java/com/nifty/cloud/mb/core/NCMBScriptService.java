@@ -31,7 +31,7 @@ public class NCMBScriptService extends NCMBService {
     /**
      * script end point
      */
-    public static final String DEFAULT_SCRIPT_DOMAIN_URL = "https://logic.mb.cloud.nifty.com";
+    public static final String DEFAULT_SCRIPT_DOMAIN_URL = "https://script.mb.cloud.nifty.com";
 
     /**
      * script API version
