@@ -133,7 +133,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -147,7 +147,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       timeZone: "Etc/UTC"
       key: "value"
   response:
@@ -163,7 +163,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -178,7 +178,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       timeZone: "Etc/UTC"
   response:
     status: 201
@@ -205,7 +205,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -218,7 +218,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -232,7 +232,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -245,7 +245,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.1.4"
+      sdkVersion: "2.2.0"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -953,3 +953,78 @@
   response:
     status: 200
     file: valid_search_file_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+    header:
+      {"key":"value"}
+  response:
+    status: 200
+    file: valid_get_script_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: POST
+    body:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+  response:
+    status: 200
+    file: valid_get_script_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+    query:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/errorTestScript.js
+    method: GET
+  response:
+    status: 404
+    file: valid_error_script_notFound_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_POST.js
+    method: POST
+    body:
+      {"message":"hello,tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_PUT.js
+    method: PUT
+    body:
+      {"message":"hello,tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_GET.js
+    method: GET
+    query:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_DELETE.js
+    method: DELETE
+  response:
+    status: 200
+    file: valid_get_script_response.json
