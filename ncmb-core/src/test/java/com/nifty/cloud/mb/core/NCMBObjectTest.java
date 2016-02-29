@@ -33,6 +33,7 @@ import java.util.Arrays;
 public class NCMBObjectTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -48,6 +49,8 @@ public class NCMBObjectTest {
                 null);
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -85,7 +88,7 @@ public class NCMBObjectTest {
 
     @Test
     public void save_object_asynchronously_valid_class() throws Exception {
-
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("SaveObjectTest");
         obj.put("key", "value");
         obj.saveInBackground(new DoneCallback() {
@@ -94,11 +97,14 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("save Background is failed.");
                 }
+                callbackFlag = true;
             }
         });
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNotNull(obj);
         Assert.assertEquals("7FrmPTBKSNtVjajm9", obj.getObjectId());
@@ -228,6 +234,7 @@ public class NCMBObjectTest {
 
     @Test
     public void update_object_in_background_with_update_value() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("updateTestObjectId");
         obj.put("updateKey", "updateValue");
@@ -237,11 +244,14 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("update object error");
                 }
+                callbackFlag = true;
             }
         });
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-04T11:28:30.348Z")));
@@ -358,6 +368,7 @@ public class NCMBObjectTest {
 
     @Test
     public void fetch_object_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
         obj.fetchInBackground(new FetchCallback<NCMBObject>() {
@@ -380,11 +391,14 @@ public class NCMBObjectTest {
                         e1.printStackTrace();
                     }
                 }
+                callbackFlag = true;
             }
         });
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
         Assert.assertEquals("value", obj.getString("key"));
@@ -463,6 +477,7 @@ public class NCMBObjectTest {
 
     @Test
     public void delete_object_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("deleteTestObjectId");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -471,8 +486,14 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("delete object method should not raise exception:");
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test

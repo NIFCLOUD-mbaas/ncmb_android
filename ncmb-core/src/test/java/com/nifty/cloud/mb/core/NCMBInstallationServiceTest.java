@@ -17,11 +17,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.httpclient.FakeHttp;
 
 import java.io.BufferedReader;
@@ -49,6 +51,7 @@ public class NCMBInstallationServiceTest {
     static final String PACKAGE_NAME = "com.nifty.cloud.mb.core";
     static final String APP_VERSION = "1.0";
     static final String APP_NAME = "ncmb-core";
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -88,6 +91,11 @@ public class NCMBInstallationServiceTest {
         MockitoAnnotations.initMocks(this);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -115,6 +123,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void createInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.createInstallationInBackground("xxxxxxxxxxxxxxxxxxx", new JSONObject(), new ExecuteServiceCallback() {
             @Override
@@ -126,8 +135,14 @@ public class NCMBInstallationServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -158,6 +173,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void updateInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         JSONObject json = new JSONObject();
         json.put("key", "value_update");
@@ -171,8 +187,14 @@ public class NCMBInstallationServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -199,14 +221,21 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void deleteInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.deleteInstallationInBackground("7FrmPTBKSNtVjajm", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -229,6 +258,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void fetchInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.fetchInstallationInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBInstallation>() {
             @Override
@@ -237,8 +267,15 @@ public class NCMBInstallationServiceTest {
                 Assert.assertNull(e);
                 Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getString("objectId"));
                 Assert.assertEquals("value", installation.getString("key"));
+
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -268,6 +305,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void searchInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //search condition
         JSONObject query = new JSONObject();
         query.put("where", new JSONObject("{deviceType:android}"));
@@ -282,8 +320,14 @@ public class NCMBInstallationServiceTest {
                 for (int i = 0; i < results.size(); i++) {
                     Assert.assertEquals("android", results.get(i).getDeviceType());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.Arrays;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBRoleTest {
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -42,6 +43,8 @@ public class NCMBRoleTest {
 
         Robolectric.getBackgroundThreadScheduler().pause();
         Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -78,6 +81,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -85,6 +89,11 @@ public class NCMBRoleTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertEquals("dummyObjectId", role.getObjectId());
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -119,6 +128,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -127,6 +137,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -162,6 +173,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -171,6 +183,7 @@ public class NCMBRoleTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
         Assert.assertNull(role.getString("belongUser"));
+        Assert.assertTrue(callbackFlag);
     }
 
 
@@ -206,6 +219,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -214,6 +228,7 @@ public class NCMBRoleTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -249,6 +264,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -258,6 +274,7 @@ public class NCMBRoleTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), role.getUpdateDate());
         Assert.assertNull(role.getString("belongRole"));
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -286,6 +303,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -296,6 +314,7 @@ public class NCMBRoleTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2013-08-30T05:04:19.045Z"), role.getCreateDate());
         Assert.assertEquals(df.parse("2013-08-30T05:04:19.045Z"), role.getCreateDate());
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -321,6 +340,7 @@ public class NCMBRoleTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
 
@@ -329,5 +349,6 @@ public class NCMBRoleTest {
 
         Assert.assertNull(role.getRoleName());
         Assert.assertNull(role.getObjectId());
+        Assert.assertTrue(callbackFlag);
     }
 }

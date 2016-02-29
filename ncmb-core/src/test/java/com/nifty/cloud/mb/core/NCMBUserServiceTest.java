@@ -12,10 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.BufferedReader;
@@ -32,6 +34,7 @@ import java.util.Date;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBUserServiceTest {
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -50,6 +53,11 @@ public class NCMBUserServiceTest {
                 null);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -93,8 +101,14 @@ public class NCMBUserServiceTest {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals(userName, user.getUserName());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -132,8 +146,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -177,8 +197,13 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -214,8 +239,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -249,8 +280,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -282,8 +319,14 @@ public class NCMBUserServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -315,8 +358,87 @@ public class NCMBUserServiceTest {
                 Assert.assertNotNull(e);
                 Assert.assertEquals("E400003", e.getCode());
                 Assert.assertEquals("mailAddress is empty.",e.getMessage());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：指定したメールアドレスでパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackが実行されること
+     */
+    @Test
+    public void requestPasswordResetInBackground_with_callback() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("sample@example.com", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this should not be happen.");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスを指定せずにパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_no_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground(null, new DoneCallback(){
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.MISSING_VALUE);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスに空文字を指定してパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_empty_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("", new DoneCallback(){
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.INVALID_FORMAT);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -345,8 +467,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -391,8 +519,14 @@ public class NCMBUserServiceTest {
                 } catch (JSONException e1) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -427,8 +561,14 @@ public class NCMBUserServiceTest {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals(userName, user.getUserName());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -509,8 +649,14 @@ public class NCMBUserServiceTest {
                 Assert.assertNotNull(e);
                 Assert.assertEquals("E400003", e.getCode());
                 Assert.assertNotNull("password is empty.", e.getMessage());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -543,8 +689,13 @@ public class NCMBUserServiceTest {
                 Assert.assertNotNull(e);
                 Assert.assertEquals("E401002", e.getCode());
                 Assert.assertNotNull("Authentication error with ID/PASS incorrect.", e.getMessage());
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -577,8 +728,13 @@ public class NCMBUserServiceTest {
                 Assert.assertNotNull(e);
                 Assert.assertEquals("E400003", e.getCode());
                 Assert.assertNotNull("password is empty.", e.getMessage());
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -617,11 +773,16 @@ public class NCMBUserServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
 
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
         Assert.assertNull(userService.mContext.sessionToken);
         Assert.assertNull(userService.mContext.userId);
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -664,8 +825,14 @@ public class NCMBUserServiceTest {
                 NCMBUser user2 = result.get(1);
                 Assert.assertEquals(user2.getObjectId(), "dummyObjectId02");
                 Assert.assertEquals(user2.getUserName(), "Nifty Jirou");
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -674,12 +841,12 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUser() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
 
-        ArrayList<NCMBUser> result = userService.searchUser(conditions);
+        ArrayList<NCMBUser> result = userService.searchUser(query.getConditions());
         Assert.assertEquals(result.size(), 1);
 
         NCMBUser user1 = result.get(0);
@@ -693,11 +860,11 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUserInBackground() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
-        userService.searchUserInBackground(conditions, new SearchUserCallback() {
+        userService.searchUserInBackground(query.getConditions(), new SearchUserCallback() {
             @Override
             public void done(ArrayList<NCMBUser> result, NCMBException e) {
                 Assert.assertEquals(e, null);
@@ -706,8 +873,14 @@ public class NCMBUserServiceTest {
                 NCMBUser user1 = result.get(0);
                 Assert.assertEquals(user1.getObjectId(), "dummyObjectId01");
                 Assert.assertEquals(user1.getUserName(), "Nifty Tarou");
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
 
@@ -912,8 +1085,14 @@ public class NCMBUserServiceTest {
                 Assert.assertNull(NCMB.sCurrentContext.userId);
                 Assert.assertNull(NCMB.sCurrentContext.sessionToken);
                 Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -1014,8 +1193,13 @@ public class NCMBUserServiceTest {
                     Assert.assertNull(NCMB.sCurrentContext.sessionToken);
                     Assert.assertNull(NCMB.sCurrentContext.userId);
                 }
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**

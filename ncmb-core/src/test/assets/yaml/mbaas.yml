@@ -271,6 +271,15 @@
     method: GET
     query:
       where: '{"deviceType":"android"}'
+  response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
       limit: 2
   response:
     status: 200
@@ -348,6 +357,15 @@
     file: valid_get_searchPush_response.json
 ---
   request:
+    url: /2013-09-01/push
+    method: GET
+    query:
+      where: '{"target":["android"]}'
+  response:
+    status: 200
+    file: valid_get_searchPush_response.json
+---
+  request:
     url: /2013-09-01/push/7FrmPTBKSNtVjajm
     method: DELETE
   response:
@@ -391,6 +409,15 @@
       skip: 3
       include: 'pointerKey'
       order: 'ascendingKey,-descendingKey'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
   response:
     status: 200
     file: valid_search_response.json
@@ -615,6 +642,33 @@
   response:
     status: 201
     file: valid_post_inviteByMail_response.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: "sample@example.com"
+  response:
+    status: 201
+    file: valid_post_requestPasswordReset_response.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: ""
+  response:
+    status: 400
+    file: valid_error_invalid_format.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: null
+  response:
+    status: 400
+    file: valid_error_missing_value.json
 ---
   request:
     url: /2013-09-01/requestMailAddressUserEntry
@@ -876,8 +930,26 @@
     file: valid_get_searchRole_response.json
 ---
   request:
+    url: /2013-09-01/roles
+    method: GET
+    query:
+      where: '{"roleName":"testRole"}'
+  response:
+    status: 200
+    file: valid_get_searchRole_response.json
+---
+  request:
     url: /2013-09-01/files
     method: GET
+  response:
+    status: 200
+    file: valid_search_file_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+      where: '{"fileName":"testFile"}'
   response:
     status: 200
     file: valid_search_file_response.json
