@@ -83,7 +83,7 @@ public class NCMBScript {
      * @param scriptName script name
      * @param method     HTTP method
      */
-    NCMBScript(String scriptName, MethodType method) {
+    public NCMBScript(String scriptName, MethodType method) {
         this(scriptName, method, null);
     }
 
@@ -94,7 +94,7 @@ public class NCMBScript {
      * @param method     HTTP method
      * @param baseUrl    script base url
      */
-    NCMBScript(String scriptName, MethodType method, String baseUrl) {
+    public NCMBScript(String scriptName, MethodType method, String baseUrl) {
         mScriptName = scriptName;
         mMethod = method;
         mBaseUrl = baseUrl;
