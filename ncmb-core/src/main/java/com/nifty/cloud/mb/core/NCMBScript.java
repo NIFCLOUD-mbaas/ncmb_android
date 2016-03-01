@@ -78,7 +78,7 @@ public class NCMBScript {
     }
 
     /**
-     * Constructor with script name
+     * Create NCMBScript instance with specified script name and request method
      *
      * @param scriptName script name
      * @param method     HTTP method
@@ -88,7 +88,8 @@ public class NCMBScript {
     }
 
     /**
-     * Constructor with script name and base url
+     * Create NCMBScript instance with specified script name and request method <br/>
+     * This constructor can set the custom endpoint for debug
      *
      * @param scriptName script name
      * @param method     HTTP method
@@ -101,13 +102,13 @@ public class NCMBScript {
     }
 
     /**
-     * Run the script with request parameters
+     * Execute the script with request parameters
      *
      * @param header header data
      * @param body   content data
      * @param query  query params
      * @return Result to script
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public byte[] execute(Map<String, String> header, JSONObject body, JSONObject query) throws NCMBException {
         NCMBScriptService scriptService = (NCMBScriptService) NCMB.factory(NCMB.ServiceType.SCRIPT);
@@ -115,7 +116,7 @@ public class NCMBScript {
     }
 
     /**
-     * Run the script asynchronously with request parameters
+     * Execute the script asynchronously with request parameters
      *
      * @param header   header data
      * @param body     content data
