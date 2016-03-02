@@ -140,7 +140,10 @@ public class NCMBConnection {
                         }
 
                     } catch (IOException e) {
-
+                        // Android4.3以下は認証エラーの場合、IOExceptionが発生するため一律でCurrentUserを破棄する
+                        if(e.getMessage().equals("No authentication challenges found")){
+                            NCMBUserService.clearCurrentUser();
+                        }
                         throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
                     } finally {
                         //Disconnect HTTPURLConnection
