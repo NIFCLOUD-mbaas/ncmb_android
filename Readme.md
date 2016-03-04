@@ -6,6 +6,19 @@
 
 Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
 
+## jarの作成
+
+リリースページからダウンロードせずにjarを作成する場合は、<br>
+以下のコマンドをプロジェクトのルートディレクトリで実行してください。
+
+```
+./gradlew clean makeJar
+```
+
+`ncmb-core/release`にNCMB.jarが作成されます。
+
+Android Studioから作成する場合は、<br>
+Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
 
 ## 依存ライブラリ
 
@@ -13,7 +26,7 @@ Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロード�
 
 - Gson
 
-プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。
+プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。<br>
 事前にSDK Managerでのインストールが必要です。
 
 - Android Support Library
