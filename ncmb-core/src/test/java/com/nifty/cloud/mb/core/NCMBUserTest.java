@@ -132,7 +132,7 @@ public class NCMBUserTest {
 
     @Test
     public void requestPasswordResetInBackground () throws Exception {
-        NCMBUser.requestPasswordResetInBackground("sample@example.com", new DoneCallback(){
+        NCMBUser.requestPasswordResetInBackground("sample@example.com", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
@@ -1006,6 +1006,33 @@ public class NCMBUserTest {
 
         Assert.assertFalse(user.isLinkedWith("google"));
         Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：ログイン状態が取得できる事を確認する
+     * - 結果：ログイン中はtrueが返却される事
+     */
+    @Test
+    public void isAuthenticated_true() throws Exception {
+        //connect post
+        NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUser user = userService.loginByName("Nifty Tarou", "dummyPassword");
+        Assert.assertEquals("Nifty Tarou", user.getUserName());
+
+        //check isAuthenticated
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        Assert.assertTrue(currentUser.isAuthenticated());
+    }
+
+    /**
+     * - 内容：ログアウト状態が取得できる事を確認する
+     * - 結果：ログアウト中はfalseが返却される事
+     */
+    @Test
+    public void isAuthenticated_false() throws Exception {
+        //check isAuthenticated
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        Assert.assertFalse(currentUser.isAuthenticated());
     }
 
     @Test

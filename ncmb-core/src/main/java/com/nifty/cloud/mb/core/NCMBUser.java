@@ -173,6 +173,15 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
+     * Decision whether logged in
+     *
+     * @return Return true if logged in
+     */
+    public boolean isAuthenticated() {
+            return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
+    }
+
+    /**
      * Check for specified provider's authentication data is linked
      * @param provider facebook or twitter or google
      * @return Return true if authentication data is linked
