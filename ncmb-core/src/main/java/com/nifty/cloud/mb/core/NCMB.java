@@ -9,7 +9,7 @@ import android.content.pm.PackageManager;
  */
 public class NCMB {
     /** Version of this SDK */
-    public static final String SDK_VERSION = "2.2.0";
+    public static final String SDK_VERSION = "2.2.1";
 
     /** Prefix of keys in metadata for NCMB settings */
     public static final String METADATA_PREFIX = "com.nifty.cloud.mb.";
