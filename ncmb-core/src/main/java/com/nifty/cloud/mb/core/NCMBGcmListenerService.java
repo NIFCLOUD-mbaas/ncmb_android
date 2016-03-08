@@ -120,7 +120,7 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 new ComponentName(packageName, activityName);
         intent.setComponent(componentName);
         intent.putExtras(pushData);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
 
         //pushDataから情報を取得
