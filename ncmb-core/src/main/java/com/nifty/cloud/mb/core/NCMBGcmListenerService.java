@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Random;
 
 /**
  * GCM push notification receive class
@@ -58,7 +59,7 @@ public class NCMBGcmListenerService extends GcmListenerService {
         int overlap = appInfo.metaData.getInt(NOTIFICATION_OVERLAP_KEY);
 
         //デフォルト複数表示
-        int notificationId = (int) System.currentTimeMillis();
+        int notificationId = new Random().nextInt();
 
         if (overlap == 0 && containsKey) {
             //最新のみ表示
@@ -120,7 +121,10 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 new ComponentName(packageName, activityName);
         intent.setComponent(componentName);
         intent.putExtras(pushData);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+
+
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, new Random().nextInt(), intent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
 
         //pushDataから情報を取得
