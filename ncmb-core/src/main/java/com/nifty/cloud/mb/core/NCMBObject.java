@@ -90,7 +90,7 @@ public class NCMBObject extends NCMBBase{
             }
         };
         if (getObjectId() == null) {
-            NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
+            NCMBObjectService objService = new NCMBObjectService(NCMB.getCurrentContext());
             objService.saveObjectInBackground(mClassName, mFields, executeCallback);
         } else {
             JSONObject updateJson = null;
@@ -102,7 +102,7 @@ public class NCMBObject extends NCMBBase{
                 }
             }
 
-            NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
+            NCMBObjectService objService = new NCMBObjectService(NCMB.getCurrentContext());
             objService.updateObjectInBackground(mClassName, getObjectId(), updateJson,executeCallback);
         }
 
@@ -130,7 +130,7 @@ public class NCMBObject extends NCMBBase{
      * @param callback callback after fetch data
      */
     public void fetchInBackground (final FetchCallback callback){
-        NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
+        NCMBObjectService objService = new NCMBObjectService(NCMB.getCurrentContext());
         objService.fetchObjectInBackground(mClassName, getObjectId(), new FetchCallback<NCMBObject>() {
             @Override
             public void done(NCMBObject object, NCMBException e) {
@@ -163,7 +163,7 @@ public class NCMBObject extends NCMBBase{
      * @param callback callback after delete object
      */
     public void deleteObjectInBackground (final DoneCallback callback) {
-        NCMBObjectService objService = new NCMBObjectService(NCMB.sCurrentContext);
+        NCMBObjectService objService = new NCMBObjectService(NCMB.getCurrentContext());
         objService.deleteObjectInBackground(mClassName, getObjectId(), new ExecuteServiceCallback() {
             @Override
             public void done(JSONObject jsonData, NCMBException e) {

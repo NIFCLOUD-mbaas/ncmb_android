@@ -84,7 +84,7 @@ public class NCMBInstallationServiceTest {
 
 
         Assert.assertEquals(
-                NCMB.sCurrentContext.context.getApplicationInfo().name,
+                NCMB.getCurrentContext().context.getApplicationInfo().name,
                 APP_NAME
         );
 
@@ -381,7 +381,7 @@ public class NCMBInstallationServiceTest {
         NCMBInstallation.subscribe(channel, activity.getClass(), android.R.drawable.sym_def_app_icon);
 
         //get file data
-        File dir = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "channels");
+        File dir = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "channels");
         File file = new File(dir, channel);
         JSONObject json = NCMBLocalFile.readFile(file);
 
@@ -590,7 +590,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("2014-06-03T11:28:30.348Z", json.getString("createDate"));
 
         //check new create localFile
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
         if (!localFile.exists()){
             Assert.fail("currentInstallationFile is not created.");
         }
@@ -633,7 +633,7 @@ public class NCMBInstallationServiceTest {
         localFileData.put("sdkVersion", "1.5.0");
 
         //create currentInstallation from v1 path
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
         try {
             FileOutputStream out = new FileOutputStream(localFile);
             out.write(localFileData.toString().getBytes("UTF-8"));

@@ -899,7 +899,7 @@ public class NCMBUserServiceTest {
         Assert.assertEquals(resultDate, user.getCreateDate());
 
         //check new create localFile
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
         if (!localFile.exists()){
             Assert.fail("currentUserFile is not created.");
         }
@@ -917,7 +917,7 @@ public class NCMBUserServiceTest {
 
         Assert.assertEquals("dummyObjectId", localData.getString("objectId"));
         Assert.assertEquals("dummySessionToken", localData.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", localData.getString("userName"));
         //パスワードをローカルに持たない
         //Assert.assertEquals("dummyPassword", localData.getString("password"));
@@ -943,7 +943,7 @@ public class NCMBUserServiceTest {
         localFileData.put("updateDate","2015-09-11T02:24:03.597Z");
 
         //create currentUser from v1 path
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
         try {
             FileOutputStream out = new FileOutputStream(localFile);
             out.write(localFileData.toString().getBytes("UTF-8"));
@@ -955,7 +955,7 @@ public class NCMBUserServiceTest {
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("000-000-0000", currentUser.getString("phone"));
         Assert.assertEquals("dummyUserId", currentUser.getObjectId());
         Assert.assertEquals("email@example.com", currentUser.getMailAddress());
@@ -997,7 +997,7 @@ public class NCMBUserServiceTest {
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("Nifty Tarou", currentUser.getUserName());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", currentUser.getUserName());
         //パスワードをローカルに持たない
         //Assert.assertEquals("dummyPassword", currentUser.getValue("password"));
@@ -1059,8 +1059,8 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         currentUser = NCMBUser.getCurrentUser();
-        Assert.assertNull(NCMB.sCurrentContext.userId);
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(currentUser.getObjectId());
     }
 
@@ -1082,8 +1082,8 @@ public class NCMBUserServiceTest {
             @Override
             public void done(JSONObject json, NCMBException e) {
                 Assert.assertNull(e);
-                Assert.assertNull(NCMB.sCurrentContext.userId);
-                Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+                Assert.assertNull(NCMB.getCurrentContext().userId);
+                Assert.assertNull(NCMB.getCurrentContext().sessionToken);
                 Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
                 callbackFlag = true;
             }
@@ -1109,7 +1109,7 @@ public class NCMBUserServiceTest {
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", user.getUserName());
     }
 
@@ -1125,7 +1125,7 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(currentUser.getObjectId());
     }
 
@@ -1144,7 +1144,7 @@ public class NCMBUserServiceTest {
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
 
         //connect auto logout
         NCMBException error = null;
@@ -1161,8 +1161,8 @@ public class NCMBUserServiceTest {
         //check currentUser
         currentUser = NCMBUser.getCurrentUser();
         Assert.assertNull(currentUser.getObjectId());
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-        Assert.assertNull(NCMB.sCurrentContext.userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
     }
 
     /**
@@ -1179,7 +1179,7 @@ public class NCMBUserServiceTest {
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
 
         JSONObject update = new JSONObject("{error:test}");
         userService.updateUserInBackground(user.getObjectId(), update, new ExecuteServiceCallback() {
@@ -1190,8 +1190,8 @@ public class NCMBUserServiceTest {
                 } else {
                     Assert.assertEquals(NCMBException.INVALID_AUTH_HEADER, e.getCode());
                     Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
-                    Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-                    Assert.assertNull(NCMB.sCurrentContext.userId);
+                    Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+                    Assert.assertNull(NCMB.getCurrentContext().userId);
                 }
                 callbackFlag = true;
             }
@@ -1215,17 +1215,17 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
 
         //clear currentUser
-        NCMB.sCurrentContext.sessionToken = null;
+        NCMB.getCurrentContext().sessionToken = null;
         NCMBUser.currentUser = null;
 
         //check newCurrentUser
         NCMBUser newCurrentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",newCurrentUser.getString("sessionToken"));
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
     }

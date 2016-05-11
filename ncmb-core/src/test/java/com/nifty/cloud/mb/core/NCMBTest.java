@@ -47,9 +47,9 @@ public class NCMBTest {
     @Test
     public void initialize_with_apiKey() {
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),"appKey","cliKey");
-        Assert.assertEquals("appKey",NCMB.sCurrentContext.applicationKey);
-        Assert.assertEquals("cliKey", NCMB.sCurrentContext.clientKey);
-        Assert.assertEquals("https://mb.api.cloud.nifty.com/2013-09-01/", NCMB.sCurrentContext.baseUrl);
+        Assert.assertEquals("appKey",NCMB.getCurrentContext().applicationKey);
+        Assert.assertEquals("cliKey", NCMB.getCurrentContext().clientKey);
+        Assert.assertEquals("https://mb.api.cloud.nifty.com/2013-09-01/", NCMB.getCurrentContext().baseUrl);
     }
 
     @Test
@@ -59,9 +59,9 @@ public class NCMBTest {
                         "cliKey",
                         mServer.getUrl("/").toString(),
                         null);
-        Assert.assertEquals("appKey",NCMB.sCurrentContext.applicationKey);
-        Assert.assertEquals("cliKey", NCMB.sCurrentContext.clientKey);
-        Assert.assertEquals(mServer.getUrl("/" + NCMB.DEFAULT_API_VERSION + "/").toString(), NCMB.sCurrentContext.baseUrl);
+        Assert.assertEquals("appKey",NCMB.getCurrentContext().applicationKey);
+        Assert.assertEquals("cliKey", NCMB.getCurrentContext().clientKey);
+        Assert.assertEquals(mServer.getUrl("/" + NCMB.DEFAULT_API_VERSION + "/").toString(), NCMB.getCurrentContext().baseUrl);
     }
 
     @Test
@@ -72,9 +72,10 @@ public class NCMBTest {
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey");
-        PowerMockito.verifyStatic();
-        Assert.assertEquals("appKey", NCMB.sCurrentContext.applicationKey);
-        Assert.assertEquals("cliKey", NCMB.sCurrentContext.clientKey);
-        Assert.assertEquals("http://sample.com/2015-07-23/", NCMB.sCurrentContext.baseUrl);
+
+        Assert.assertEquals("appKey", NCMB.getCurrentContext().applicationKey);
+        Assert.assertEquals("cliKey", NCMB.getCurrentContext().clientKey);
+        Assert.assertEquals("http://sample.com/2015-07-23/", NCMB.getCurrentContext().baseUrl);
     }
+
 }

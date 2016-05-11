@@ -19,7 +19,7 @@ class NCMBLocalFile {
     static final String FOLDER_NAME = "NCMB";
 
     static File create(String fileName){
-        return new File(NCMB.sCurrentContext.context.getDir(FOLDER_NAME, Context.MODE_PRIVATE), fileName);
+        return new File(NCMB.getCurrentContext().context.getDir(FOLDER_NAME, Context.MODE_PRIVATE), fileName);
     }
     /**
      * Writing to a local file
@@ -69,10 +69,10 @@ class NCMBLocalFile {
      * null check in NCMBContext
      */
     static void checkNCMBContext(){
-        if (NCMB.sCurrentContext == null) {
+        if (NCMB.getCurrentContext() == null) {
             throw new RuntimeException("Please run the　NCMB.initialize.");
         }
-        if (NCMB.sCurrentContext.context == null) {
+        if (NCMB.getCurrentContext().context == null) {
             throw new RuntimeException("NCMB.initialize context may not be null.");
         }
     }

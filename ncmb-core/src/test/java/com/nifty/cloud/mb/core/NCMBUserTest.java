@@ -67,7 +67,7 @@ public class NCMBUserTest {
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class NCMBUserTest {
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -153,7 +153,7 @@ public class NCMBUserTest {
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
     }
 
     @Test
@@ -177,7 +177,7 @@ public class NCMBUserTest {
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -191,7 +191,7 @@ public class NCMBUserTest {
             Assert.fail(error.getMessage());
         }
 
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Nifty Tarou", NCMBUser.getCurrentUser().getUserName());
     }
@@ -210,7 +210,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Nifty Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertTrue(callbackFlag);
@@ -234,7 +234,7 @@ public class NCMBUserTest {
         Assert.assertEquals(facebookParams.accessToken, user.getAuthData("facebook").getString("access_token"));
 
         Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
     }
@@ -242,7 +242,7 @@ public class NCMBUserTest {
     @Test
     public void login_with_invalid_facebook_account () throws Exception {
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -258,7 +258,7 @@ public class NCMBUserTest {
         }
 
         Assert.assertNull(user);
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
     }
 
     @Test
@@ -290,7 +290,7 @@ public class NCMBUserTest {
         Assert.assertEquals(facebookParams.accessToken, user.getAuthData("facebook").getString("access_token"));
 
         Assert.assertEquals(df.format(facebookParams.expirationDate), user.getAuthData("facebook").getJSONObject("expiration_date").getString("iso"));
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
         Assert.assertTrue(callbackFlag);
@@ -332,7 +332,7 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -355,7 +355,7 @@ public class NCMBUserTest {
         Assert.assertEquals(twitterParams.accessToken, user.getAuthData("twitter").getString("oauth_token"));
         Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
 
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
     }
@@ -363,7 +363,7 @@ public class NCMBUserTest {
     @Test
     public void login_with_invalid_twitter_account () throws Exception {
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "invalidTwitterDummyId",
@@ -380,7 +380,7 @@ public class NCMBUserTest {
             Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
         }
         Assert.assertNull(user);
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
     }
 
 
@@ -418,7 +418,7 @@ public class NCMBUserTest {
         Assert.assertEquals(twitterParams.accessToken, user.getAuthData("twitter").getString("oauth_token"));
         Assert.assertEquals(twitterParams.accessTokenSecret, user.getAuthData("twitter").getString("oauth_token_secret"));
 
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
         Assert.assertTrue(callbackFlag);
@@ -464,7 +464,7 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -480,7 +480,7 @@ public class NCMBUserTest {
         Assert.assertEquals(googleParams.userId, user.getAuthData("google").getString("id"));
         Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
 
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("google"));
     }
@@ -488,7 +488,7 @@ public class NCMBUserTest {
     @Test
     public void login_with_invalid_google_account () throws Exception {
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "invalidGoogleDummyId",
@@ -502,7 +502,7 @@ public class NCMBUserTest {
         }
 
         Assert.assertNull(user);
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
     }
 
     @Test
@@ -528,7 +528,7 @@ public class NCMBUserTest {
         Assert.assertEquals(user.getObjectId(), "dummyObjectId");
         Assert.assertEquals(googleParams.userId, user.getAuthData("google").getString("id"));
         Assert.assertEquals(googleParams.accessToken, user.getAuthData("google").getString("access_token"));
-        Assert.assertNotNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("google"));
     }
@@ -563,7 +563,7 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
 
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -575,7 +575,7 @@ public class NCMBUserTest {
 
         Assert.assertNull(user.getObjectId());
         Assert.assertNull(user.getUserName());
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
     }
 
@@ -1077,8 +1077,8 @@ public class NCMBUserTest {
         user.deleteObject();
 
         Assert.assertNull(user.getUserName());
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-        Assert.assertNull(NCMB.sCurrentContext.userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
 
     }
 
@@ -1103,8 +1103,8 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(user.getUserName());
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-        Assert.assertNull(NCMB.sCurrentContext.userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
         Assert.assertTrue(callbackFlag);
     }
 
@@ -1119,8 +1119,8 @@ public class NCMBUserTest {
         user.deleteObject();
 
         Assert.assertNull(user.getUserName());
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
-        Assert.assertEquals("dummyObjectId", NCMB.sCurrentContext.userId);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMB.getCurrentContext().userId);
     }
 
     @Test
@@ -1145,8 +1145,8 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertNull(user.getUserName());
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
-        Assert.assertEquals("dummyObjectId", NCMB.sCurrentContext.userId);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMB.getCurrentContext().userId);
         Assert.assertTrue(callbackFlag);
     }
 

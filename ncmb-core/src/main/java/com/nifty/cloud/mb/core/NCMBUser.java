@@ -61,7 +61,7 @@ public class NCMBUser extends NCMBObject {
 
         try {
             if (params.has("sessionToken")) {
-                NCMB.sCurrentContext.sessionToken = params.getString("sessionToken");
+                NCMB.getCurrentContext().sessionToken = params.getString("sessionToken");
             }
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Invalid user information");
