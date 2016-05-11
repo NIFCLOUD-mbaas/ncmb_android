@@ -1,5 +1,8 @@
 package com.nifty.cloud.mb.core;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
@@ -16,6 +19,8 @@ import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import java.lang.reflect.Field;
 
 import static org.mockito.Mockito.when;
 
@@ -78,4 +83,38 @@ public class NCMBTest {
         Assert.assertEquals("http://sample.com/2015-07-23/", NCMB.getCurrentContext().baseUrl);
     }
 
+    @Test
+    public void initialize_with_process_killing() {
+        // アプリが起動している場合をモック(getApplicationStateにアプリ起動時の状態を設定)
+        PowerMockito.spy(NCMBApplicationController.class);
+        NCMBApplicationController controller = new NCMBApplicationController();// モックの戻り値
+        controller.onCreate();
+        PowerMockito.doReturn(controller).when(NCMBApplicationController.class);
+        NCMBApplicationController.getApplicationState();// staticメソッドをモック
+
+        // 初期化
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "appKey", "cliKey");
+
+        // Preferencesに書き込まれているか確認
+        SharedPreferences preferences = controller.getApplicationContext().getSharedPreferences("NCMB", Context.MODE_PRIVATE);
+        Assert.assertEquals("appKey", preferences.getString("applicationKey", ""));
+        Assert.assertEquals("cliKey", preferences.getString("clientKey", ""));
+        Assert.assertEquals("https://mb.api.cloud.nifty.com/2013-09-01/", preferences.getString("apiBaseUrl", ""));
+
+
+        // GCがstaticを解放した場合やプロセスが破棄された場合をモック(sCurrentContextがnullになる)
+        Field modifiersField = null;
+        try {
+            modifiersField = NCMB.class.getDeclaredField("sCurrentContext");
+            modifiersField.setAccessible(true);
+            modifiersField.set(null, null);// モックの戻り値
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        // nullの状態の場合でもPreferencesを元にsCurrentContextが生成されるか確認
+        Assert.assertEquals(NCMB.getCurrentContext().applicationKey, preferences.getString("applicationKey", ""));
+        Assert.assertEquals(NCMB.getCurrentContext().clientKey, preferences.getString("clientKey", ""));
+        Assert.assertEquals(NCMB.getCurrentContext().baseUrl, preferences.getString("apiBaseUrl", ""));
+    }
 }
