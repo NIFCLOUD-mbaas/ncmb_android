@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
@@ -77,8 +76,6 @@ public class NCMBInstallationService extends NCMBService {
 
         //set installation data
         try {
-            //readOnly check
-            checkKeyIsMutable(params);
             //set registrationId
             params.put("deviceToken", registrationId);
             //set basic data
@@ -116,8 +113,6 @@ public class NCMBInstallationService extends NCMBService {
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set registrationId
                 params.put("deviceToken", registrationId);
                 //set basic data
@@ -179,8 +174,6 @@ public class NCMBInstallationService extends NCMBService {
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set basic data
                 setInstallationBasicData(params);
             } catch (JSONException e) {
@@ -221,8 +214,6 @@ public class NCMBInstallationService extends NCMBService {
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set basic data
                 setInstallationBasicData(params);
             } catch (JSONException e) {
@@ -471,25 +462,6 @@ public class NCMBInstallationService extends NCMBService {
     // endregion
 
     // region internal method
-
-    /**
-     * readonlyFields check
-     *
-     * @param params installation parameters
-     * @throws IllegalArgumentException
-     */
-    void checkKeyIsMutable(JSONObject params) throws IllegalArgumentException {
-        List<String> readonlyFields = Arrays.asList(
-                "timeZone", "appVersion", "applicationName", "sdkVersion", "deviceType");
-
-        Iterator keys = params.keys();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            if (readonlyFields.contains(key)) {
-                throw new IllegalArgumentException("Can not change " + key + " property of an installation object.");
-            }
-        }
-    }
 
     /**
      * @param params installation parameters
