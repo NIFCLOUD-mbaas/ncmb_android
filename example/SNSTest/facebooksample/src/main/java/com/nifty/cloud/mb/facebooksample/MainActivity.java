@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         NCMB.initialize(
-                this,
+                this.getApplication(),
                 "YOUR_APPLICATION_KEY",
                 "YOUR_CLIENT_KEY"
         );
