@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
     public void onGETQueryClicked(View v) {
         Toast.makeText(this, "同期GET(Query)実行", Toast.LENGTH_SHORT).show();
         //全検索
-        NCMBQuery<NCMBFile> query = new NCMBQuery<>("files");
+        NCMBQuery<NCMBFile> query = new NCMBQuery<>("file");
 
         //通信
         String result;
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
     public void onAsyncGETQueryClicked(View v) {
         Toast.makeText(this, "非同期GET(Query)実行", Toast.LENGTH_SHORT).show();
         //画像ファイル名を指定して検索
-        NCMBQuery<NCMBFile> query = new NCMBQuery<>("files");
+        NCMBQuery<NCMBFile> query = new NCMBQuery<>("file");
         query.whereEqualTo("fileName", IMAGE_FILENAME);
 
         //通信
