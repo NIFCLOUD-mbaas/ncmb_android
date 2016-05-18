@@ -125,25 +125,25 @@ public class NCMB {
 
         switch (serviceType) {
             case OBJECT:
-                service = (NCMBService)new NCMBObjectService(sCurrentContext);
+                service = (NCMBService)new NCMBObjectService(getCurrentContext());
                 break;
             case USER:
-                service = (NCMBService)new NCMBUserService(sCurrentContext);
+                service = (NCMBService)new NCMBUserService(getCurrentContext());
                 break;
             case ROLE:
-                service = (NCMBService)new NCMBRoleService(sCurrentContext);
+                service = (NCMBService)new NCMBRoleService(getCurrentContext());
                 break;
             case INSTALLATION:
-                service = (NCMBInstallationService)new NCMBInstallationService(sCurrentContext);
+                service = (NCMBInstallationService)new NCMBInstallationService(getCurrentContext());
                 break;
             case PUSH:
-                service = (NCMBPushService)new NCMBPushService(sCurrentContext);
+                service = (NCMBPushService)new NCMBPushService(getCurrentContext());
                 break;
             case FILE:
-                service = (NCMBFileService)new NCMBFileService(sCurrentContext);
+                service = (NCMBFileService)new NCMBFileService(getCurrentContext());
                 break;
             case SCRIPT:
-                service = (NCMBScriptService)new NCMBScriptService(sCurrentContext);
+                service = (NCMBScriptService)new NCMBScriptService(getCurrentContext());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid serviceType");
