@@ -247,7 +247,7 @@ public class NCMBPushServiceTest {
      */
     @Test
     public void searchPush() throws Exception {
-        NCMBPushService pushService = new NCMBPushService(NCMB.sCurrentContext);
+        NCMBPushService pushService = new NCMBPushService(NCMB.getCurrentContext());
         //Search condition
         JSONObject query = new JSONObject();
         query.put("where", new JSONObject("{target:[android]}"));
@@ -269,7 +269,7 @@ public class NCMBPushServiceTest {
     @Test
     public void searchPushInBackground() throws Exception {
         Assert.assertFalse(callbackFlag);
-        NCMBPushService pushService = new NCMBPushService(NCMB.sCurrentContext);
+        NCMBPushService pushService = new NCMBPushService(NCMB.getCurrentContext());
         //Search condition
         JSONObject query = new JSONObject();
         query.put("where", new JSONObject("{target:[android]}"));

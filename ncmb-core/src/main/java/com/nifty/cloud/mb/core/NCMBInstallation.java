@@ -418,13 +418,13 @@ public class NCMBInstallation extends NCMBObject {
      */
     public void getRegistrationIdInBackground(String senderId, final DoneCallback callback) {
         //Nullチェック
-        if (senderId == null && NCMB.sCurrentContext.context == null) {
+        if (senderId == null && NCMB.getCurrentContext().context == null) {
             throw new RuntimeException("applicationContext or senderId is must not be null.");
         }
 
         //端末にAPKがインストールされていない場合は処理を終了
         try {
-            if (!checkPlayServices(NCMB.sCurrentContext.context)) return;
+            if (!checkPlayServices(NCMB.getCurrentContext().context)) return;
         }catch (Exception error){
             if(callback!=null){
                 callback.done(new NCMBException(error));
@@ -454,7 +454,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param senderId GCM用に設定したsenderId
      */
     protected String getDeviceTokenFromGCM(String senderId) throws IOException {
-        InstanceID instanceID = InstanceID.getInstance(NCMB.sCurrentContext.context);
+        InstanceID instanceID = InstanceID.getInstance(NCMB.getCurrentContext().context);
         String token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
         return token;
     }

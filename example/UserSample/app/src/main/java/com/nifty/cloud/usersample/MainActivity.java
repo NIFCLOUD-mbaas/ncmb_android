@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         //初期化
         NCMB.initialize(
-                this,
+                this.getApplicationContext(),
                 "YOUR_APPLICATION_KEY",
                 "YOUR_CLIENT_KEY");
 

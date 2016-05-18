@@ -501,8 +501,8 @@ public class NCMBInstallationService extends NCMBService {
 
         //value get
         String timeZone = TimeZone.getDefault().getID();
-        String packageName = NCMB.sCurrentContext.context.getPackageName();
-        PackageManager pm = NCMB.sCurrentContext.context.getPackageManager();
+        String packageName = NCMB.getCurrentContext().context.getPackageName();
+        PackageManager pm = NCMB.getCurrentContext().context.getPackageManager();
         String applicationName = pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString();
         String appVersion = pm.getPackageInfo(packageName, 0).versionName;
 

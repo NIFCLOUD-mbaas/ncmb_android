@@ -1104,7 +1104,7 @@ public class NCMBUserService extends NCMBService {
         NCMBUser.currentUser = new NCMBUser(currentData);
         if (currentData.has("sessionToken")) {
             try {
-                NCMB.sCurrentContext.sessionToken = currentData.getString("sessionToken");
+                NCMB.getCurrentContext().sessionToken = currentData.getString("sessionToken");
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
             }
@@ -1120,8 +1120,8 @@ public class NCMBUserService extends NCMBService {
         NCMBLocalFile.deleteFile(file);
         //discarded from the static
         NCMBUser.currentUser = null;
-        NCMB.sCurrentContext.sessionToken = null;
-        NCMB.sCurrentContext.userId = null;
+        NCMB.getCurrentContext().sessionToken = null;
+        NCMB.getCurrentContext().userId = null;
     }
 
     /**
