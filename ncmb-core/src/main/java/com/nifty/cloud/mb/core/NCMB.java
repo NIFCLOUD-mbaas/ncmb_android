@@ -53,6 +53,7 @@ public class NCMB {
     private static final String APPLICATION_KEY = "applicationKey";
     private static final String CLIENT_KEY = "clientKey";
     private static final String API_BASE_URL = "apiBaseUrl";
+    private static final String RESPONSE_VALIDATION = "responseValidation";
 
     // SharedPreferences file name
     private static final String PREFERENCE_FILE_NAME = "NCMB";
@@ -76,6 +77,11 @@ public class NCMB {
      * Runtime Context
      */
     private static NCMBContext sCurrentContext;
+
+    /**
+     * Response signature valid flag
+     */
+    private static boolean sResponseValidation;
 
     /**
      * Setup SDK internals
@@ -242,8 +248,33 @@ public class NCMB {
         return createSharedPreferences().getString(API_BASE_URL, "");
     }
 
+    static boolean getResponseValidation() {
+        return sResponseValidation || createSharedPreferences().getBoolean(RESPONSE_VALIDATION, false);
+    }
+
+    /**
+     * Determining whether a response has not been tampered<br>
+     * The default is invalid<br>
+     * true = valid , false = inValid
+     *
+     * @param responseValidation response validation enable flag
+     */
+    public static void enableResponseValidation(boolean responseValidation) {
+        sResponseValidation = responseValidation;
+        if (getCurrentContext().context != null) {
+            SharedPreferences data = getCurrentContext().context.getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = data.edit();
+            editor.putBoolean(RESPONSE_VALIDATION, responseValidation);
+            editor.apply();
+        }
+    }
+
     private static SharedPreferences createSharedPreferences() {
-        return NCMBApplicationController.getApplicationState().getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        Context appState = NCMBApplicationController.getApplicationState();
+        if (appState != null) {
+            return NCMBApplicationController.getApplicationState().getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        }
+        return NCMB.getCurrentContext().context.getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
     }
 
 }

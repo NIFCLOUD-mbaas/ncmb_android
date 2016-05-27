@@ -88,6 +88,9 @@ public class NCMBRequest {
     private String fileName = "";
     private byte[] fileData = null;
     private String contentType = null;
+
+    // レスポンスシグネチャ計算ハッシュデータ用
+    private String signatureHashData = null;
     // endregion
 
     //region getter
@@ -172,6 +175,7 @@ public class NCMBRequest {
     public String getFileName() {
         return this.fileName;
     }
+
     /**
      * Get contentType
      *
@@ -180,6 +184,16 @@ public class NCMBRequest {
     public String getContentType() {
         return this.contentType;
     }
+
+    /**
+     * Get signatureHashData
+     *
+     * @return signatureHashData
+     */
+    public String getSignatureHashData() {
+        return this.signatureHashData;
+    }
+
 
     /**
      * Get timestamp
@@ -265,6 +279,7 @@ public class NCMBRequest {
         this.fileName = fileName;
         this.fileData = fileData;
 
+
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
@@ -319,8 +334,8 @@ public class NCMBRequest {
             }
             this.requestProperties.put(HEADER_TIMESTAMP, this.timestamp);
             // シグネチャ生成/設定
-            String signatureHashData = createSignatureHashData(this.url.getPath(), parameterList);
-            String signature = createSignature(signatureHashData, this.clientKey);
+            this.signatureHashData = createSignatureHashData(this.url.getPath(), parameterList);
+            String signature = createSignature(this.signatureHashData, this.clientKey);
             this.requestProperties.put(HEADER_SIGNATURE, signature);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -347,8 +362,7 @@ public class NCMBRequest {
     // region Method
 
     // シグネチャ文字列の生成
-    private String createSignature(String data, String key) {
-        //Log.d(null, data);
+    String createSignature(String data, String key) {
         String result = null;
         try {
             SecretKeySpec signingKey = new SecretKeySpec(key.getBytes("UTF-8"), SIGNATURE_METHOD_VALUE);
@@ -387,6 +401,7 @@ public class NCMBRequest {
         data.append(this.url.getHost()).append("\n");
         // APIパス
         data.append(path).append("\n");
+
         // パラメーター
         Iterator<?> it = parameterList.iterator();
         while (it.hasNext()) {
