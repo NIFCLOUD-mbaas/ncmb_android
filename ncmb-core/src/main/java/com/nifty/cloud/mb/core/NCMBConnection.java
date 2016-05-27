@@ -105,16 +105,16 @@ public class NCMBConnection {
 
                                 //upload data
                                 out.writeBytes("--" + boundary + lineEnd);
-                                out.writeBytes("Content-Disposition: form-data; name=file; filename=" + URLEncoder.encode(ncmbRequest.getFileName(),"UTF-8") + lineEnd);
+                                out.writeBytes("Content-Disposition: form-data; name=file; filename=" + URLEncoder.encode(ncmbRequest.getFileName(), "UTF-8") + lineEnd);
                                 out.writeBytes("Content-Type: " + createMimeType(ncmbRequest.getFileName()) + lineEnd);
                                 out.writeBytes(lineEnd);
-                                for (int i=0;i<ncmbRequest.getFileData().length;i++){
+                                for (int i = 0; i < ncmbRequest.getFileData().length; i++) {
                                     out.writeByte(ncmbRequest.getFileData()[i]);
                                 }
                                 out.writeBytes(lineEnd);
 
                                 //ACLのみ対応
-                                if(!ncmbRequest.getContent().isEmpty()&&!ncmbRequest.getContent().equals("{}")){
+                                if (!ncmbRequest.getContent().isEmpty() && !ncmbRequest.getContent().equals("{}")) {
                                     out.writeBytes("--" + boundary + lineEnd);
                                     out.writeBytes("Content-Disposition: form-data; name=acl; filename=acl" + lineEnd);
                                     out.writeBytes(lineEnd);
@@ -141,7 +141,7 @@ public class NCMBConnection {
 
                     } catch (IOException e) {
                         // Android4.3以下は認証エラーの場合、IOExceptionが発生するため一律でCurrentUserを破棄する
-                        if(e.getMessage().equals("No authentication challenges found")){
+                        if (e.getMessage().equals("No authentication challenges found")) {
                             NCMBUserService.clearCurrentUser();
                         }
                         throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
