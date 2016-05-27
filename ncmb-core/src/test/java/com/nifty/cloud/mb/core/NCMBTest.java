@@ -20,6 +20,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import static org.mockito.Mockito.when;
@@ -116,5 +117,16 @@ public class NCMBTest {
         Assert.assertEquals(NCMB.getCurrentContext().applicationKey, preferences.getString("applicationKey", ""));
         Assert.assertEquals(NCMB.getCurrentContext().clientKey, preferences.getString("clientKey", ""));
         Assert.assertEquals(NCMB.getCurrentContext().baseUrl, preferences.getString("apiBaseUrl", ""));
+    }
+
+    @Test
+    public void enableResponseValidation() throws IOException {
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
+
+        SharedPreferences preferences = NCMB.getCurrentContext().context.getApplicationContext().getSharedPreferences("NCMB", Context.MODE_PRIVATE);
+        Assert.assertEquals(false, preferences.getBoolean("responseValidation", false));
+
+        NCMB.enableResponseValidation(true);
+        Assert.assertEquals(true, preferences.getBoolean("responseValidation", false));
     }
 }

@@ -1028,3 +1028,12 @@
   response:
     status: 200
     file: valid_get_script_response.json
+---
+  request:
+    url: /2013-09-01/classes/ResponseSignatureTest
+    method: POST
+    body:
+      {"key":"value"}
+  response:
+    status: 201
+    file: valid_response_signature.json
