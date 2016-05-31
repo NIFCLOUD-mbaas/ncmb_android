@@ -52,15 +52,15 @@ public class NCMBResponseTest {
      * - 結果：値が正しく設定されていること
      */
     @Test
-    public void responsePropertyCheck() throws Exception{
+    public void responsePropertyCheck() throws Exception {
         URL url = mServer.getUrl("/2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm");
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("GET");
         urlConnection.connect();
         NCMBResponse response = new NCMBResponse(urlConnection.getInputStream(),
-                                                 urlConnection.getResponseCode(),
-                                                 urlConnection.getHeaderFields());
+                urlConnection.getResponseCode(),
+                urlConnection.getHeaderFields());
 
         //プロパティの値を取得
         int statusCode = response.statusCode;
@@ -77,9 +77,10 @@ public class NCMBResponseTest {
      * - 結果：レスポンスシグネチャが正しく比較されること
      */
     @Test
-    public void responseSignatureCheck() throws Exception{
+    public void responseSignatureCheck() throws Exception {
         NCMB.enableResponseValidation(true);
 
+        // 検証用のAPIキーでレスポンスシグネチャを確認.該当アプリは削除済
         NCMBRequest request = new NCMBRequest(
                 "https://mb.api.cloud.nifty.com/2013-09-01/classes/ResponseSignatureTest",
                 Constants.HTTP_METHOD_POST,
@@ -109,8 +110,8 @@ public class NCMBResponseTest {
 
         try {
             NCMBConnection connection = new NCMBConnection(request);
-            connection.responseSignatureCheck(urlConnection,response,request);
-        } catch (NCMBException error){
+            connection.responseSignatureCheck(urlConnection, response, request);
+        } catch (NCMBException error) {
             Assert.fail(error.getMessage());
         }
 
