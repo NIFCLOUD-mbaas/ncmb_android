@@ -117,4 +117,51 @@ public class NCMBResponseTest {
 
     }
 
+    /**
+     * - 内容：不正データでレスポンスシグネチャの検証が行われた場合にエラーが返却されることを確認する
+     * - 結果：エラーが返却されること
+     */
+    @Test
+    public void responseSignatureCheck_error() throws Exception {
+        NCMB.enableResponseValidation(true);
+
+        NCMBRequest request = new NCMBRequest(
+                "https://mb.api.cloud.nifty.com/2013-09-01/classes/ResponseSignatureTest",
+                Constants.HTTP_METHOD_POST,
+                "{\"key\":\"value\"}",
+                null,
+                null,
+                null,
+                null,
+                null,
+                "dummy_application_key",
+                "dummy_client_key",
+                "2016-05-27T04%3A46%3A09.376Z");
+
+        URL url = mServer.getUrl("/2013-09-01/classes/ResponseSignatureTest");
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setDoOutput(true);
+        DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+        writer.write("{\"key\":\"value\"}");
+        writer.flush();
+        writer.close();
+        urlConnection.connect();
+        NCMBResponse response = new NCMBResponse(urlConnection.getInputStream(),
+                urlConnection.getResponseCode(),
+                urlConnection.getHeaderFields());
+
+        try {
+            NCMBConnection connection = new NCMBConnection(request);
+            connection.responseSignatureCheck(urlConnection, response, request);
+            Assert.fail();
+        } catch (NCMBException error) {
+            Assert.assertEquals(NCMBException.INVALID_RESPONSE_SIGNATURE, error.getCode());
+            Assert.assertEquals("Authentication error by response signature incorrect.", error.getMessage());
+        }
+
+    }
+
+
 }
