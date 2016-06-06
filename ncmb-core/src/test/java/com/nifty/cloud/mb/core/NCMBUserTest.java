@@ -58,7 +58,7 @@ public class NCMBUserTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void sign_up () throws Exception {
+    public void sign_up() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setUserName("Nifty Tarou");
         user.setPassword("niftytarou");
@@ -71,7 +71,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void sign_up_in_background () throws Exception {
+    public void sign_up_in_background() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setUserName("Nifty Tarou");
         user.setPassword("niftytarou");
@@ -96,16 +96,16 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void requestAuthenticationMail () throws Exception {
-        try{
+    public void requestAuthenticationMail() throws Exception {
+        try {
             NCMBUser.requestAuthenticationMail("sample@example.com");
-        }catch (Exception error){
+        } catch (Exception error) {
             Assert.fail(error.getMessage());
         }
     }
 
     @Test
-    public void requestAuthenticationMailInBackground () throws Exception {
+    public void requestAuthenticationMailInBackground() throws Exception {
         NCMBUser.requestAuthenticationMailInBackground("sample@example.com", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
@@ -122,16 +122,16 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void requestPasswordResetSynchronously () throws Exception {
-        try{
+    public void requestPasswordResetSynchronously() throws Exception {
+        try {
             NCMBUser.requestPasswordReset("sample@example.com");
-        }catch (Exception error){
+        } catch (Exception error) {
             Assert.fail(error.getMessage());
         }
     }
 
     @Test
-    public void requestPasswordResetInBackground () throws Exception {
+    public void requestPasswordResetInBackground() throws Exception {
         NCMBUser.requestPasswordResetInBackground("sample@example.com", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
@@ -148,7 +148,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login () throws Exception {
+    public void login() throws Exception {
         NCMBUser user = NCMBUser.login("Nifty Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
@@ -157,7 +157,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_in_background () throws Exception {
+    public void login_in_background() throws Exception {
         NCMBUser.loginInBackground("Nifty Tarou", "dummyPassword", new LoginCallback() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
@@ -182,12 +182,12 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void loginWithMailAddress () throws Exception {
+    public void loginWithMailAddress() throws Exception {
         try {
             NCMBUser user = NCMBUser.loginWithMailAddress("sample@example.com", "dummyPassword");
             Assert.assertEquals("dummyObjectId", user.getObjectId());
             Assert.assertEquals("Nifty Tarou", user.getUserName());
-        }catch (Exception error){
+        } catch (Exception error) {
             Assert.fail(error.getMessage());
         }
 
@@ -197,7 +197,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void loginWithMailAddressInBackground () throws Exception {
+    public void loginWithMailAddressInBackground() throws Exception {
         NCMBUser.loginWithMailAddressInBackground("sample@example.com", "dummyPassword", new LoginCallback() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
@@ -218,7 +218,7 @@ public class NCMBUserTest {
 
 
     @Test
-    public void login_with_facebook_account () throws Exception {
+    public void login_with_facebook_account() throws Exception {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
@@ -240,7 +240,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_facebook_account () throws Exception {
+    public void login_with_invalid_facebook_account() throws Exception {
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -262,7 +262,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_facebook_in_background () throws Exception {
+    public void login_with_facebook_in_background() throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -297,7 +297,7 @@ public class NCMBUserTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void login_with_empty_facebook_auth_data () throws Exception{
+    public void login_with_empty_facebook_auth_data() throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -310,7 +310,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_facebook_in_background () throws Exception {
+    public void login_with_invalid_facebook_in_background() throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -337,7 +337,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_twitter_account () throws Exception {
+    public void login_with_twitter_account() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "twitterDummyId",
@@ -361,7 +361,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_twitter_account () throws Exception {
+    public void login_with_invalid_twitter_account() throws Exception {
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
@@ -385,7 +385,7 @@ public class NCMBUserTest {
 
 
     @Test
-    public void login_with_twitter_in_background () throws Exception {
+    public void login_with_twitter_in_background() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "twitterDummyId",
@@ -396,7 +396,7 @@ public class NCMBUserTest {
                 "twitterDummyOauthSecret"
         );
 
-        NCMBUser.loginInBackgroundWith(twitterParams, new LoginCallback(){
+        NCMBUser.loginInBackgroundWith(twitterParams, new LoginCallback() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 if (e != null) {
@@ -425,7 +425,7 @@ public class NCMBUserTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void login_with_empty_twitter_auth_data () throws Exception{
+    public void login_with_empty_twitter_auth_data() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 null,
@@ -440,7 +440,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_twitter_in_background () throws Exception {
+    public void login_with_invalid_twitter_in_background() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "invalidTwitterDummyId",
@@ -469,7 +469,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_google_account () throws Exception {
+    public void login_with_google_account() throws Exception {
 
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
@@ -486,7 +486,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_google_account () throws Exception {
+    public void login_with_invalid_google_account() throws Exception {
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
@@ -506,7 +506,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_google_in_background () throws Exception {
+    public void login_with_google_in_background() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
                 "googleDummyAccessToken"
@@ -534,7 +534,7 @@ public class NCMBUserTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void login_with_empty_google_auth_data () throws Exception{
+    public void login_with_empty_google_auth_data() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 null,
                 "invalidGoogleDummyAccessToken"
@@ -544,7 +544,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_invalid_google_in_background () throws Exception {
+    public void login_with_invalid_google_in_background() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "invalidGoogleDummyId",
                 "invalidGoogleDummyAccessToken"
@@ -568,7 +568,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void logout () throws Exception {
+    public void logout() throws Exception {
         NCMBUser.logout();
 
         NCMBUser user = NCMBUser.getCurrentUser();
@@ -580,7 +580,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void logout_in_background () throws Exception {
+    public void logout_in_background() throws Exception {
         NCMBUser.logoutInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
@@ -598,7 +598,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void update () throws Exception {
+    public void update() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
         user.put("key", "value");
@@ -609,7 +609,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void update_in_background () throws Exception {
+    public void update_in_background() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
         user.put("key", "value");
@@ -632,7 +632,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_facebook_auth_data () throws Exception {
+    public void link_facebook_auth_data() throws Exception {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
@@ -654,7 +654,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_facebook_auth_data_in_background () throws Exception {
+    public void link_facebook_auth_data_in_background() throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -684,7 +684,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_facebook_auth_data () throws Exception {
+    public void link_invalid_facebook_auth_data() throws Exception {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
@@ -706,7 +706,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_facebook_auth_data_in_background () throws Exception {
+    public void link_invalid_facebook_auth_data_in_background() throws Exception {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
 
         NCMBFacebookParameters facebookParams = new NCMBFacebookParameters(
@@ -737,7 +737,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_twitter_auth_data () throws Exception {
+    public void link_twitter_auth_data() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "twitterDummyId",
@@ -760,7 +760,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_twitter_auth_data_in_background () throws Exception {
+    public void link_twitter_auth_data_in_background() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "twitterDummyId",
@@ -792,7 +792,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_twitter_auth_data () throws Exception {
+    public void link_invalid_twitter_auth_data() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "invalidTwitterDummyId",
@@ -815,7 +815,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_twitter_auth_data_in_background () throws Exception {
+    public void link_invalid_twitter_auth_data_in_background() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "invalidTwitterDummyId",
@@ -848,7 +848,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_google_auth_data () throws Exception {
+    public void link_google_auth_data() throws Exception {
 
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
@@ -867,7 +867,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_google_auth_data_in_background () throws Exception {
+    public void link_google_auth_data_in_background() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
                 "googleDummyAccessToken"
@@ -894,7 +894,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_google_auth_data () throws Exception {
+    public void link_invalid_google_auth_data() throws Exception {
 
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "invalidGoogleDummyId",
@@ -913,7 +913,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void link_invalid_google_auth_data_in_background () throws Exception {
+    public void link_invalid_google_auth_data_in_background() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "invalidGoogleDummyId",
                 "invalidGoogleDummyAccessToken"
@@ -940,7 +940,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void login_with_twitter_and_link_google_auth_data () throws Exception {
+    public void login_with_twitter_and_link_google_auth_data() throws Exception {
 
         NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
                 "twitterDummyId",
@@ -969,7 +969,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void unlink_authentication_data () throws Exception {
+    public void unlink_authentication_data() throws Exception {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
                 "googleDummyAccessToken"
@@ -983,7 +983,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void unlink_authentication_data_in_background () throws NCMBException {
+    public void unlink_authentication_data_in_background() throws NCMBException {
         NCMBGoogleParameters googleParams = new NCMBGoogleParameters(
                 "googleDummyId",
                 "googleDummyAccessToken"
@@ -1036,7 +1036,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void fetch () throws Exception {
+    public void fetch() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
         user.fetch();
@@ -1045,7 +1045,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void fetch_in_background () throws Exception {
+    public void fetch_in_background() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setObjectId("dummyUserId");
         user.fetchInBackground(new FetchCallback<NCMBUser>() {
@@ -1068,7 +1068,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void delete_current_user () throws Exception {
+    public void delete_current_user() throws Exception {
         NCMBUser.login("Nifty Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
@@ -1083,7 +1083,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void delete_in_bakcground () throws Exception {
+    public void delete_in_bakcground() throws Exception {
         NCMBUser.login("Nifty Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
@@ -1109,7 +1109,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void delete_not_current_user () throws Exception {
+    public void delete_not_current_user() throws Exception {
         NCMBUser.login("Nifty Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
@@ -1124,7 +1124,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void delete_in_background_not_current_user () throws Exception {
+    public void delete_in_background_not_current_user() throws Exception {
         NCMBUser.login("Nifty Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
@@ -1151,7 +1151,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void mUpdateKeys_property_check () throws Exception {
+    public void mUpdateKeys_property_check() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setUserName("Nifty Tarou");
         user.setPassword("dummyPassword");
