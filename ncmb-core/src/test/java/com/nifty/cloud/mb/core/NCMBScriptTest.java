@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 /**
  * NCMBScriptTest
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBScriptTest {
     private MockWebServer mServer;
@@ -209,7 +208,7 @@ public class NCMBScriptTest {
     public void script_execute_POST() throws Exception {
         NCMBScript script = new NCMBScript("testScript_POST.js", NCMBScript.MethodType.POST, mScriptUrl);
         JSONObject body = new JSONObject();
-        body.put("message","hello,tarou");
+        body.put("message", "hello,tarou");
         script.executeInBackground(null, body, null, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {
@@ -240,7 +239,7 @@ public class NCMBScriptTest {
     public void script_execute_PUT() throws Exception {
         NCMBScript script = new NCMBScript("testScript_PUT.js", NCMBScript.MethodType.PUT, mScriptUrl);
         JSONObject body = new JSONObject();
-        body.put("message","hello,tarou");
+        body.put("message", "hello,tarou");
         script.executeInBackground(null, body, null, new ExecuteScriptCallback() {
             @Override
             public void done(byte[] result, NCMBException e) {

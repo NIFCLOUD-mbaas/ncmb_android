@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.skyscreamer.jsonassert.JSONAssert;
 //import junit.framework.Assert;
@@ -15,7 +14,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 /**
  * Test for NCMBAcl
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBAclTest {
     @Before
@@ -184,6 +183,7 @@ public class NCMBAclTest {
         Assert.assertTrue(acl2.getPublicReadAccess());
         Assert.assertFalse(acl2.getPublicWriteAccess());
     }
+
     /**
      * - 内容：ACLの初期値をチェックする
      * - 結果：空状態を判別できる

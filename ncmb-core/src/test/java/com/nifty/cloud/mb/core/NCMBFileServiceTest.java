@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
@@ -18,7 +17,7 @@ import org.robolectric.shadows.ShadowLooper;
 
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBFileServiceTest {
     private MockWebServer mServer;
@@ -62,7 +61,7 @@ public class NCMBFileServiceTest {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
 
         byte[] data = "Hello,NCMB".getBytes();
-        fileService.saveFileInBackground("Sample.txt",data,new JSONObject(),new ExecuteServiceCallback() {
+        fileService.saveFileInBackground("Sample.txt", data, new JSONObject(), new ExecuteServiceCallback() {
             @Override
             public void done(JSONObject json, NCMBException e) {
                 callbackFlag = true;

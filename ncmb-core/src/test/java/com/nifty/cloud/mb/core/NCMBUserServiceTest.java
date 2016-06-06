@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
@@ -30,8 +29,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE, shadows = {ShadowNCMBUser.class})
 public class NCMBUserServiceTest {
     private MockWebServer mServer;
     private boolean callbackFlag;
@@ -66,7 +65,7 @@ public class NCMBUserServiceTest {
     }
 
     protected NCMBUserService getUserService() {
-        return (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        return (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
     }
     /*** Test Case NCMBUserService ***/
 
@@ -340,7 +339,7 @@ public class NCMBUserServiceTest {
             userService.inviteByMail(null);
             Assert.fail("This test case to error test");
         } catch (NCMBException e) {
-            Assert.assertEquals("E400003",e.getCode());
+            Assert.assertEquals("E400003", e.getCode());
             Assert.assertEquals("mailAddress is empty.", e.getMessage());
         }
     }
@@ -357,7 +356,7 @@ public class NCMBUserServiceTest {
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
                 Assert.assertEquals("E400003", e.getCode());
-                Assert.assertEquals("mailAddress is empty.",e.getMessage());
+                Assert.assertEquals("mailAddress is empty.", e.getMessage());
                 callbackFlag = true;
             }
         });
@@ -398,7 +397,7 @@ public class NCMBUserServiceTest {
     @Test
     public void requestPasswordResetInBackground_no_mailaddress() throws Exception {
         NCMBUserService userService = getUserService();
-        userService.requestPasswordResetInBackground(null, new DoneCallback(){
+        userService.requestPasswordResetInBackground(null, new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
@@ -423,7 +422,7 @@ public class NCMBUserServiceTest {
     @Test
     public void requestPasswordResetInBackground_empty_mailaddress() throws Exception {
         NCMBUserService userService = getUserService();
-        userService.requestPasswordResetInBackground("", new DoneCallback(){
+        userService.requestPasswordResetInBackground("", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e == null) {
@@ -587,7 +586,7 @@ public class NCMBUserServiceTest {
             Assert.assertEquals(resultDate, user.getCreateDate());
             resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
             Assert.assertEquals(resultDate, user.getUpdateDate());
-        }catch (NCMBException error){
+        } catch (NCMBException error) {
             Assert.fail(error.getMessage());
         }
     }
@@ -629,7 +628,7 @@ public class NCMBUserServiceTest {
             NCMBUserService userService = getUserService();
             NCMBUser user = userService.loginByMail("sample@example.com", null);
             Assert.fail("This test case to error test");
-        }catch (NCMBException error) {
+        } catch (NCMBException error) {
             Assert.assertNotNull(error);
             Assert.assertEquals("E400003", error.getCode());
             Assert.assertNotNull("password is empty.", error.getMessage());
@@ -669,7 +668,7 @@ public class NCMBUserServiceTest {
             NCMBUserService userService = getUserService();
             NCMBUser user = userService.loginByMail("sample@example.com", "incorrectPassword");
             Assert.fail("This test case to error test");
-        }catch (NCMBException error) {
+        } catch (NCMBException error) {
             Assert.assertNotNull(error);
             Assert.assertEquals("E401002", error.getCode());
             Assert.assertNotNull("Authentication error with ID/PASS incorrect.", error.getMessage());
@@ -708,7 +707,7 @@ public class NCMBUserServiceTest {
             NCMBUserService userService = getUserService();
             NCMBUser user = userService.loginByMail("sample@example.com", "");
             Assert.fail("This test case to error test");
-        }catch (NCMBException error) {
+        } catch (NCMBException error) {
             Assert.assertNotNull(error);
             Assert.assertEquals("E400003", error.getCode());
             Assert.assertNotNull("password is empty.", error.getMessage());
@@ -900,7 +899,7 @@ public class NCMBUserServiceTest {
 
         //check new create localFile
         File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
-        if (!localFile.exists()){
+        if (!localFile.exists()) {
             Assert.fail("currentUserFile is not created.");
         }
 
@@ -932,15 +931,15 @@ public class NCMBUserServiceTest {
     public void currentUser_v1_From_v2() throws Exception {
         //create currentUser data
         JSONObject localFileData = new JSONObject();
-        localFileData.put("sessionToken","dummySessionToken");
-        localFileData.put("phone","000-000-0000");
-        localFileData.put("objectId","dummyUserId");
-        localFileData.put("mailAddress","email@example.com");
-        localFileData.put("classname","user");
-        localFileData.put("userName","dummyUser");
-        localFileData.put("password","dummyPassword");
-        localFileData.put("createDate","2015-09-10T02:24:03.597Z");
-        localFileData.put("updateDate","2015-09-11T02:24:03.597Z");
+        localFileData.put("sessionToken", "dummySessionToken");
+        localFileData.put("phone", "000-000-0000");
+        localFileData.put("objectId", "dummyUserId");
+        localFileData.put("mailAddress", "email@example.com");
+        localFileData.put("classname", "user");
+        localFileData.put("userName", "dummyUser");
+        localFileData.put("password", "dummyPassword");
+        localFileData.put("createDate", "2015-09-10T02:24:03.597Z");
+        localFileData.put("updateDate", "2015-09-11T02:24:03.597Z");
 
         //create currentUser from v1 path
         File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
@@ -973,7 +972,7 @@ public class NCMBUserServiceTest {
         try {
             JSONObject update = new JSONObject("{key:value}");
             userService.updateUser(currentUser.getObjectId(), update);
-        }catch (NCMBException error){
+        } catch (NCMBException error) {
             Assert.fail(error.getMessage());
         }
     }
@@ -1018,7 +1017,6 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        System.out.println("currentUser:" + currentUser.mFields.toString());
         Assert.assertEquals("dummyUserId", currentUser.getObjectId());
         Assert.assertEquals("value", currentUser.getString("key"));
 
@@ -1065,7 +1063,7 @@ public class NCMBUserServiceTest {
     }
 
     @Test
-    public void currentUser_DELETE_asynchronously () throws Exception {
+    public void currentUser_DELETE_asynchronously() throws Exception {
         //connect post
         NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         NCMBUser user = userService.registerByName("Nifty Tarou", "niftytarou");
@@ -1108,7 +1106,7 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", currentUser.getString("sessionToken"));
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", user.getUserName());
     }
@@ -1216,8 +1214,8 @@ public class NCMBUserServiceTest {
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", currentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMBUser.getSessionToken());
 
         //clear currentUser
         NCMB.getCurrentContext().sessionToken = null;
@@ -1226,7 +1224,7 @@ public class NCMBUserServiceTest {
         //check newCurrentUser
         NCMBUser newCurrentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",newCurrentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", newCurrentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMBUser.getSessionToken());
     }
 }

@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
@@ -43,7 +42,7 @@ import java.util.SimpleTimeZone;
 /**
  * Test for NCMBInstallationServiceTest
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationServiceTest {
 
@@ -591,7 +590,7 @@ public class NCMBInstallationServiceTest {
 
         //check new create localFile
         File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
-        if (!localFile.exists()){
+        if (!localFile.exists()) {
             Assert.fail("currentInstallationFile is not created.");
         }
 
@@ -620,16 +619,16 @@ public class NCMBInstallationServiceTest {
     public void currentInstallation_v1_From_v2() throws Exception {
         //create currentInstallation data
         JSONObject localFileData = new JSONObject();
-        localFileData.put("appVersion","1.0");
-        localFileData.put("deviceToken","dummyDeviceToken");
-        localFileData.put("objectId","non-update-value-id");
-        localFileData.put("key","value");
-        localFileData.put("applicationName","AndroidSDK_v1");
-        localFileData.put("classname","installation");
-        localFileData.put("channels",new JSONArray("[Ch2]"));
-        localFileData.put("timeZone","Asia\\/Tokyo");
-        localFileData.put("createDate","2015-09-10T02:24:03.597Z");
-        localFileData.put("updateDate","2015-09-11T02:24:03.597Z");
+        localFileData.put("appVersion", "1.0");
+        localFileData.put("deviceToken", "dummyDeviceToken");
+        localFileData.put("objectId", "non-update-value-id");
+        localFileData.put("key", "value");
+        localFileData.put("applicationName", "AndroidSDK_v1");
+        localFileData.put("classname", "installation");
+        localFileData.put("channels", new JSONArray("[Ch2]"));
+        localFileData.put("timeZone", "Asia\\/Tokyo");
+        localFileData.put("createDate", "2015-09-10T02:24:03.597Z");
+        localFileData.put("updateDate", "2015-09-11T02:24:03.597Z");
         localFileData.put("sdkVersion", "1.5.0");
 
         //create currentInstallation from v1 path
@@ -650,8 +649,8 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("dummyDeviceToken", currentInstallation.getDeviceToken());
         Assert.assertEquals("1.0", currentInstallation.getAppVersion());
         Assert.assertEquals("AndroidSDK_v1", currentInstallation.getApplicationName());
-        Assert.assertEquals(new JSONArray("[Ch2]"),currentInstallation.getChannels());
-        Assert.assertEquals("Asia\\/Tokyo",currentInstallation.getTimeZone());
+        Assert.assertEquals(new JSONArray("[Ch2]"), currentInstallation.getChannels());
+        Assert.assertEquals("Asia\\/Tokyo", currentInstallation.getTimeZone());
         DateFormat format = NCMBDateFormat.getIso8601();
         Date resultCreateDate = format.parse("2015-09-10T02:24:03.597Z");
         Assert.assertEquals(resultCreateDate, currentInstallation.getCreateDate());

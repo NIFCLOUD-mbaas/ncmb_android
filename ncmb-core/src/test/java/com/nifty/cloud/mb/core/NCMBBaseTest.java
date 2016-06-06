@@ -14,7 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -31,7 +30,7 @@ import java.util.SimpleTimeZone;
 /**
  * NCMBBaseTest
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBBaseTest {
 
@@ -77,7 +76,7 @@ public class NCMBBaseTest {
     @Test
     public void put_boolean_value() throws Exception {
         NCMBBase obj = new NCMBBase("dataTypeClass");
-        obj.put("boolean",true);
+        obj.put("boolean", true);
 
         Class c = obj.getClass();
         Field f = c.getDeclaredField("mFields");
@@ -89,7 +88,7 @@ public class NCMBBaseTest {
     @Test
     public void put_int_value() throws Exception {
         NCMBBase obj = new NCMBBase("dataTypeClass");
-        obj.put("int",303);
+        obj.put("int", 303);
 
         Class c = obj.getClass();
         Field f = c.getDeclaredField("mFields");
@@ -197,7 +196,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void set_object_id () throws Exception {
+    public void set_object_id() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass");
         baseObj.setObjectId("testObjectId");
 
@@ -209,14 +208,14 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_object_id () throws Exception {
+    public void get_object_id() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"objectId\":\"testObjectId\"}"));
 
         Assert.assertEquals("testObjectId", baseObj.getObjectId());
     }
 
     @Test
-    public void set_create_date () throws Exception {
+    public void set_create_date() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass");
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         baseObj.setCreateDate(df.parse("2015-07-29T10:10:10.000Z"));
@@ -229,7 +228,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_create_date () throws Exception {
+    public void get_create_date() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"createDate\":\"2015-07-29T10:10:10.000Z\"}"));
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -238,7 +237,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void set_update_date () throws Exception {
+    public void set_update_date() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass");
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         baseObj.setUpdateDate(df.parse("2015-07-29T10:10:10.000Z"));
@@ -251,7 +250,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_update_date () throws Exception {
+    public void get_update_date() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"updateDate\":\"2015-07-29T10:10:10.000Z\"}"));
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -260,7 +259,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void set_acl () throws Exception {
+    public void set_acl() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass");
         NCMBAcl acl = new NCMBAcl(new JSONObject("{\"*\":{\"read\":true, \"write\":true}}"));
         baseObj.setAcl(acl);
@@ -273,7 +272,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_acl () throws Exception {
+    public void get_acl() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"acl\":{\"*\":{\"read\":true, \"write\":true}}}"));
 
         JSONAssert.assertEquals(
@@ -347,7 +346,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_string_from_non_exist_key () throws Exception {
+    public void get_string_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getString("nonExistKey"));
     }
@@ -359,7 +358,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_boolean_from_non_exist_key () throws Exception {
+    public void get_boolean_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertFalse(obj.getBoolean("nonExistKey"));
     }
@@ -371,7 +370,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_int_from_non_exist_key () throws Exception {
+    public void get_int_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertEquals(0, obj.getInt("nonExistKey"));
     }
@@ -386,7 +385,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_long_from_non_exist_key () throws Exception {
+    public void get_long_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertEquals(0, obj.getLong("nonExistKey"));
     }
@@ -398,7 +397,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_double_from_non_exist_key () throws Exception {
+    public void get_double_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertEquals(0.0, obj.getDouble("nonExistKey"));
     }
@@ -412,7 +411,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_date_from_non_exist_key () throws Exception {
+    public void get_date_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getDate("nonExistKey"));
     }
@@ -425,7 +424,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_geolocation_from_non_exist_key () throws Exception {
+    public void get_geolocation_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getGeolocation("nonExistKey"));
     }
@@ -437,7 +436,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_json_object_from_non_exist_key () throws Exception {
+    public void get_json_object_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getJSONObject("nonExistKey"));
     }
@@ -449,7 +448,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_json_array_from_non_exist_key () throws Exception {
+    public void get_json_array_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getJSONArray("nonExistKey"));
     }
@@ -463,7 +462,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_list_from_non_exist_key () throws Exception {
+    public void get_list_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getList("nonExistKey"));
     }
@@ -477,13 +476,13 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void get_map_from_non_exist_key () throws Exception {
+    public void get_map_from_non_exist_key() throws Exception {
         NCMBBase obj = new NCMBBase("testClass");
         Assert.assertNull(obj.getMap("nonExistKey"));
     }
 
     @Test
-    public void remove () throws Exception {
+    public void remove() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"key\":\"value\"}"));
 
         Assert.assertTrue(baseObj.containsKey("key"));
@@ -497,7 +496,7 @@ public class NCMBBaseTest {
     }
 
     @Test
-    public void contains () throws Exception {
+    public void contains() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"key\":\"value\"}"));
         Assert.assertTrue(baseObj.containsKey("key"));
     }
