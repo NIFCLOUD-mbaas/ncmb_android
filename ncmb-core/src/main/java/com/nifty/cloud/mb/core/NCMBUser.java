@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * NCMBUser is used to sign up and login/logout the user
@@ -184,8 +185,8 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Check for specified provider's authentication data is linked
-     * @param provider facebook or twitter or google
      *
+     * @param provider facebook or twitter or google or anonymous
      * @return Return true if authentication data is linked
      */
     public boolean isLinkedWith(String provider) {
@@ -370,6 +371,33 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
+     * Login with anonymous
+     *
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public static NCMBUser loginWithAnonymous() throws NCMBException {
+        NCMBAnonymousParameters anonymousParameters = new NCMBAnonymousParameters(createUUID());
+        return NCMBUser.loginWith(anonymousParameters);
+    }
+
+    /**
+     * Login with anonymous in background
+     *
+     * @param callback Callback is executed after login
+     */
+    public static void loginWithAnonymousInBackground(final LoginCallback callback) {
+        NCMBAnonymousParameters anonymousParameters = new NCMBAnonymousParameters(createUUID());
+        NCMBUser.loginInBackgroundWith(anonymousParameters, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (callback != null) {
+                    callback.done(user, e);
+                }
+            }
+        });
+    }
+
+    /**
      * login with username and password
      *
      * @param userName user name
@@ -451,6 +479,9 @@ public class NCMBUser extends NCMBObject {
         } else if (params.getClass().equals(NCMBGoogleParameters.class)) {
             authDataJSON = createGoogleAuthData((NCMBGoogleParameters) params);
             authDataJSON.put("type", "google");
+        } else if (params.getClass().equals(NCMBAnonymousParameters.class)) {
+            authDataJSON = createAnonymousAuthData((NCMBAnonymousParameters) params);
+            authDataJSON.put("type", "anonymous");
         } else {
             throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
         }
@@ -858,5 +889,9 @@ public class NCMBUser extends NCMBObject {
 
     JSONObject getLocalData() throws NCMBException {
         return mFields;
+    }
+
+    static String createUUID() {
+        return UUID.randomUUID().toString();
     }
 }
