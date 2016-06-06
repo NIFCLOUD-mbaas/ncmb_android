@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
@@ -21,8 +20,8 @@ import java.text.SimpleDateFormat;
 /**
  * NCMBUserTest class
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE, shadows = {ShadowNCMBUser.class})
 public class NCMBUserTest {
 
     private boolean callbackFlag;
@@ -216,6 +215,43 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    @Test
+    public void loginWithAnonymous() throws Exception {
+        Assert.assertFalse(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
+        try {
+            NCMBUser user = NCMBUser.loginWithAnonymous();
+            Assert.assertEquals("dummyObjectId", user.getObjectId());
+        } catch (Exception error) {
+            Assert.fail(error.getMessage());
+        }
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
+
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+    }
+
+    @Test
+    public void loginWithAnonymousInBackground() throws Exception {
+
+        Assert.assertFalse(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
+        NCMBUser.loginWithAnonymousInBackground(new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+    }
 
     @Test
     public void login_with_facebook_account() throws Exception {

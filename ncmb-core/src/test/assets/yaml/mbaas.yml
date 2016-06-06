@@ -1037,3 +1037,13 @@
   response:
     status: 201
     file: valid_response_signature.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        anonymous: id
+  response:
+    status: 200
+    file: valid_post_registerUserAnonymous_response.json
