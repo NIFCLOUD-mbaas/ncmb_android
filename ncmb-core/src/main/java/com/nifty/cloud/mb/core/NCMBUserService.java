@@ -12,23 +12,33 @@ import java.util.Iterator;
  * Service for user api
  */
 public class NCMBUserService extends NCMBService {
-    /** service path for API category */
+    /**
+     * service path for API category
+     */
     public static final String SERVICE_PATH = "users";
 
-    /** Status code of register success */
+    /**
+     * Status code of register success
+     */
     public static final int HTTP_STATUS_REGISTERED = 201;
 
-    /** Status code of authorize success */
+    /**
+     * Status code of authorize success
+     */
     public static final int HTTP_STATUS_AUTHORIZED = 200;
 
-    /** Status code of invite api accespted */
+    /**
+     * Status code of invite api accespted
+     */
     public static final int HTTP_STATUS_REQUEST_ACCEPTED = 201;
 
     /**
      * Inner class for callback
      */
     abstract class UserServiceCallback extends ServiceCallback {
-        /** constructors */
+        /**
+         * constructors
+         */
         UserServiceCallback(NCMBUserService service, ExecuteServiceCallback callback) {
             super((NCMBService) service, callback);
         }
@@ -313,10 +323,11 @@ public class NCMBUserService extends NCMBService {
 
     /**
      * Send Email for the password reset in background thread
+     *
      * @param mailAddress mail address
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void requestPasswordReset(String mailAddress) throws NCMBException{
+    public void requestPasswordReset(String mailAddress) throws NCMBException {
         RequestParams reqParams = null;
         try {
             reqParams = requestPasswordResetParams(mailAddress);
@@ -328,8 +339,9 @@ public class NCMBUserService extends NCMBService {
 
     /**
      * Send Email for the password reset in background thread
+     *
      * @param mailAddress mail address
-     * @param callback callback when process finished
+     * @param callback    callback when process finished
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public void requestPasswordResetInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
@@ -441,7 +453,7 @@ public class NCMBUserService extends NCMBService {
 
             sendRequestAsync(reqParams, new UserServiceCallback(this, callback, options) {
                 @Override
-                public void handleResponse(NCMBResponse response){
+                public void handleResponse(NCMBResponse response) {
                     /*
                     try {
                         boolean oauth = mOptions.getBoolean("oauth");
@@ -525,7 +537,7 @@ public class NCMBUserService extends NCMBService {
         RequestParams reqParams = getUserParams(userId);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response){
+            public void handleResponse(NCMBResponse response) {
                 NCMBUser user = null;
                 try {
                     user = new NCMBUser(response.responseData);
@@ -693,7 +705,7 @@ public class NCMBUserService extends NCMBService {
         RequestParams reqParams = loginByNameParams(userName, password);
         sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response){
+            public void handleResponse(NCMBResponse response) {
                 NCMBException error = null;
                 NCMBUser user = null;
                 try {
@@ -777,7 +789,7 @@ public class NCMBUserService extends NCMBService {
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public void loginByMailInBackground(String mailAddress, String password,
-                                        LoginCallback callback) throws NCMBException{
+                                        LoginCallback callback) throws NCMBException {
         RequestParams params = null;
         try {
             params = loginByMailParams(mailAddress, password);
@@ -786,7 +798,7 @@ public class NCMBUserService extends NCMBService {
         }
         sendRequestAsync(params, new UserServiceCallback(this, callback) {
             @Override
-            public void handleResponse(NCMBResponse response){
+            public void handleResponse(NCMBResponse response) {
                 NCMBUser user = null;
                 NCMBException error = null;
                 try {
@@ -848,7 +860,7 @@ public class NCMBUserService extends NCMBService {
 
     /**
      * Check responkse to delete user
-     * 
+     *
      * @param response
      * @throws NCMBException
      */
@@ -1055,7 +1067,7 @@ public class NCMBUserService extends NCMBService {
 
             sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
+                public void handleResponse(NCMBResponse response) {
 
                     ArrayList<NCMBUser> users = null;
                     try {

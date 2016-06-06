@@ -35,6 +35,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Create query for file class
+     *
      * @return NCMBQuery for file class
      */
     public static NCMBQuery<NCMBUser> getQuery() {
@@ -178,12 +179,13 @@ public class NCMBUser extends NCMBObject {
      * @return Return true if logged in
      */
     public boolean isAuthenticated() {
-            return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
+        return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
     }
 
     /**
      * Check for specified provider's authentication data is linked
      * @param provider facebook or twitter or google
+     *
      * @return Return true if authentication data is linked
      */
     public boolean isLinkedWith(String provider) {
@@ -217,6 +219,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Get Specified Authentication Data
+     *
      * @param provider String "facebook" or "twitter" or "google" or "anonymous"
      * @return Specified Authentication Data or null
      */
@@ -279,6 +282,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Mail request of user authentication
+     *
      * @param mailAddress e-mail address for user authentication
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
@@ -289,8 +293,9 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Mail request of user authentication in background
+     *
      * @param mailAddress e-mail address for user authentication
-     * @param callback Callback is executed after mail signUp request
+     * @param callback    Callback is executed after mail signUp request
      */
     public static void requestAuthenticationMailInBackground(String mailAddress, DoneCallback callback) {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -305,6 +310,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Request Email for the password reset
+     *
      * @param mailAddress mail address
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
@@ -315,10 +321,11 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * Request Email for the password reset in background thread
+     *
      * @param mailAddress mail address
-     * @param callback callback when process finished
+     * @param callback    callback when process finished
      */
-    public static void requestPasswordResetInBackground(String mailAddress, DoneCallback callback){
+    public static void requestPasswordResetInBackground(String mailAddress, DoneCallback callback) {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.requestPasswordResetInBackground(mailAddress, callback);
@@ -418,21 +425,22 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * login with parameter that can be obtained after the OAuth authentication
+     *
      * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @return Authenticated user
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
     public static NCMBUser loginWith(Object authData) throws NCMBException {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
 
         try {
-           return service.registerByOauth(createAuthData(authData));
+            return service.registerByOauth(createAuthData(authData));
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
         }
     }
 
-    private static JSONObject createAuthData (Object params) throws JSONException {
+    private static JSONObject createAuthData(Object params) throws JSONException {
         JSONObject authDataJSON = null;
         if (params.getClass().equals(NCMBFacebookParameters.class)) {
             authDataJSON = createFacebookAuthData((NCMBFacebookParameters) params);
@@ -479,13 +487,21 @@ public class NCMBUser extends NCMBObject {
         return authDataJson;
     }
 
+    private static JSONObject createAnonymousAuthData(NCMBAnonymousParameters params) throws JSONException {
+        JSONObject authDataJson = new JSONObject();
+        authDataJson.put("id", params.userId);
+        return authDataJson;
+    }
+
+
     /**
      * login asynchronously with parameter that can be obtained after the OAuth authentication
+     *
      * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @param callback if login is succeeded, callback include authenticated user.
      */
     public static void loginInBackgroundWith(Object authData, LoginCallback callback) {
-        NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         try {
             service.registerByOauthInBackground(createAuthData(authData), callback);
         } catch (NCMBException e) {
@@ -501,6 +517,7 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * link specified authentication data for current user
+     *
      * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
@@ -509,7 +526,7 @@ public class NCMBUser extends NCMBObject {
         JSONObject currentAuthData = null;
         JSONObject linkedData;
         try {
-            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             linkedData = service.registerByOauthSetup(createAuthData(params));
             currentAuthData = getJSONObject("authData");
             mFields.put("authData", linkedData.getJSONObject("authData"));
@@ -528,7 +545,7 @@ public class NCMBUser extends NCMBObject {
         }
     }
 
-    private void copyLinkedAuthData (JSONObject currentAuthData, JSONObject linkedData) throws JSONException {
+    private void copyLinkedAuthData(JSONObject currentAuthData, JSONObject linkedData) throws JSONException {
         if (currentAuthData != null) {
             Iterator<String> keys = linkedData.keys();
             while (keys.hasNext()) {
@@ -541,12 +558,13 @@ public class NCMBUser extends NCMBObject {
 
     /**
      * link specified authentication data asynchronously for current user
-     * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     *
+     * @param params   NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @param callback Callback is executed after link or throw Exception
      */
-    public void linkInBackgroundWith (Object params, final DoneCallback callback) {
+    public void linkInBackgroundWith(Object params, final DoneCallback callback) {
         try {
-            NCMBUserService service = (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+            NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             final JSONObject linkedData = service.registerByOauthSetup(createAuthData(params));
             final JSONObject currentAuthData = getJSONObject("authData");
             mFields.put("authData", linkedData.getJSONObject("authData"));
@@ -589,7 +607,7 @@ public class NCMBUser extends NCMBObject {
 
     public void unlink(@NonNull String provider) throws NCMBException {
         JSONObject currentAuthData;
-        if (provider != null && ( provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
             currentAuthData = getJSONObject("authData");
             JSONObject unlinkData = new JSONObject();
             try {
@@ -616,7 +634,7 @@ public class NCMBUser extends NCMBObject {
 
         final JSONObject currentAuthData;
 
-        if (provider != null && ( provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
             currentAuthData = getJSONObject("authData");
             JSONObject unlinkData = new JSONObject();
             try {
@@ -652,7 +670,7 @@ public class NCMBUser extends NCMBObject {
 
             } catch (JSONException e) {
                 if (callback != null) {
-                    callback.done( new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
+                    callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
             }
         } else {
