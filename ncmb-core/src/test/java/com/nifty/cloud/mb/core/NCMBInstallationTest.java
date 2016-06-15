@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
@@ -32,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 /**
  * Test for NCMBInstallationTest
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationTest {
 
@@ -91,11 +90,11 @@ public class NCMBInstallationTest {
         ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
 
         NCMBInstallation installation = new NCMBInstallation();
-        installation.getRegistrationIdInBackground("dummySenderId",new DoneCallback() {
+        installation.getRegistrationIdInBackground("dummySenderId", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("java.lang.IllegalArgumentException: This device is not supported google-play-services-APK.",e.getMessage());
+                Assert.assertEquals("java.lang.IllegalArgumentException: This device is not supported google-play-services-APK.", e.getMessage());
             }
         });
     }
@@ -409,7 +408,7 @@ public class NCMBInstallationTest {
      * - 結果：非同期でInstallationの取得ができること
      */
     @Test
-    public void fetchInBackground_with_callback () throws Exception {
+    public void fetchInBackground_with_callback() throws Exception {
         NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
         installation.fetchInBackground(new FetchCallback<NCMBInstallation>() {
