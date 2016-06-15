@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -26,36 +25,6 @@ import java.net.URL;
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBResponseTest {
     private MockWebServer mServer;
-
-    //URLごとにレスポンスを定義するdispatcherを作成
-    final Dispatcher dispatcher = new Dispatcher() {
-
-        @Override
-        public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-            if (request.getMethod().equals(Constants.HTTP_METHOD_GET) && request.getPath().equals("/2013-09-01/classes/TestClass")) {
-                return new MockResponse().setHeader("X-NCMB-Response-Signature", "tLTbS3aMV7PT2N8Qy38UZoNjySRFHmJJ3tEPS1J2SS0=")
-                        .setHeader("Content-Type", "application/json")
-                        .setResponseCode(201)
-                        .setBody(readJsonResponse("valid_get_response.json"));
-            }
-            return new MockResponse().setResponseCode(404).setBody(readJsonResponse("valid_error_response.json"));
-        }
-    };
-
-    /***
-     * Utilities
-     ***/
-
-    public String readJsonResponse(String file_name) {
-        File file = new File("src/test/assets/json/" + file_name);
-        String json = null;
-        try {
-            json = FileUtils.fileRead(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
 
     @Before
     public void setup() throws Exception {
