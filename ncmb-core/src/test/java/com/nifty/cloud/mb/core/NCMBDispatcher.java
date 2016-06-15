@@ -62,10 +62,19 @@ public class NCMBDispatcher {
                 if (pathAndQuery.length > 1) {
                     query = pathAndQuery[1];
                 }
+
                 if (!requestMap.get("url").equals(path)) {
                     continue;
                     //return defaultErrorResponse();
                 }
+
+                if (requestMap.get("url").equals("/2013-09-01/classes/ResponseSignatureTest")) {
+                    return new MockResponse().setResponseCode((int) responseMap.get("status"))
+                            .setHeader("Content-Type", "application/json")
+                            .setHeader("X-NCMB-Response-Signature", "tLdHmmi7td5+YnjdPxhPYfjV6Lh8pZNBrd2kH7EejnU=")
+                            .setBody(readJsonResponse(responseMap.get("file").toString()));
+                }
+
                 if (!requestMap.get("method").equals(request.getMethod())){
                     continue;
                     //return defaultErrorResponse();
@@ -92,6 +101,7 @@ public class NCMBDispatcher {
                         String mockBodyStr = gson.toJson(mockBody);
                         System.out.println("mock:" + mockBodyStr);
                         System.out.println("req:" + requestBody);
+
                         if (checkRequestBody(mockBodyStr, requestBody)) {
                             //Responseをreturn
                             return new MockResponse().setResponseCode((int)responseMap.get("status"))

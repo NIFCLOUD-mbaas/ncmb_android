@@ -9,39 +9,58 @@ import android.content.pm.PackageManager;
  * The NCMB Class contains sdk initialize method and factory method for Service class
  */
 public class NCMB {
-    /** Version of this SDK */
+    /**
+     * Version of this SDK
+     */
     public static final String SDK_VERSION = "2.2.2";
 
-    /** Prefix of keys in metadata for NCMB settings */
+    /**
+     * Prefix of keys in metadata for NCMB settings
+     */
     public static final String METADATA_PREFIX = "com.nifty.cloud.mb.";
 
-    /** Default base URL of API */
+    /**
+     * Default base URL of API
+     */
     public static final String DEFAULT_DOMAIN_URL = "https://mb.api.cloud.nifty.com/";
 
-    /** Default API version */
+    /**
+     * Default API version
+     */
     public static final String DEFAULT_API_VERSION = "2013-09-01";
 
-    /** OAuth type of Twitter */
+    /**
+     * OAuth type of Twitter
+     */
     public static final String OAUTH_TWITTER = "twitter";
 
-    /** OAuth type of Facebook */
+    /**
+     * OAuth type of Facebook
+     */
     public static final String OAUTH_FACEBOOK = "facebook";
 
-    /** OAuth type of Google */
+    /**
+     * OAuth type of Google
+     */
     public static final String OAUTH_GOOGLE = "google";
 
-    /** Anonymous authentication */
+    /**
+     * Anonymous authentication
+     */
     public static final String OAUTH_ANONYMOUS = "anonymous";
 
     // SharedPreferences key name
     private static final String APPLICATION_KEY = "applicationKey";
     private static final String CLIENT_KEY = "clientKey";
     private static final String API_BASE_URL = "apiBaseUrl";
+    private static final String RESPONSE_VALIDATION = "responseValidation";
 
     // SharedPreferences file name
     private static final String PREFERENCE_FILE_NAME = "NCMB";
 
-    /** Service types */
+    /**
+     * Service types
+     */
     public enum ServiceType {
         OBJECT,
         USER,
@@ -50,7 +69,9 @@ public class NCMB {
         PUSH,
         FILE,
         SCRIPT
-    };
+    }
+
+    ;
 
     /**
      * Runtime Context
@@ -58,11 +79,16 @@ public class NCMB {
     private static NCMBContext sCurrentContext;
 
     /**
+     * Response signature valid flag
+     */
+    private static boolean sResponseValidation;
+
+    /**
      * Setup SDK internals
      *
-     * @param context Application context
+     * @param context        Application context
      * @param applicationKey application key
-     * @param clientKey client key
+     * @param clientKey      client key
      */
     public static void initialize(Context context,
                                   String applicationKey,
@@ -73,11 +99,11 @@ public class NCMB {
     /**
      * Setup SDK internals with api server host name
      *
-     * @param context Application context
+     * @param context        Application context
      * @param applicationKey application key
-     * @param clientKey client key
-     * @param domainUrl host name for api request
-     * @param apiVersion version for rest api
+     * @param clientKey      client key
+     * @param domainUrl      host name for api request
+     * @param apiVersion     version for rest api
      */
     public static void initialize(Context context,
                                   String applicationKey,
@@ -105,7 +131,7 @@ public class NCMB {
 
         // 永続化
         Context appState = NCMBApplicationController.getApplicationState();
-        if(appState != null){ // Manifestに設定が追加されていない場合はnull
+        if (appState != null) { // Manifestに設定が追加されていない場合はnull
             SharedPreferences.Editor editor = createSharedPreferences().edit();
             editor.putString(APPLICATION_KEY, applicationKey);
             editor.putString(CLIENT_KEY, clientKey);
@@ -125,25 +151,25 @@ public class NCMB {
 
         switch (serviceType) {
             case OBJECT:
-                service = (NCMBService)new NCMBObjectService(getCurrentContext());
+                service = (NCMBService) new NCMBObjectService(getCurrentContext());
                 break;
             case USER:
-                service = (NCMBService)new NCMBUserService(getCurrentContext());
+                service = (NCMBService) new NCMBUserService(getCurrentContext());
                 break;
             case ROLE:
-                service = (NCMBService)new NCMBRoleService(getCurrentContext());
+                service = (NCMBService) new NCMBRoleService(getCurrentContext());
                 break;
             case INSTALLATION:
-                service = (NCMBInstallationService)new NCMBInstallationService(getCurrentContext());
+                service = (NCMBInstallationService) new NCMBInstallationService(getCurrentContext());
                 break;
             case PUSH:
-                service = (NCMBPushService)new NCMBPushService(getCurrentContext());
+                service = (NCMBPushService) new NCMBPushService(getCurrentContext());
                 break;
             case FILE:
-                service = (NCMBFileService)new NCMBFileService(getCurrentContext());
+                service = (NCMBFileService) new NCMBFileService(getCurrentContext());
                 break;
             case SCRIPT:
-                service = (NCMBScriptService)new NCMBScriptService(getCurrentContext());
+                service = (NCMBScriptService) new NCMBScriptService(getCurrentContext());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid serviceType");
@@ -155,7 +181,7 @@ public class NCMB {
      * Getting metadata from given context
      *
      * @param context Application context
-     * @param name Name of metadata
+     * @param name    Name of metadata
      * @return String or null;
      */
     protected static String getMetadata(Context context, String name) {
@@ -174,27 +200,29 @@ public class NCMB {
     /**
      * Setting time out
      * Default 10000 milliseconds
+     *
      * @param timeout milliseconds
      */
-    public static void setTimeout(int timeout){
+    public static void setTimeout(int timeout) {
         NCMBConnection.sConnectionTimeout = timeout;
     }
 
     /**
      * Getting time out
+     *
      * @return timeout milliseconds
      */
-    public static int getTimeout(){
+    public static int getTimeout() {
         return NCMBConnection.sConnectionTimeout;
     }
 
     /**
      * Get NCMBContext
      */
-    public static NCMBContext getCurrentContext(){
-        if(sCurrentContext == null){
+    public static NCMBContext getCurrentContext() {
+        if (sCurrentContext == null) {
             Context context = NCMBApplicationController.getApplicationState();
-            if(!getApplicationKey().isEmpty() && !getClientKey().isEmpty() && !getApiBaseUrl().isEmpty() && context == null){
+            if (!getApplicationKey().isEmpty() && !getClientKey().isEmpty() && !getApiBaseUrl().isEmpty() && context == null) {
                 throw new IllegalArgumentException("Please call the NCMB.initialize() method.");
             }
 
@@ -208,20 +236,45 @@ public class NCMB {
         return sCurrentContext;
     }
 
-    private static String getApplicationKey(){
-        return createSharedPreferences().getString(APPLICATION_KEY,"");
+    private static String getApplicationKey() {
+        return createSharedPreferences().getString(APPLICATION_KEY, "");
     }
 
-    private static String getClientKey(){
-        return createSharedPreferences().getString(CLIENT_KEY,"");
+    private static String getClientKey() {
+        return createSharedPreferences().getString(CLIENT_KEY, "");
     }
 
-    private static String getApiBaseUrl(){
-        return createSharedPreferences().getString(API_BASE_URL,"");
+    private static String getApiBaseUrl() {
+        return createSharedPreferences().getString(API_BASE_URL, "");
     }
 
-    private static SharedPreferences createSharedPreferences(){
-        return NCMBApplicationController.getApplicationState().getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+    static boolean getResponseValidation() {
+        return sResponseValidation || createSharedPreferences().getBoolean(RESPONSE_VALIDATION, false);
+    }
+
+    /**
+     * Determining whether a response has not been tampered<br>
+     * The default is invalid<br>
+     * true = valid , false = inValid
+     *
+     * @param responseValidation response validation enable flag
+     */
+    public static void enableResponseValidation(boolean responseValidation) {
+        sResponseValidation = responseValidation;
+        if (getCurrentContext().context != null) {
+            SharedPreferences data = getCurrentContext().context.getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = data.edit();
+            editor.putBoolean(RESPONSE_VALIDATION, responseValidation);
+            editor.apply();
+        }
+    }
+
+    private static SharedPreferences createSharedPreferences() {
+        Context appState = NCMBApplicationController.getApplicationState();
+        if (appState != null) {
+            return NCMBApplicationController.getApplicationState().getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        }
+        return NCMB.getCurrentContext().context.getApplicationContext().getSharedPreferences(PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
     }
 
 }
