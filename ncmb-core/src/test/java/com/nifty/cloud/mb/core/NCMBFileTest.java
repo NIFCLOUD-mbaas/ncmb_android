@@ -9,13 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowLooper;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBFileTest {
     private MockWebServer mServer;
@@ -57,7 +56,7 @@ public class NCMBFileTest {
     @Test
     public void saveInBackground() throws Exception {
         byte[] data = "Hello,NCMB".getBytes();
-        NCMBFile file = new NCMBFile("Sample.txt",data,new NCMBAcl());
+        NCMBFile file = new NCMBFile("Sample.txt", data, new NCMBAcl());
         file.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
@@ -75,7 +74,7 @@ public class NCMBFileTest {
      */
     @Test
     public void updateInBackground() throws Exception {
-        NCMBFile file = new NCMBFile("Sample.txt",new NCMBAcl());
+        NCMBFile file = new NCMBFile("Sample.txt", new NCMBAcl());
         file.updateInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {

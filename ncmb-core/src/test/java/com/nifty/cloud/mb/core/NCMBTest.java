@@ -16,18 +16,18 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import static org.mockito.Mockito.when;
 
 
-@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*", "org.junit.*" })
+@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*", "org.junit.*"})
 @PrepareForTest(NCMB.class)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBTest {
 
@@ -51,8 +51,8 @@ public class NCMBTest {
 
     @Test
     public void initialize_with_apiKey() {
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),"appKey","cliKey");
-        Assert.assertEquals("appKey",NCMB.getCurrentContext().applicationKey);
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "appKey", "cliKey");
+        Assert.assertEquals("appKey", NCMB.getCurrentContext().applicationKey);
         Assert.assertEquals("cliKey", NCMB.getCurrentContext().clientKey);
         Assert.assertEquals("https://mb.api.cloud.nifty.com/2013-09-01/", NCMB.getCurrentContext().baseUrl);
     }
@@ -60,11 +60,11 @@ public class NCMBTest {
     @Test
     public void initialize_with_apiKey_and_url() {
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
-                        "appKey",
-                        "cliKey",
-                        mServer.getUrl("/").toString(),
-                        null);
-        Assert.assertEquals("appKey",NCMB.getCurrentContext().applicationKey);
+                "appKey",
+                "cliKey",
+                mServer.getUrl("/").toString(),
+                null);
+        Assert.assertEquals("appKey", NCMB.getCurrentContext().applicationKey);
         Assert.assertEquals("cliKey", NCMB.getCurrentContext().clientKey);
         Assert.assertEquals(mServer.getUrl("/" + NCMB.DEFAULT_API_VERSION + "/").toString(), NCMB.getCurrentContext().baseUrl);
     }
@@ -72,8 +72,8 @@ public class NCMBTest {
     @Test
     public void initialize_with_apiKey_and_metaData() {
         PowerMockito.spy(NCMB.class);
-        when(NCMB.getMetadata(RuntimeEnvironment.application.getApplicationContext() ,NCMB.METADATA_PREFIX + "DOMAIN_URL")).thenReturn("http://sample.com/");
-        when(NCMB.getMetadata(RuntimeEnvironment.application.getApplicationContext() ,NCMB.METADATA_PREFIX + "API_VERSION")).thenReturn("2015-07-23");
+        when(NCMB.getMetadata(RuntimeEnvironment.application.getApplicationContext(), NCMB.METADATA_PREFIX + "DOMAIN_URL")).thenReturn("http://sample.com/");
+        when(NCMB.getMetadata(RuntimeEnvironment.application.getApplicationContext(), NCMB.METADATA_PREFIX + "API_VERSION")).thenReturn("2015-07-23");
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey");
@@ -116,5 +116,16 @@ public class NCMBTest {
         Assert.assertEquals(NCMB.getCurrentContext().applicationKey, preferences.getString("applicationKey", ""));
         Assert.assertEquals(NCMB.getCurrentContext().clientKey, preferences.getString("clientKey", ""));
         Assert.assertEquals(NCMB.getCurrentContext().baseUrl, preferences.getString("apiBaseUrl", ""));
+    }
+
+    @Test
+    public void enableResponseValidation() throws IOException {
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
+
+        SharedPreferences preferences = NCMB.getCurrentContext().context.getApplicationContext().getSharedPreferences("NCMB", Context.MODE_PRIVATE);
+        Assert.assertEquals(false, preferences.getBoolean("responseValidation", false));
+
+        NCMB.enableResponseValidation(true);
+        Assert.assertEquals(true, preferences.getBoolean("responseValidation", false));
     }
 }

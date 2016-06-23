@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 this.getApplicationContext(),
                 "YOUR_APPLICATION_KEY",
                 "YOUR_CLIENT_KEY");
+
+        NCMB.enableResponseValidation(true);
         intent = new Intent(this, ResultActivity.class);
     }
 

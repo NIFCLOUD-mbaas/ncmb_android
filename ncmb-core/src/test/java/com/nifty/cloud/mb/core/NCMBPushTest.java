@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
@@ -28,7 +27,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBPushTest {
 
@@ -377,7 +376,7 @@ public class NCMBPushTest {
      * - 結果：非同期でプッシュ通知が取得できること
      */
     @Test
-    public void fetchInBackground_with_callback () throws Exception {
+    public void fetchInBackground_with_callback() throws Exception {
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
         push.fetchInBackground(new FetchCallback<NCMBPush>() {
@@ -537,7 +536,7 @@ public class NCMBPushTest {
         push.setBadgeSetting(0);
         push.setTarget(new JSONArray("[android,ios]"));
         NCMBQuery<NCMBInstallation> query = new NCMBQuery<>("installation");
-        query.whereEqualTo("channels","Ch1");
+        query.whereEqualTo("channels", "Ch1");
         push.setSearchCondition(query);
         push.setUserSettingValue(new JSONObject("{score:100}"));
         push.setBadgeIncrementFlag(true);
@@ -678,7 +677,7 @@ public class NCMBPushTest {
         Assert.assertNull(push.getRichUrl());
         Assert.assertNull(push.getCategory());
         Assert.assertNull(push.getAction());
-        Assert.assertEquals(0,push.getBadgeSetting());
+        Assert.assertEquals(0, push.getBadgeSetting());
         Assert.assertNull(push.getTarget());
         Assert.assertNull(push.getSearchCondition());
         Assert.assertNull(push.getUserSettingValue());
@@ -694,7 +693,7 @@ public class NCMBPushTest {
     //endregion
 
     @Test
-    public void NCMBGcmReceiverSavedRecentPushNotoficationId () {
+    public void NCMBGcmReceiverSavedRecentPushNotoficationId() {
 
         String testPushId = "testPushId";
 
@@ -702,7 +701,6 @@ public class NCMBPushTest {
         Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), NCMBGcmListenerService.class);
         intent.putExtra("com.nifty.PushId", testPushId);
         receiver.onReceive(ShadowApplication.getInstance().getApplicationContext(), intent);
-
 
 
         SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
