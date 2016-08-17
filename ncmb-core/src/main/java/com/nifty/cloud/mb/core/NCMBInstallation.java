@@ -16,10 +16,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -186,40 +184,6 @@ public class NCMBInstallation extends NCMBObject {
 
             return mFields.getString("timeZone");
         } catch (JSONException error) {
-            throw new IllegalArgumentException(error.getMessage());
-        }
-    }
-
-    /**
-     * Get created date
-     *
-     * @return created date
-     */
-    public Date getCreateDate() {
-        try {
-            if (mFields.isNull("createDate")) {
-                return null;
-            }
-            DateFormat format = NCMBDateFormat.getIso8601();
-            return format.parse(mFields.getString("createDate"));
-        } catch (JSONException | ParseException error) {
-            throw new IllegalArgumentException(error.getMessage());
-        }
-    }
-
-    /**
-     * Get updated date
-     *
-     * @return updated date
-     */
-    public Date getUpdateDate() {
-        try {
-            if (mFields.isNull("updateDate")) {
-                return null;
-            }
-            DateFormat format = NCMBDateFormat.getIso8601();
-            return format.parse(mFields.getString("updateDate"));
-        } catch (JSONException | ParseException error) {
             throw new IllegalArgumentException(error.getMessage());
         }
     }

@@ -75,12 +75,16 @@ public class NCMBBase {
     }
 
 
-    public Date getCreateDate() {
+    public Date getCreateDate() throws NCMBException {
         try {
+            if (mFields.isNull("createDate")) {
+                return null;
+            }
+
             SimpleDateFormat df = NCMBDateFormat.getIso8601();
             return df.parse(mFields.getString("createDate"));
         } catch (JSONException | ParseException e) {
-            return null;
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
@@ -93,12 +97,16 @@ public class NCMBBase {
         }
     }
 
-    public Date getUpdateDate() {
+    public Date getUpdateDate() throws NCMBException {
         try {
+            if (mFields.isNull("updateDate")) {
+                return null;
+            }
+
             SimpleDateFormat df = NCMBDateFormat.getIso8601();
             return df.parse(mFields.getString("updateDate"));
         } catch (JSONException | ParseException e) {
-            return null;
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
@@ -109,7 +117,6 @@ public class NCMBBase {
             } else {
                 mFields.put("acl", acl.toJson());
             }
-            ;
 
         } catch (JSONException e) {
             throw new IllegalArgumentException(e.getMessage());
