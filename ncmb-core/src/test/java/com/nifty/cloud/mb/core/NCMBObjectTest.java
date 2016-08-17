@@ -386,8 +386,8 @@ public class NCMBObjectTest {
                     try {
                         Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
                         Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
+                    } catch (ParseException | NCMBException error) {
+                        Assert.fail(error.getMessage());
                     }
                 }
                 callbackFlag = true;
