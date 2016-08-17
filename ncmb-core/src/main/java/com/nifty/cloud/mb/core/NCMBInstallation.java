@@ -30,14 +30,22 @@ import java.util.Set;
  */
 public class NCMBInstallation extends NCMBObject {
 
-    /** currentInstallation fileName */
+    /**
+     * currentInstallation fileName
+     */
     static final String INSTALLATION_FILENAME = "currentInstallation";
-    /** channels folder Name */
+    /**
+     * channels folder Name
+     */
     static final String CHANNELS_FOLDER_NAME = "channels";
 
-    /** request code */
+    /**
+     * request code
+     */
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    /** push device */
+    /**
+     * push device
+     */
     static NCMBInstallation currentInstallation = null;
 
     static final List<String> ignoreKeys = Arrays.asList(
@@ -222,7 +230,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param name field name
      * @return field value
      */
-    public Object getValue(String name){
+    public Object getValue(String name) {
         try {
             if (mFields.isNull(name)) {
                 return null;
@@ -385,6 +393,7 @@ public class NCMBInstallation extends NCMBObject {
 
     /**
      * Create query for installation class
+     *
      * @return NCMBQuery for installation class
      */
     public static NCMBQuery<NCMBInstallation> getQuery() {
@@ -405,7 +414,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    NCMBInstallation(JSONObject params){
+    NCMBInstallation(JSONObject params) {
         super("installation", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -425,8 +434,8 @@ public class NCMBInstallation extends NCMBObject {
         //端末にAPKがインストールされていない場合は処理を終了
         try {
             if (!checkPlayServices(NCMB.getCurrentContext().context)) return;
-        }catch (Exception error){
-            if(callback!=null){
+        } catch (Exception error) {
+            if (callback != null) {
                 callback.done(new NCMBException(error));
                 return;
             }
@@ -466,7 +475,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param context
      * @return bool
      */
-    protected boolean checkPlayServices(Context context) throws Exception{
+    protected boolean checkPlayServices(Context context) throws Exception {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
             throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
@@ -747,8 +756,8 @@ public class NCMBInstallation extends NCMBObject {
     void setLocalData(JSONObject data) throws NCMBException {
         try {
             //新規作成時
-            if(data.has("createDate")&&!data.has("updateDate")){
-                data.put("updateDate",data.getString("createDate"));
+            if (data.has("createDate") && !data.has("updateDate")) {
+                data.put("updateDate", data.getString("createDate"));
             }
 
             for (Iterator<String> keys = data.keys(); keys.hasNext(); ) {
