@@ -239,17 +239,17 @@ public class NCMBInstallationService extends NCMBService {
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
                 public void handleResponse(NCMBResponse response) {
-
+                    NCMBException error = null;
                     //update currentInstallation
                     try {
                         writeCurrentInstallation(argumentParams, response.responseData);
                     } catch (NCMBException e) {
-                        callback.done(null, e);
+                        error = e;
                     }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(response.responseData, error);
                     }
                 }
 
