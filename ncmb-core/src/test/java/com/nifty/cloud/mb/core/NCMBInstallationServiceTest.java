@@ -39,6 +39,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.SimpleTimeZone;
 
+import static org.mockito.Matchers.any;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.spy;
+
 /**
  * Test for NCMBInstallationServiceTest
  */
@@ -145,6 +149,32 @@ public class NCMBInstallationServiceTest {
     }
 
     /**
+     * - 内容：createInstallationInBackgroundが失敗した際にエラーが返却される事を確認する
+     * - 結果：エラーが返却される事
+     */
+    @Test
+    public void createInstallationInBackground_error() throws Exception {
+        NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
+        NCMBInstallationService mock = spy(installationService);
+        doThrow(new NCMBException(NCMBException.INVALID_FORMAT, "Unparseable date: \"2016-06-21T18:40:38:506Z\"")).when(mock).writeCurrentInstallation(any(JSONObject.class), any(JSONObject.class));
+        mock.createInstallationInBackground("dummyToken", new JSONObject(), new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject json, NCMBException e) {
+                //checkAssert
+                Assert.assertNotNull(e);
+                Assert.assertEquals(e.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+                Assert.assertEquals(e.getCode(), NCMBException.INVALID_FORMAT);
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
      * - 内容：updateInstallationが成功する事を確認する
      * - 結果：updateDateを含むJSONObjectが返却される事
      */
@@ -186,6 +216,33 @@ public class NCMBInstallationServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：updateInstallationInBackgroundが失敗した際ににエラーが返却される事を確認する
+     * - 結果：エラーが返却される事
+     */
+    @Test
+    public void updateInstallationInBackground_error() throws Exception {
+        Assert.assertFalse(callbackFlag);
+        NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
+        NCMBInstallationService mock = spy(installationService);
+        doThrow(new NCMBException(NCMBException.INVALID_FORMAT, "Unparseable date: \"2016-06-21T18:40:38:506Z\"")).when(mock).writeCurrentInstallation(any(JSONObject.class), any(JSONObject.class));
+        mock.updateInstallationInBackground("7FrmPTBKSNtVjajm", new JSONObject(), new ExecuteServiceCallback() {
+            @Override
+            public void done(JSONObject json, NCMBException e) {
+                //checkAssert
+                Assert.assertNotNull(e);
+                Assert.assertEquals(e.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+                Assert.assertEquals(e.getCode(), NCMBException.INVALID_FORMAT);
                 callbackFlag = true;
             }
         });

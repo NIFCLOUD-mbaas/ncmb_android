@@ -320,42 +320,6 @@ public class NCMBInstallationTest {
         Assert.assertEquals("java.lang.IllegalArgumentException: registrationId is must not be null.", error.getMessage());
     }
 
-    @Test
-    public void saveInBackground_error_parse() throws Exception {
-
-        NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
-        installation.setDeviceToken("parse_error_test");
-        installation.saveInBackground(new DoneCallback() {
-
-            @Override
-            public void done(NCMBException error) {
-                junit.framework.Assert.assertNotNull(error);
-                junit.framework.Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
-                junit.framework.Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
-            }
-        });
-
-        Robolectric.flushBackgroundThreadScheduler();
-        ShadowLooper.runUiThreadTasks();
-    }
-
-    @Test
-    public void save_error_parse() throws Exception {
-
-        NCMBException error = null;
-        NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
-        installation.setDeviceToken("parse_error_test");
-        try {
-            installation.save();
-        } catch (NCMBException e) {
-            error = e;
-        }
-
-        junit.framework.Assert.assertNotNull(error);
-        junit.framework.Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
-        junit.framework.Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
-
-    }
     // endregion
 
     //region fetch test

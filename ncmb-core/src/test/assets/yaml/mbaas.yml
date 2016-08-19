@@ -173,20 +173,6 @@
     url: /2013-09-01/installations
     method: POST
     body:
-      deviceToken: "parse_error_test"
-      deviceType: "android"
-      applicationName: "ncmb-core"
-      appVersion: "1.0"
-      sdkVersion: "2.2.3"
-      timeZone: "Asia/Tokyo"
-  response:
-    status: 201
-    file: valid_post_response_invalid_date.json
----
-  request:
-    url: /2013-09-01/installations
-    method: POST
-    body:
       error: "test"
       deviceToken: "xxxxxxxxxxxxxxxxxxx"
       deviceType: "android"
