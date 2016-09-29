@@ -49,11 +49,11 @@ public class NCMBBase {
         }
     }
 
-    public void setObjectId(String objectId) {
+    public void setObjectId(String objectId) throws NCMBException {
         try {
             mFields.put("objectId", objectId);
         } catch (JSONException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
@@ -65,12 +65,12 @@ public class NCMBBase {
         }
     }
 
-    protected void setCreateDate(Date createDate) {
+    protected void setCreateDate(Date createDate) throws NCMBException {
         try {
             SimpleDateFormat df = NCMBDateFormat.getIso8601();
             mFields.put("createDate", df.format(createDate));
         } catch (JSONException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
@@ -88,12 +88,12 @@ public class NCMBBase {
         }
     }
 
-    protected void setUpdateDate(Date updateDate) {
+    protected void setUpdateDate(Date updateDate) throws NCMBException {
         try {
             SimpleDateFormat df = NCMBDateFormat.getIso8601();
             mFields.put("updateDate", df.format(updateDate));
         } catch (JSONException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
@@ -110,7 +110,7 @@ public class NCMBBase {
         }
     }
 
-    protected void setAclFromInternal(NCMBAcl acl) {
+    protected void setAclFromInternal(NCMBAcl acl) throws NCMBException {
         try {
             if (acl == null) {
                 mFields.put("acl", null);
@@ -119,11 +119,11 @@ public class NCMBBase {
             }
 
         } catch (JSONException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
     }
 
-    public void setAcl(NCMBAcl acl) {
+    public void setAcl(NCMBAcl acl) throws NCMBException {
         setAclFromInternal(acl);
         mUpdateKeys.add("acl");
     }
@@ -160,14 +160,14 @@ public class NCMBBase {
      *
      * @param key field name for remove the value
      */
-    public void remove(String key) {
+    public void remove(String key) throws NCMBException {
         try {
             if (mFields.has(key)) {
                 mFields.put(key, null);
                 mUpdateKeys.add(key);
             }
         } catch (JSONException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
 
     }
@@ -211,15 +211,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, String value) {
+    public void put(String key, String value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
 
@@ -231,15 +231,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, boolean value) {
+    public void put(String key, boolean value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -250,15 +250,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, int value) {
+    public void put(String key, int value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -269,15 +269,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, long value) {
+    public void put(String key, long value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -288,15 +288,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, float value) {
+    public void put(String key, float value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, (double) value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -307,15 +307,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, double value) {
+    public void put(String key, double value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -326,9 +326,9 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, Date value) {
+    public void put(String key, Date value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 SimpleDateFormat df = NCMBDateFormat.getIso8601();
@@ -337,7 +337,7 @@ public class NCMBBase {
                 mFields.put(key, dateJson);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -348,9 +348,9 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, Location value) {
+    public void put(String key, Location value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 JSONObject locationJson = new JSONObject("{'__type':'GeoPoint'}");
@@ -359,7 +359,7 @@ public class NCMBBase {
                 mFields.put(key, locationJson);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -370,15 +370,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, JSONObject value) {
+    public void put(String key, JSONObject value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -389,15 +389,15 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, JSONArray value) {
+    public void put(String key, JSONArray value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 mFields.put(key, value);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -408,16 +408,16 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, Map value) {
+    public void put(String key, Map value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 String mapJsonStr = new Gson().toJson(value);
                 mFields.put(key, new JSONObject(mapJsonStr));
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -428,16 +428,16 @@ public class NCMBBase {
      * @param key   field name for put the value
      * @param value value to put
      */
-    public void put(String key, List value) {
+    public void put(String key, List value) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
                 String listJsonStr = new Gson().toJson(value);
                 mFields.put(key, new JSONArray(listJsonStr));
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
@@ -448,11 +448,11 @@ public class NCMBBase {
      * @param key    field name for put the value
      * @param object NCMBObject to put as pointer
      */
-    public void put(String key, NCMBObject object) {
+    public void put(String key, NCMBObject object) throws NCMBException {
         if (isIgnoreKey(key)) {
-            throw new IllegalArgumentException("Can't put data to same name with property key.");
+            throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else if (object.getObjectId() == null) {
-            throw new IllegalArgumentException("objectId must not be null.");
+            throw new NCMBException(NCMBException.MISSING_VALUE, "objectId must not be null.");
         } else {
             try {
                 JSONObject pointerJson = new JSONObject("{\"__type\":\"Pointer\"}");
@@ -461,7 +461,7 @@ public class NCMBBase {
                 mFields.put(key, pointerJson);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
             }
         }
     }
