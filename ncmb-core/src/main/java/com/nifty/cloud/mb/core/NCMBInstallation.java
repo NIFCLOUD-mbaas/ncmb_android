@@ -507,7 +507,7 @@ public class NCMBInstallation extends NCMBObject {
             	return;
         	}
         } catch (NCMBException error) {
-            error.printStackTrace(); //issues:112194
+            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得
@@ -548,7 +548,7 @@ public class NCMBInstallation extends NCMBObject {
             	return;
         	}
         } catch (NCMBException error) {
-            error.printStackTrace(); //issues:112194
+            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得
