@@ -42,7 +42,7 @@ class NCMBLocalFile {
      * @param readFile read file instance
      * @return file data
      */
-    static JSONObject readFile(File readFile){
+    static JSONObject readFile(File readFile) throws NCMBException {
         checkNCMBContext();
         JSONObject json = new JSONObject();
         try {
@@ -50,8 +50,8 @@ class NCMBLocalFile {
             String information = br.readLine();
             br.close();
             json = new JSONObject(information);
-        } catch (IOException | JSONException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new NCMBException(e);
         }
         return json;
     }

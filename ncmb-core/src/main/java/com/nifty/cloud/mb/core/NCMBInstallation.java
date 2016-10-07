@@ -360,7 +360,7 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @return Installation
      */
-    public static NCMBInstallation getCurrentInstallation() {
+    public static NCMBInstallation getCurrentInstallation() throws NCMBException {
         try {
             //null check
             NCMBLocalFile.checkNCMBContext();
@@ -378,7 +378,7 @@ public class NCMBInstallation extends NCMBObject {
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            throw new NCMBException(error);
         }
         return currentInstallation;
     }
@@ -501,9 +501,13 @@ public class NCMBInstallation extends NCMBObject {
             throw new IllegalArgumentException("activity may not be null.");
         }
 
+        try{
         //端末未登録の場合は処理を実行しない
         if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
             return;
+        }
+        } catch (NCMBException error) {
+            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得
@@ -538,9 +542,13 @@ public class NCMBInstallation extends NCMBObject {
             throw new IllegalArgumentException("channel may not be null.");
         }
 
+        try{
         //端末未登録の場合は処理を実行しない
         if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
             return;
+        }
+        } catch (NCMBException error) {
+            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得
