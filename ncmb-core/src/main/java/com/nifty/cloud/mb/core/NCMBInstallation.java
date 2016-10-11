@@ -359,6 +359,7 @@ public class NCMBInstallation extends NCMBObject {
      * Get current installation object
      *
      * @return Installation
+     * @throws NCMBException
      */
     public static NCMBInstallation getCurrentInstallation() throws NCMBException {
         try {
@@ -481,8 +482,9 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @param channel  channel
      * @param activity Activity Class
+     * @throws NCMBException
      */
-    public static void subscribe(String channel, Class<? extends Activity> activity) {
+    public static void subscribe(String channel, Class<? extends Activity> activity) throws NCMBException {
         subscribe(channel, activity, 0);
     }
 
@@ -493,21 +495,18 @@ public class NCMBInstallation extends NCMBObject {
      * @param channelName channel
      * @param icon        icon
      * @param activity    Activity Class
+     * @throws NCMBException
      */
-    public static void subscribe(String channelName, Class<? extends Activity> activity, int icon) {
+    public static void subscribe(String channelName, Class<? extends Activity> activity, int icon) throws NCMBException {
         if (channelName == null) {
             throw new IllegalArgumentException("channel may not be null.");
         } else if (activity == null) {
             throw new IllegalArgumentException("activity may not be null.");
         }
 
-        try{
         //端末未登録の場合は処理を実行しない
         if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
             return;
-        }
-        } catch (NCMBException error) {
-            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得
@@ -536,19 +535,16 @@ public class NCMBInstallation extends NCMBObject {
      * please use after the instalation registration
      *
      * @param channelName channel
+     * @throws NCMBException
      */
-    public static void unsubscribe(String channelName) {
+    public static void unsubscribe(String channelName) throws NCMBException {
         if (channelName == null) {
             throw new IllegalArgumentException("channel may not be null.");
         }
 
-        try{
         //端末未登録の場合は処理を実行しない
         if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
             return;
-        }
-        } catch (NCMBException error) {
-            error.printStackTrace();
         }
 
         // NCMB/channels フォルダの取得

@@ -41,6 +41,7 @@ class NCMBLocalFile {
      * Reading to a local file
      * @param readFile read file instance
      * @return file data
+     * @throws NCMBException
      */
     static JSONObject readFile(File readFile) throws NCMBException {
         checkNCMBContext();

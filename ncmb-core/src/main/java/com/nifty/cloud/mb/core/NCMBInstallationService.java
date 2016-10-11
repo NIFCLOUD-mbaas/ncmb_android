@@ -648,7 +648,7 @@ public class NCMBInstallationService extends NCMBService {
                 clearCurrentInstallation();
             }
             } catch (NCMBException error) {
-                error.printStackTrace();
+                //none
             }
         }
     }
