@@ -499,9 +499,9 @@ public class NCMBInstallation extends NCMBObject {
      */
     public static void subscribe(String channelName, Class<? extends Activity> activity, int icon) throws NCMBException {
         if (channelName == null) {
-            throw new IllegalArgumentException("channel may not be null.");
+            throw new NCMBException(NCMBException.GENERIC_ERROR,"channel may not be null.");
         } else if (activity == null) {
-            throw new IllegalArgumentException("activity may not be null.");
+            throw new NCMBException(NCMBException.GENERIC_ERROR,"activity may not be null.");
         }
 
         //端末未登録の場合は処理を実行しない
@@ -522,7 +522,7 @@ public class NCMBInstallation extends NCMBObject {
             localData.put("activityClass", activity.getName());
             localData.put("icon", icon);
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            throw new NCMBException(e);
         }
 
         // NCMB/channels/channelName 作成
@@ -539,7 +539,7 @@ public class NCMBInstallation extends NCMBObject {
      */
     public static void unsubscribe(String channelName) throws NCMBException {
         if (channelName == null) {
-            throw new IllegalArgumentException("channel may not be null.");
+            throw new NCMBException(NCMBException.GENERIC_ERROR,"channel may not be null.");
         }
 
         //端末未登録の場合は処理を実行しない
