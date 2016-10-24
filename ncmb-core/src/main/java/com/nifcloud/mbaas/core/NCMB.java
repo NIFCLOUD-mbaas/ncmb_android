@@ -260,7 +260,7 @@ public class NCMB {
     public static NCMBContext getCurrentContext() {
         if (sCurrentContext == null) {
             Context context = NCMBApplicationController.getApplicationState();
-            if (!getApplicationKey().isEmpty() && !getClientKey().isEmpty() && !getApiBaseUrl().isEmpty() && context == null) {
+            if (null == context) {
                 throw new IllegalArgumentException("Please call the NCMB.initialize() method.");
             }
 
