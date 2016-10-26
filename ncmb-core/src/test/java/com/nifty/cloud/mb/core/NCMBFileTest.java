@@ -126,27 +126,87 @@ public class NCMBFileTest {
     }
 
     /**
-     * - 内容：エラーの場合NCMBExceptionをスローする
-     * - 結果：NCMBExceptionがスロー出来る事
+     * - 内容：読込時の処理にNullチェックを入れる
+     * - 結果：NullPointerException発生しない事
      */
     @Test
-    public void readFile_NCMBException() throws Exception {
-        //post
-        NCMBException error = null;
+    public void checkReadFileNull() {
+
+        NullPointerException nullError = null;
         try {
-            //空のファイルのみを準備する
-            String fileData = "";
+            //空のファイルを準備する
+            String fileData = ""; //空データ
             File file = NCMBLocalFile.create("currentInstallation");
             FileOutputStream out = new FileOutputStream(file);
             out.write(fileData.toString().getBytes("UTF-8"));
             out.close();
-            //getCurrentInstallation実施()
-            NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
-        } catch (NCMBException e) {
-            error = e;
+
+            //読込時の処理を実行する
+            JSONObject json = NCMBLocalFile.readFile(file);
+            //空データ確認する
+            Assert.assertEquals(0, json.length());
+
+        } catch (NullPointerException e) {
+            nullError = e;
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        //check:NullPointerException発生しない
+        Assert.assertNull(nullError);
+    }
+
+    /**
+     * - 内容：書込時の処理に空ファイルが作られないようにする
+     * - 結果：空ファイル生成場合は削除する事
+     */
+    @Test
+    public void deleteWriteFileZeroSize() {
+
+        try {
+            //1)空のファイルを準備する
+            String fileData = ""; //空データ
+            File file = NCMBLocalFile.create("currentInstallation");
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(fileData.toString().getBytes("UTF-8"));
+            out.close();
+
+            //ファイル存在する
+            if (file.exists()) {
+                Assert.assertTrue(true);
+            }
+            //空ファイル場合は削除する
+            NCMBLocalFile.deleteFileSizeZero(file);
+
+            //check:空のファイル存在しない(削除する)
+            if (!file.exists()) {
+                Assert.assertFalse(false);
+            }
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
         }
 
-        //check
-        Assert.assertNotNull(error);
+        try {
+            //2)データがあるファイルを準備する
+            String fileData = "Test"; //データ
+            File file = NCMBLocalFile.create("currentInstallation");
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(fileData.toString().getBytes("UTF-8"));
+            out.close();
+
+            //ファイル存在する
+            if (file.exists()) {
+                Assert.assertTrue(true);
+            }
+            //空ファイル場合は削除する
+            NCMBLocalFile.deleteFileSizeZero(file);
+
+            //check:ファイル存在する(削除されない)
+            if (file.exists()) {
+                Assert.assertTrue(true);
+            }
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
     }
+
 }
