@@ -640,4 +640,12 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * return all keys from mFields of object
+     */
+    public JSONArray allKeys(){
+        JSONArray allKeys = this.mFields.names();
+        return allKeys;
+    }
+
 }

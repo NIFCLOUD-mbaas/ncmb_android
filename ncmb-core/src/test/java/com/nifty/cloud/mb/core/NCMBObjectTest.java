@@ -6,7 +6,6 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -610,24 +609,5 @@ public class NCMBObjectTest {
         );
     }
 
-    @Test
-    public void get_Allkeys() throws Exception {
-        //user Classを登録する
-        NCMBUser user = new NCMBUser();
-        user.setUserName("Nifty Tarou");
-        user.setPassword("niftytarou");
-
-        user.signUp();
-
-        JSONArray userKeyArray = user.allKeys();
-        //userKeyArrayの取得キー結果 => ["createDate","objectId","sessionToken","userName","authData"]
-
-        Assert.assertEquals("createDate", userKeyArray.get(0));
-        Assert.assertEquals("objectId", userKeyArray.get(1));
-        Assert.assertEquals("sessionToken", userKeyArray.get(2));
-        Assert.assertEquals("userName", userKeyArray.get(3));
-        Assert.assertEquals("authData", userKeyArray.get(4));
-
-    }
 
 }
