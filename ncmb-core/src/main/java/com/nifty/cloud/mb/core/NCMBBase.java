@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -643,9 +644,20 @@ public class NCMBBase {
     /**
      * return all keys from mFields of object
      */
-    public JSONArray allKeys(){
-        JSONArray allKeys = this.mFields.names();
-        return allKeys;
+    public List allKeys(){
+        JSONArray listdata = this.mFields.names();
+        if (listdata != null) {
+            List allKeys = new ArrayList();
+            try {
+                for (int i=0;i<listdata.length();i++){
+                    allKeys.add(listdata.get(i).toString());
+                }
+            } catch (JSONException e) {
+                return null;
+            }
+            return allKeys;
+        }
+        return null;
     }
 
 }

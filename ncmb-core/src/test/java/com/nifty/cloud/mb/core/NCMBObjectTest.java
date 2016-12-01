@@ -24,6 +24,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * NCMBObjectTest
@@ -619,7 +620,7 @@ public class NCMBObjectTest {
 
         user.signUp();
 
-        JSONArray userKeyArray = user.allKeys();
+        List userKeyArray = user.allKeys();
         //userKeyArrayの取得キー結果 => ["createDate","objectId","sessionToken","userName","authData"]
 
         Assert.assertEquals("createDate", userKeyArray.get(0));
