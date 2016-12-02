@@ -640,4 +640,14 @@ public class NCMBBase {
         }
     }
 
+    /**
+     *  Get list all keys of object
+     *  @return List all keys or null 
+     */
+    public List allKeys(){
+        JSONArray listdata = this.mFields.names();
+        if (listdata != null) return new Gson().fromJson(listdata.toString(), List.class);
+        return null;
+    }
+
 }
