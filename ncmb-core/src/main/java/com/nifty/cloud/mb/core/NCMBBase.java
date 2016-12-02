@@ -646,17 +646,7 @@ public class NCMBBase {
      */
     public List allKeys(){
         JSONArray listdata = this.mFields.names();
-        if (listdata != null) {
-            List allKeys = new ArrayList();
-            try {
-                for (int i=0;i<listdata.length();i++){
-                    allKeys.add(listdata.get(i).toString());
-                }
-            } catch (JSONException e) {
-                return null;
-            }
-            return allKeys;
-        }
+        if (listdata != null) return new Gson().fromJson(listdata.toString(), List.class);
         return null;
     }
 
