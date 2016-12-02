@@ -1,7 +1,6 @@
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
