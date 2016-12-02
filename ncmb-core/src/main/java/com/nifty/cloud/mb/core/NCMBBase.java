@@ -641,7 +641,8 @@ public class NCMBBase {
     }
 
     /**
-     * return all keys from mFields of object
+     *  Get list all keys of object
+     *  @return List all keys or null 
      */
     public List allKeys(){
         JSONArray listdata = this.mFields.names();
