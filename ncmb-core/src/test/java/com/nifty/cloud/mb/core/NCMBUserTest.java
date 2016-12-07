@@ -4,6 +4,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
+import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -70,6 +71,22 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void sign_up_add_own_field() throws Exception {
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+        user.put("testField","test");
+
+        user.signUp();
+
+        Assert.assertEquals("test", user.mFields.getString("testField"));
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Nifty Tarou", user.getUserName());
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+    }
+
+
+    @Test
     public void sign_up_in_background() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setUserName("Nifty Tarou");
@@ -88,6 +105,33 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
 
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Nifty Tarou", user.getUserName());
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
+    public void sign_up_add_own_field_in_background() throws Exception {
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+        user.put("testField","test");
+
+        user.signUpInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("save Background is failed.");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertEquals("test", user.mFields.getString("testField"));
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
