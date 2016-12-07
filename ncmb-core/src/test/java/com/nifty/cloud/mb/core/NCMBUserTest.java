@@ -4,7 +4,6 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
-import org.apache.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
