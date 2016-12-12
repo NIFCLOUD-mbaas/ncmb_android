@@ -39,9 +39,8 @@ public class NCMBDialogPushConfiguration {
 	 * Constructor <br>
 	 *
 	 * @param displayType display format
-	 * @param filePath path of background image
 	 */
-	public NCMBDialogPushConfiguration(int displayType, String filePath){
+	public NCMBDialogPushConfiguration(int displayType){
 		this.displayType = displayType;
 	}
 
