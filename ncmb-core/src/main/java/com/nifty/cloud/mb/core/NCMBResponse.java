@@ -22,6 +22,7 @@ public class NCMBResponse {
 
     //通信結果文字列
     public JSONObject responseData = null;
+    public String responseDataString = null;
     //通信結果byte(file取得)
     public byte[] responseByte = null;
     //通信結果ステータスコード
@@ -57,6 +58,7 @@ public class NCMBResponse {
 
                 if (sb.length() > 0) {
                     responseData = new JSONObject(new String(sb));
+                    responseDataString = new String(sb);
                 }
 
             } else {
