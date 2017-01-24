@@ -353,6 +353,23 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void set_condition_within_kilometers_double() throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        Location point = new Location("sdk-test");
+        point.setLatitude(30.0);
+        point.setLongitude(30.0);
+
+        query.whereWithinKilometers("location", point, 0.1);
+
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"location\":{\"$nearSphere\":{\"__type\":\"GeoPoint\",\"latitude\":30.0,\"longitude\":30.0},\"$maxDistanceInKilometers\":0.1}}}"),
+                true
+        );
+    }
+
+    @Test
     public void set_condition_within_miles() throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 

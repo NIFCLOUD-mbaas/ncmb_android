@@ -584,7 +584,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * @param center center location for data searching
      * @param distance search radius distance from center point in kilometers
      */
-    public void whereWithinKilometers(String key, Location center, int distance){
+    public void whereWithinKilometers(String key, Location center, double distance){
         try {
             JSONObject newCondition = new JSONObject();
             if (mWhereConditions.has(key)){
