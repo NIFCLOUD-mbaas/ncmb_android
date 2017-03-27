@@ -180,7 +180,7 @@ public class NCMBConnection {
                 hashData = req.getSignatureHashData() + "\n" + hexadecimal;
             } else if(res.responseData != null){
                 // json data
-                hashData = req.getSignatureHashData() + "\n" + res.responseData.toString().replace("\\","");
+                hashData = req.getSignatureHashData() + "\n" + res.responseData.toString();
             }else {
                 // delete,logout API
                 hashData = req.getSignatureHashData();
