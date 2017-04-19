@@ -34,10 +34,6 @@ class NCMBLocalFile {
             out.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if(writeFile.exists() && writeFile.length() ==0){
-                writeFile.delete();
-            }
         }
     }
 
