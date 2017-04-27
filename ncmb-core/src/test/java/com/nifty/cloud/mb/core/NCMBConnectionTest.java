@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 
@@ -29,6 +30,12 @@ public class NCMBConnectionTest {
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
+
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
+                "appKey",
+                "cliKey",
+                mServer.getUrl("/").toString(),
+                null);
     }
 
     @After
