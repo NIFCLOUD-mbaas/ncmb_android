@@ -358,7 +358,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get current installation object
      *
-     * @return Installation
+     * @return Return NCMBInstallation object created from the contents read local file. if local file is empty, return new NCMBInstallation.
      */
     public static NCMBInstallation getCurrentInstallation() {
         try {

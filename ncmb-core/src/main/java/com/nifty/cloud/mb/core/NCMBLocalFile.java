@@ -45,7 +45,7 @@ class NCMBLocalFile {
      * Reading to a local file
      *
      * @param readFile read file instance
-     * @return file data
+     * @return file data. if file data is empty, return empty json
      */
     static JSONObject readFile(File readFile) {
         checkNCMBContext();
