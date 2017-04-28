@@ -405,7 +405,7 @@ public class NCMBObjectService extends NCMBService{
             return mContext.baseUrl + "push";
         } else if (className.equals("installation")) {
             return mContext.baseUrl + "installations";
-        } else if (className.equals("files")) {
+        } else if (className.equals("file")) {
             return mContext.baseUrl + "files";
         } else {
             return mContext.baseUrl + mServicePath + className;
