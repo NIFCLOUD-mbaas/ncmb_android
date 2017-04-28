@@ -28,6 +28,7 @@ public class NCMBGcmListenerService extends GcmListenerService {
     //<meta-data>
     static final String OPEN_PUSH_START_ACTIVITY_KEY = "openPushStartActivity";
     static final String SMALL_ICON_KEY = "smallIcon";
+    static final String SMALL_ICON_COLOR_KEY = "smallIconColor";
     static final String NOTIFICATION_OVERLAP_KEY = "notificationOverlap";
 
     @Override
@@ -153,11 +154,14 @@ public class NCMBGcmListenerService extends GcmListenerService {
             //それ以外はアプリのアイコンを設定する
             icon = appInfo.icon;
         }
+        //SmallIconカラーを設定
+        int smallIconColor = appInfo.metaData.getInt(SMALL_ICON_COLOR_KEY);
 
         //Notification作成
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(icon)//通知エリアのアイコン設定
+                .setColor(smallIconColor) //通知エリアのアイコンカラー設定
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)//通知をタップしたら自動で削除する
