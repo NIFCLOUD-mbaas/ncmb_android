@@ -1082,7 +1082,11 @@ public class NCMBUserServiceTest {
                 Assert.assertNull(e);
                 Assert.assertNull(NCMB.getCurrentContext().userId);
                 Assert.assertNull(NCMB.getCurrentContext().sessionToken);
-                Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+                try {
+                    Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+                } catch (NCMBException error) {
+                    Assert.fail(error.getMessage());
+                }
                 callbackFlag = true;
             }
         });
@@ -1187,7 +1191,11 @@ public class NCMBUserServiceTest {
                     Assert.fail("this callback must be raise exception");
                 } else {
                     Assert.assertEquals(NCMBException.INVALID_AUTH_HEADER, e.getCode());
-                    Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+                    try {
+                        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+                    } catch (NCMBException error) {
+                        Assert.fail(error.getMessage());
+                    }
                     Assert.assertNull(NCMB.getCurrentContext().sessionToken);
                     Assert.assertNull(NCMB.getCurrentContext().userId);
                 }

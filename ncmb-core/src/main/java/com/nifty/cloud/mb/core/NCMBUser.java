@@ -180,7 +180,11 @@ public class NCMBUser extends NCMBObject {
      * @return Return true if logged in
      */
     public boolean isAuthenticated() {
-        return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
+        try {
+            return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
+        } catch (NCMBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -850,7 +854,7 @@ public class NCMBUser extends NCMBObject {
      *
      * @return user
      */
-    public static NCMBUser getCurrentUser() {
+    public static NCMBUser getCurrentUser() throws NCMBException {
         try {
             //null check
             NCMBLocalFile.checkNCMBContext();
@@ -868,7 +872,7 @@ public class NCMBUser extends NCMBObject {
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            throw new NCMBException(error);
         }
         return currentUser;
     }
@@ -879,10 +883,14 @@ public class NCMBUser extends NCMBObject {
      * @return sessionToken
      */
     public static String getSessionToken() {
-        if (getCurrentUser().getString("sessionToken") != null) {
-            return NCMBUser.getCurrentUser().getString("sessionToken");
-        } else {
-            return null;
+        try {
+            if (getCurrentUser().getString("sessionToken") != null) {
+                return NCMBUser.getCurrentUser().getString("sessionToken");
+            } else {
+                return null;
+            }
+        } catch (NCMBException e) {
+            throw new RuntimeException(e);
         }
     }
 

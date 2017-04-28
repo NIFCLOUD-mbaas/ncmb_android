@@ -30,14 +30,14 @@ class NCMBLocalFile {
      * @param writeFile write file instance
      * @param fileData  local file data
      */
-    static void writeFile(File writeFile, JSONObject fileData) {
+    static void writeFile(File writeFile, JSONObject fileData) throws NCMBException {
         checkNCMBContext();
         try {
             FileOutputStream out = new FileOutputStream(writeFile);
             out.write(fileData.toString().getBytes("UTF-8"));
             out.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new NCMBException(e);
         }
     }
 
@@ -47,7 +47,7 @@ class NCMBLocalFile {
      * @param readFile read file instance
      * @return file data. if file data is empty, return empty json
      */
-    static JSONObject readFile(File readFile) {
+    static JSONObject readFile(File readFile) throws NCMBException {
         checkNCMBContext();
         JSONObject json = new JSONObject();
         try {
@@ -58,8 +58,8 @@ class NCMBLocalFile {
             }
             br.close();
             json = new JSONObject(information);
-        } catch (IOException | JSONException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | JSONException | NullPointerException e) {
+            throw new NCMBException(e);
         }
         return json;
     }

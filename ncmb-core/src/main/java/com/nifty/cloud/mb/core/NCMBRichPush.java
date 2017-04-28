@@ -132,6 +132,7 @@ public class NCMBRichPush extends Dialog {
             try {
                 NCMBRichPush.this.progressDialog.dismiss();
             } catch (IllegalArgumentException localIllegalArgumentException) {
+                System.out.println(localIllegalArgumentException.getMessage());
             }
 
             NCMBRichPush.this.richPushHandlerContainer.setBackgroundColor(0);
