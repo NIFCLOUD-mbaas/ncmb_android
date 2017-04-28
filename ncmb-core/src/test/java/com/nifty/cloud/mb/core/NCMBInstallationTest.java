@@ -554,7 +554,7 @@ public class NCMBInstallationTest {
         out.close();
 
         // check
-        Assert.assertNull(NCMBInstallation.getCurrentInstallation().getObjectId());
+        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation());
     }
 
     //endregion
