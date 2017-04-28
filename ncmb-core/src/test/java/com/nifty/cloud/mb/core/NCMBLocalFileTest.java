@@ -16,6 +16,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * NCMBLocalFileTest class
@@ -83,6 +84,17 @@ public class NCMBLocalFileTest {
     }
 
     @Test
+    public void readFile_0byte() throws Exception {
+        // set 0byte local file
+        File file = NCMBLocalFile.create("Test");
+        FileOutputStream out = new FileOutputStream(file);
+        out.write("".getBytes("UTF-8"));
+        out.close();
+
+        Assert.assertEquals("{}", NCMBLocalFile.readFile(file).toString());
+    }
+
+    @Test
     public void deleteFile() throws Exception {
         String jsonString = "{\"key\":\"value\"}";
         File file = NCMBLocalFile.create("Test");
@@ -93,5 +105,6 @@ public class NCMBLocalFileTest {
         NCMBLocalFile.deleteFile(file);
         Assert.assertFalse(file.exists());
     }
+
 
 }
