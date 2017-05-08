@@ -110,7 +110,7 @@ public class NCMBRoleService extends NCMBService {
      */
     protected void createRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_CREATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
     }
 
@@ -175,7 +175,7 @@ public class NCMBRoleService extends NCMBService {
      */
     protected void deleteRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_DELETED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
     }
 
@@ -239,7 +239,7 @@ public class NCMBRoleService extends NCMBService {
      */
     protected void getRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
     }
 
@@ -301,7 +301,7 @@ public class NCMBRoleService extends NCMBService {
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type, null, conditions);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
 
         return createSearchResults(response.responseData);
@@ -412,7 +412,7 @@ public class NCMBRoleService extends NCMBService {
             NCMBResponse response = sendRequest(url, type, null, query);
 
             if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+                throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
             }
             // NOT IMPLEMENTED YET
             // check return format
@@ -465,7 +465,7 @@ public class NCMBRoleService extends NCMBService {
      */
     protected void updateRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
     }
 
@@ -705,7 +705,7 @@ public class NCMBRoleService extends NCMBService {
      */
     protected void setAclCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
     }
 

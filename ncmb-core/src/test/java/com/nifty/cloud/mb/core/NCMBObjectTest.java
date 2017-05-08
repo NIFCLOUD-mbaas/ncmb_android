@@ -6,7 +6,6 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -352,7 +351,7 @@ public class NCMBObjectTest {
         try {
             obj.fetch();
         } catch (NCMBException e) {
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
@@ -421,7 +420,7 @@ public class NCMBObjectTest {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });
@@ -461,7 +460,7 @@ public class NCMBObjectTest {
         try {
             obj.deleteObject();
         } catch (NCMBException e) {
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
@@ -507,7 +506,7 @@ public class NCMBObjectTest {
                 if (e == null) {
                     Assert.fail("delete object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });

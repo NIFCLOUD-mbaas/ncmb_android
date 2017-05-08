@@ -468,7 +468,7 @@ public class NCMBUser extends NCMBObject {
         try {
             return service.registerByOauth(createAuthData(authData));
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -545,7 +545,7 @@ public class NCMBUser extends NCMBObject {
             }
         } catch (JSONException e) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                callback.done(null, new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
             }
         }
     }
@@ -727,7 +727,7 @@ public class NCMBUser extends NCMBObject {
                     mFields.put("updateDate", response.getString("updateDate"));
                 }
             } catch (JSONException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
             }
         }
 
@@ -767,7 +767,7 @@ public class NCMBUser extends NCMBObject {
                 }
             } catch (JSONException e) {
                 if (callback != null) {
-                    callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                    callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
             }
         }

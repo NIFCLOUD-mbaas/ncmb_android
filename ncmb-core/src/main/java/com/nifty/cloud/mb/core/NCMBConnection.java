@@ -140,7 +140,7 @@ public class NCMBConnection {
 
 
                     } catch (IOException e) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                        throw new NCMBException(NCMBException.AUTH_FAILURE, e.getMessage());
                     } finally {
                         //Disconnect HTTPURLConnection
                         if (urlConnection != null) {
@@ -159,7 +159,7 @@ public class NCMBConnection {
             }
             return res;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(e);
         }
     }
 

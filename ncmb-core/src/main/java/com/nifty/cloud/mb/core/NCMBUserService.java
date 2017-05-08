@@ -256,7 +256,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void inviteByMailCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_REQUEST_ACCEPTED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid response from API");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid response from API");
         }
     }
 
@@ -579,7 +579,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void updateUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Update user info failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Update user info failed");
         }
     }
 
@@ -598,7 +598,7 @@ public class NCMBUserService extends NCMBService {
         try {
             params.put("objectId", userId);
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.getMessage());
         }
         updateUserCheckResponse(response);
         writeCurrentUser(params, response.responseData);
@@ -626,7 +626,7 @@ public class NCMBUserService extends NCMBService {
                 } catch (NCMBException e) {
                     callback.done(null, e);
                 } catch (JSONException e) {
-                    callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                    callback.done(null, new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
 
                 ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
@@ -866,7 +866,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void deleteUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Delete user failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Delete user failed");
         }
     }
 
@@ -937,7 +937,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void logoutCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Logout failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Logout failed");
         }
     }
 
@@ -1013,7 +1013,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void searchUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Search user failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Search user failed");
         }
     }
 
@@ -1118,7 +1118,7 @@ public class NCMBUserService extends NCMBService {
             try {
                 NCMB.getCurrentContext().sessionToken = currentData.getString("sessionToken");
             } catch (JSONException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
             }
         }
     }
@@ -1151,7 +1151,7 @@ public class NCMBUserService extends NCMBService {
                 base.put(key, compare.get(key));
             }
         } catch (JSONException error) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage());
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, error.getMessage());
         }
     }
 }

@@ -262,7 +262,7 @@ public abstract class NCMBService {
                                 )
                             );
                         } catch (JSONException error) {
-                            callback.handleError(new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage()));
+                            callback.handleError(new NCMBException(NCMBException.INVALID_JSON, error.getMessage()));
                         }
                     }
                 }

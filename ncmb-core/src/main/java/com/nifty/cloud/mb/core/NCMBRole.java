@@ -103,7 +103,7 @@ public class NCMBRole extends NCMBBase {
         } catch (NCMBException e) {
             throw e;
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -131,7 +131,7 @@ public class NCMBRole extends NCMBBase {
                             }
                         } catch (JSONException e1) {
                             if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
                             }
                         }
                     }
@@ -160,7 +160,7 @@ public class NCMBRole extends NCMBBase {
         } catch (NCMBException e) {
             throw e;
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -188,7 +188,7 @@ public class NCMBRole extends NCMBBase {
                             }
                         } catch (JSONException e1) {
                             if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
                             }
                         }
                     }
@@ -216,7 +216,7 @@ public class NCMBRole extends NCMBBase {
         } catch (NCMBException e) {
             throw e;
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -244,7 +244,7 @@ public class NCMBRole extends NCMBBase {
                             }
                         } catch (JSONException e1) {
                             if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
                             }
                         }
                     }
@@ -272,7 +272,7 @@ public class NCMBRole extends NCMBBase {
         } catch (NCMBException e) {
             throw e;
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -300,7 +300,7 @@ public class NCMBRole extends NCMBBase {
                             }
                         } catch (JSONException e1) {
                             if (callback != null) {
-                                callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e1.getMessage()));
+                                callback.done(new NCMBException(NCMBException.INVALID_JSON, e1.getMessage()));
                             }
                         }
                     }

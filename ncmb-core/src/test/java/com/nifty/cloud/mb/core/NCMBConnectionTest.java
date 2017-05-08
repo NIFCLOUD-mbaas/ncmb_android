@@ -279,7 +279,7 @@ public class NCMBConnectionTest {
         } catch (NCMBException e) {
             error = e;
         } catch (JSONException e) {
-            error = new NCMBException(NCMBException.GENERIC_ERROR, "Invalid json query");
+            error = new NCMBException(NCMBException.INVALID_JSON, "Invalid json query");
         }
 
         //NCMBURLConnectionを作成
