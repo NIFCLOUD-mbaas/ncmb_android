@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         //mBaaS初期化
-        NCMB.initialize(this,
+        NCMB.initialize(this.getApplicationContext(),
                 "applicationKey",
                 "clientKey");
 
