@@ -531,20 +531,20 @@ public class NCMBBase {
 
     /**
      * Get Location object from given key
+     *
      * @param key key name for getting object
      * @return Location object from given key or null
      */
     public Location getGeolocation(String key) {
         try {
-            if (mFields.has(key)){
+            if (!mFields.isNull(key)) {
                 JSONObject geolocationJson = getJSONObject(key);
                 Location location = new Location("ncmb-core");
                 location.setLongitude(geolocationJson.getDouble("longitude"));
                 location.setLatitude(geolocationJson.getDouble("latitude"));
                 return location;
-            } else {
-                return null;
             }
+            return null;
         } catch (JSONException e) {
             return null;
         }
@@ -579,11 +579,12 @@ public class NCMBBase {
 
     /**
      * Get List object from given key
+     *
      * @param key key name for getting object
      * @return List object from given key or null
      */
     public List getList(String key) {
-        if (mFields.has(key)){
+        if (!mFields.isNull(key)) {
             return new Gson().fromJson(getJSONArray(key).toString(), List.class);
         } else {
             return null;
@@ -592,11 +593,12 @@ public class NCMBBase {
 
     /**
      * Get Map object from given key
+     *
      * @param key key name for getting object
      * @return Map object from given key or null
      */
     public Map getMap(String key) {
-        if (mFields.has(key)){
+        if (!mFields.isNull(key)) {
             return new Gson().fromJson(getJSONObject(key).toString(), Map.class);
         } else {
             return null;

@@ -507,5 +507,21 @@ public class NCMBBaseTest {
         Assert.assertNull(obj.getDate("date"));
     }
 
+    @Test
+    public void get_geolocation_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"geo\":null}"));
+        Assert.assertNull(obj.getGeolocation("geo"));
+    }
 
+    @Test
+    public void get_map_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"map\":null}"));
+        Assert.assertNull(obj.getMap("map"));
+    }
+
+    @Test
+    public void get_list_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"list\":null}"));
+        Assert.assertNull(obj.getList("list"));
+    }
 }
