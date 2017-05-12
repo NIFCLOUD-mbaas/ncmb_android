@@ -111,7 +111,7 @@ public class NCMBGcmListenerService extends GcmListenerService {
             }
             //通知起動時のActivityクラスを作成
             startClass = Class.forName(activityName);
-        } catch (PackageManager.NameNotFoundException | ClassNotFoundException | JSONException e) {
+        } catch (PackageManager.NameNotFoundException | ClassNotFoundException | JSONException | NCMBException e) {
             throw new IllegalArgumentException(e);
         }
 
