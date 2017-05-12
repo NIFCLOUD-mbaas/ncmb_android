@@ -643,9 +643,7 @@ public class NCMBInstallationService extends NCMBService {
      */
     static void checkDataNotFound(String objectId, String code) {
         if (NCMBException.DATA_NOT_FOUND.equals(code)) {
-            if (objectId.equals(NCMBInstallation.getCurrentInstallation().getObjectId())) {
-                clearCurrentInstallation();
-            }
+            clearCurrentInstallation();
         }
     }
 

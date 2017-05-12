@@ -22,6 +22,8 @@ import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
 
 import java.text.DateFormat;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -524,6 +526,31 @@ public class NCMBInstallationTest {
         Assert.assertEquals("java.lang.IllegalArgumentException: objectId is must not be null.", error.getMessage());
     }
     //endregion
+
+    /**
+     * - 内容：エラーの場合NCMBExceptionをスローする
+     * - 結果：NCMBExceptionがスロー出来る事
+     */
+    @Test
+    public void getCurrentInstallation_NCMBException() throws Exception {
+        //post
+        NCMBException error = null;
+        try {
+            //空のファイルのみを準備する
+            String fileData = "";
+            File file = NCMBLocalFile.create("currentInstallation");
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(fileData.toString().getBytes("UTF-8"));
+            out.close();
+            //getCurrentInstallation実施()
+            NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        //check
+        Assert.assertNotNull(error);
+    }
 
 
 }

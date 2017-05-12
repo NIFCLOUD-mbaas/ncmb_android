@@ -14,6 +14,9 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowLooper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 @RunWith(CustomRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBFileTest {
@@ -120,5 +123,30 @@ public class NCMBFileTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：エラーの場合NCMBExceptionをスローする
+     * - 結果：NCMBExceptionがスロー出来る事
+     */
+    @Test
+    public void readFile_NCMBException() throws Exception {
+        //post
+        NCMBException error = null;
+        try {
+            //空のファイルのみを準備する
+            String fileData = "";
+            File file = NCMBLocalFile.create("currentInstallation");
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(fileData.toString().getBytes("UTF-8"));
+            out.close();
+            //getCurrentInstallation実施()
+            NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        //check
+        Assert.assertNotNull(error);
     }
 }
