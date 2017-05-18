@@ -449,7 +449,7 @@ public class NCMBRoleServiceTest {
 
         try {
             NCMBAcl acl = generateAcl();
-            roleService.setAcl(roleId, acl);
+            roleService.updateAcl(roleId, acl);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -465,7 +465,7 @@ public class NCMBRoleServiceTest {
         String roleId = "dummyRoleId";
 
         NCMBAcl acl = generateAcl();
-        roleService.setAclInBackground(roleId, acl, new DoneCallback() {
+        roleService.updateAclInBackground(roleId, acl, new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
