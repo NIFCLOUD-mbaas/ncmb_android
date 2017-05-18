@@ -443,7 +443,7 @@ public class NCMBRoleServiceTest {
      * - 結果：例外が発生しないこと
      */
     @Test
-    public void setAcl() throws Exception {
+    public void updateAcl() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
@@ -460,7 +460,7 @@ public class NCMBRoleServiceTest {
      * - 結果：callback に例外が返らないこと
      */
     @Test
-    public void setAclInBackground() throws Exception {
+    public void updateAclInBackground() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
