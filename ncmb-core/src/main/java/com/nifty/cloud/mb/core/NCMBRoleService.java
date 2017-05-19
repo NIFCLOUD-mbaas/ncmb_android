@@ -710,7 +710,7 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Set ACL to role
+     * Update ACL to role
      *
      * @param roleId role id
      * @param acl    Assigned ACL
@@ -724,7 +724,7 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Set ACL to role in background
+     * Update ACL to role in background
      *
      * @param roleId   role id
      * @param acl      Assigned ACL
