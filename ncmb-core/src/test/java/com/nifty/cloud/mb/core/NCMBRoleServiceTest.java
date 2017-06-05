@@ -443,13 +443,13 @@ public class NCMBRoleServiceTest {
      * - 結果：例外が発生しないこと
      */
     @Test
-    public void setAcl() throws Exception {
+    public void updateAcl() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
         try {
             NCMBAcl acl = generateAcl();
-            roleService.setAcl(roleId, acl);
+            roleService.updateAcl(roleId, acl);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -460,12 +460,12 @@ public class NCMBRoleServiceTest {
      * - 結果：callback に例外が返らないこと
      */
     @Test
-    public void setAclInBackground() throws Exception {
+    public void updateAclInBackground() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
         NCMBAcl acl = generateAcl();
-        roleService.setAclInBackground(roleId, acl, new DoneCallback() {
+        roleService.updateAclInBackground(roleId, acl, new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);

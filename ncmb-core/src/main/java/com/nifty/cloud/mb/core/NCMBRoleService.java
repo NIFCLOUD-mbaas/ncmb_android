@@ -710,13 +710,13 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Set ACL to role
+     * Update ACL to role
      *
      * @param roleId role id
      * @param acl    Assigned ACL
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void setAcl(String roleId, NCMBAcl acl) throws NCMBException {
+    public void updateAcl(String roleId, NCMBAcl acl) throws NCMBException {
         RequestParams reqParams = setAclParams(roleId, acl);
         NCMBResponse response = sendRequest(reqParams);
         setAclCheckResponse(response);
@@ -724,14 +724,14 @@ public class NCMBRoleService extends NCMBService {
     }
 
     /**
-     * Set ACL to role in background
+     * Update ACL to role in background
      *
      * @param roleId   role id
      * @param acl      Assigned ACL
      * @param callback callback when process finished
      * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
      */
-    public void setAclInBackground(String roleId, NCMBAcl acl, DoneCallback callback) throws NCMBException {
+    public void updateAclInBackground(String roleId, NCMBAcl acl, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = setAclParams(roleId, acl);
         sendRequestAsync(reqParams, new RoleServiceCallback(this, callback) {
             @Override
