@@ -38,6 +38,9 @@ class NCMBLocalFile {
             out.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            //空白のファイル作成を防ぐ
+            deleteFileSizeZero(writeFile);
         }
     }
 
@@ -57,7 +60,9 @@ class NCMBLocalFile {
                 return json;
             }
             br.close();
-            json = new JSONObject(information);
+            if(null != information){ 
+              json = new JSONObject(information);
+            }
         } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
@@ -83,6 +88,17 @@ class NCMBLocalFile {
         }
         if (NCMB.getCurrentContext().context == null) {
             throw new RuntimeException("NCMB.initialize context may not be null.");
+        }
+    }
+
+    /**
+     * delete from local file of size zero
+     * @param writeFile write file instance
+     */
+    static void deleteFileSizeZero(File writeFile) {
+        if (null != writeFile && writeFile.exists() && 0 == writeFile.length()) {
+            //サイズが0の場合は削除する
+            writeFile.delete();
         }
     }
 }
