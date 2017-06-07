@@ -15,18 +15,22 @@ import java.io.IOException;
  * LocalFile class
  */
 class NCMBLocalFile {
-    /** Base folder name */
+    /**
+     * Base folder name
+     */
     static final String FOLDER_NAME = "NCMB";
 
-    static File create(String fileName){
+    static File create(String fileName) {
         return new File(NCMB.getCurrentContext().context.getDir(FOLDER_NAME, Context.MODE_PRIVATE), fileName);
     }
+
     /**
      * Writing to a local file
+     *
      * @param writeFile write file instance
-     * @param fileData local file data
+     * @param fileData  local file data
      */
-    static void writeFile(File writeFile , JSONObject fileData){
+    static void writeFile(File writeFile, JSONObject fileData) {
         checkNCMBContext();
         try {
             FileOutputStream out = new FileOutputStream(writeFile);
@@ -39,15 +43,19 @@ class NCMBLocalFile {
 
     /**
      * Reading to a local file
+     *
      * @param readFile read file instance
-     * @return file data
+     * @return file data. if file data is empty, return empty json
      */
-    static JSONObject readFile(File readFile){
+    static JSONObject readFile(File readFile) {
         checkNCMBContext();
         JSONObject json = new JSONObject();
         try {
             BufferedReader br = new BufferedReader(new FileReader(readFile));
             String information = br.readLine();
+            if (information == null) {
+                return json;
+            }
             br.close();
             json = new JSONObject(information);
         } catch (IOException | JSONException e) {
@@ -58,9 +66,10 @@ class NCMBLocalFile {
 
     /**
      * Delete the local file
+     *
      * @param deleteFile delete file instance
      */
-    static void deleteFile(File deleteFile){
+    static void deleteFile(File deleteFile) {
         checkNCMBContext();
         deleteFile.delete();
     }
@@ -68,7 +77,7 @@ class NCMBLocalFile {
     /**
      * null check in NCMBContext
      */
-    static void checkNCMBContext(){
+    static void checkNCMBContext() {
         if (NCMB.getCurrentContext() == null) {
             throw new RuntimeException("Please run the　NCMB.initialize.");
         }

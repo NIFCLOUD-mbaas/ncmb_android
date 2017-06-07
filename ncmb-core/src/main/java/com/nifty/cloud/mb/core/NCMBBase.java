@@ -515,8 +515,10 @@ public class NCMBBase {
             // Date型変換
             if (mFields.has(key)){
                 JSONObject dateJson = this.getJSONObject(key);
-                if (dateJson.has("iso")){
-                    return sdf.parse(dateJson.getString("iso"));
+                if (dateJson != null) {
+                    if (dateJson.has("iso")) {
+                        return sdf.parse(dateJson.getString("iso"));
+                    }
                 }
             }
 

@@ -501,5 +501,11 @@ public class NCMBBaseTest {
         Assert.assertTrue(baseObj.containsKey("key"));
     }
 
+    @Test
+    public void get_date_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"date\":null}"));
+        Assert.assertNull(obj.getDate("date"));
+    }
+
 
 }
