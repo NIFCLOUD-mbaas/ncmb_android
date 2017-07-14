@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -132,7 +133,7 @@ public class NCMBRichPush extends Dialog {
             try {
                 NCMBRichPush.this.progressDialog.dismiss();
             } catch (IllegalArgumentException localIllegalArgumentException) {
-                System.out.println(localIllegalArgumentException.getMessage());
+                Log.e("Error", localIllegalArgumentException.toString());
             }
 
             NCMBRichPush.this.richPushHandlerContainer.setBackgroundColor(0);
