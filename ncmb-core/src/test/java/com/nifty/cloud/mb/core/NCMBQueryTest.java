@@ -572,6 +572,38 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void count_file() throws Exception {
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+
+        int result = query.count();
+        Assert.assertEquals(result, 50);
+    }
+
+    @Test
+    public void count_file_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals(result, 50);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
     public void find_with_operand() throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
         query.whereEqualTo("key", "value");
