@@ -240,11 +240,8 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 }
-                try {
-                    Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
-                } catch (NCMBException error) {
-                    Assert.fail(error.getMessage());
-                }
+                Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
                 callbackFlag = true;
             }
         });

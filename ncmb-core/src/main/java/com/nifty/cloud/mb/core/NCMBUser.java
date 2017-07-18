@@ -1,6 +1,7 @@
 package com.nifty.cloud.mb.core;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -180,11 +181,7 @@ public class NCMBUser extends NCMBObject {
      * @return Return true if logged in
      */
     public boolean isAuthenticated() {
-        try {
             return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
-        } catch (NCMBException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -854,25 +851,24 @@ public class NCMBUser extends NCMBObject {
      *
      * @return user
      */
-    public static NCMBUser getCurrentUser() throws NCMBException {
-        try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
+    public static NCMBUser getCurrentUser() {
+        //null check
+        NCMBLocalFile.checkNCMBContext();
 
+        try {
             //create currentUser
             if (currentUser == null) {
+                currentUser = new NCMBUser();
                 //ローカルファイルにログイン情報があれば取得、なければ新規作成
                 File currentUserFile = NCMBLocalFile.create(USER_FILENAME);
                 if (currentUserFile.exists()) {
                     //ローカルファイルからログイン情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentUserFile);
                     currentUser = new NCMBUser(localData);
-                } else {
-                    currentUser = new NCMBUser();
                 }
             }
         } catch (Exception error) {
-            throw new NCMBException(error);
+            Log.e("Error", error.toString());
         }
         return currentUser;
     }
@@ -883,15 +879,11 @@ public class NCMBUser extends NCMBObject {
      * @return sessionToken
      */
     public static String getSessionToken() {
-        try {
             if (getCurrentUser().getString("sessionToken") != null) {
                 return NCMBUser.getCurrentUser().getString("sessionToken");
             } else {
                 return null;
             }
-        } catch (NCMBException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
