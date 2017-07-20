@@ -571,11 +571,8 @@ public class NCMBInstallationServiceTest {
 
                 //check currentInstallation
                 NCMBInstallation currentInstallation = null;
-                try {
-                    currentInstallation = NCMBInstallation.getCurrentInstallation();
-                } catch (NCMBException error) {
-                    Assert.fail(error.getMessage());
-                }
+                currentInstallation = NCMBInstallation.getCurrentInstallation();
+
                 Assert.assertNull(currentInstallation.getObjectId());
             }
         });

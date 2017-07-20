@@ -3,6 +3,7 @@ package com.nifty.cloud.mb.core;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -361,31 +362,30 @@ public class NCMBInstallation extends NCMBObject {
      * @return NCMBInstallation object that is created from data that is saved to local file.<br>
      * If local file is not available, it returns empty NCMBInstallation object
      */
-    public static NCMBInstallation getCurrentInstallation() throws NCMBException {
+    public static NCMBInstallation getCurrentInstallation() {
+        //null check
+        NCMBLocalFile.checkNCMBContext();
         try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
-
             //create currentInstallation
             if (currentInstallation == null) {
+                currentInstallation = new NCMBInstallation();
                 //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                 File currentInstallationFile = NCMBLocalFile.create(INSTALLATION_FILENAME);
                 if (currentInstallationFile.exists()) {
                     //ローカルファイルから端末情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentInstallationFile);
                     currentInstallation = new NCMBInstallation(localData);
-                } else {
-                    currentInstallation = new NCMBInstallation();
                 }
             }
         } catch (Exception error) {
-            throw new NCMBException(error);
+            Log.e("Error", error.toString());
         }
         return currentInstallation;
     }
 
     /**
      * Create query for installation class
+     *
      * @return NCMBQuery for installation class
      */
     public static NCMBQuery<NCMBInstallation> getQuery() {
@@ -506,12 +506,8 @@ public class NCMBInstallation extends NCMBObject {
         }
 
         //端末未登録の場合は処理を実行しない
-        try {
-            if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
-                return;
-            }
-        } catch (NCMBException e) {
-            throw new RuntimeException(e);
+        if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
+            return;
         }
 
         // NCMB/channels フォルダの取得
@@ -551,12 +547,8 @@ public class NCMBInstallation extends NCMBObject {
         }
 
         //端末未登録の場合は処理を実行しない
-        try {
-            if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
-                return;
-            }
-        } catch (NCMBException e) {
-            throw new RuntimeException(e);
+        if (NCMBInstallation.getCurrentInstallation().getObjectId() == null) {
+            return;
         }
 
         // NCMB/channels フォルダの取得

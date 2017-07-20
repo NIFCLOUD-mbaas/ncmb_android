@@ -181,7 +181,7 @@ public class NCMBUser extends NCMBObject {
      * @return Return true if logged in
      */
     public boolean isAuthenticated() {
-            return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
+        return ((NCMBUser.getSessionToken() != null) && (getCurrentUser() != null) && (getObjectId().equals(getCurrentUser().getObjectId())));
     }
 
     /**
@@ -879,11 +879,11 @@ public class NCMBUser extends NCMBObject {
      * @return sessionToken
      */
     public static String getSessionToken() {
-            if (getCurrentUser().getString("sessionToken") != null) {
-                return NCMBUser.getCurrentUser().getString("sessionToken");
-            } else {
-                return null;
-            }
+        if (getCurrentUser().getString("sessionToken") != null) {
+            return NCMBUser.getCurrentUser().getString("sessionToken");
+        } else {
+            return null;
+        }
     }
 
 
