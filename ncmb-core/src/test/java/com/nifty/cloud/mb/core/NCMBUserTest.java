@@ -256,6 +256,7 @@ public class NCMBUserTest {
                     Assert.fail(e.getMessage());
                 }
                 Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
                 callbackFlag = true;
             }
         });

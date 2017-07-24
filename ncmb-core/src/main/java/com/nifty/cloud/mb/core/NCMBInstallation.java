@@ -18,6 +18,7 @@ package com.nifty.cloud.mb.core;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -377,30 +378,29 @@ public class NCMBInstallation extends NCMBObject {
      * If local file is not available, it returns empty NCMBInstallation object
      */
     public static NCMBInstallation getCurrentInstallation() {
+        //null check
+        NCMBLocalFile.checkNCMBContext();
         try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
-
             //create currentInstallation
             if (currentInstallation == null) {
+                currentInstallation = new NCMBInstallation();
                 //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                 File currentInstallationFile = NCMBLocalFile.create(INSTALLATION_FILENAME);
                 if (currentInstallationFile.exists()) {
                     //ローカルファイルから端末情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentInstallationFile);
                     currentInstallation = new NCMBInstallation(localData);
-                } else {
-                    currentInstallation = new NCMBInstallation();
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            Log.e("Error", error.toString());
         }
         return currentInstallation;
     }
 
     /**
      * Create query for installation class
+     *
      * @return NCMBQuery for installation class
      */
     public static NCMBQuery<NCMBInstallation> getQuery() {
@@ -435,7 +435,10 @@ public class NCMBInstallation extends NCMBObject {
     public void getRegistrationIdInBackground(String senderId, final DoneCallback callback) {
         //Nullチェック
         if (senderId == null && NCMB.getCurrentContext().context == null) {
-            throw new RuntimeException("applicationContext or senderId is must not be null.");
+            if (callback != null) {
+                callback.done(new NCMBException(NCMBException.REQUIRED, "applicationContext or senderId is must not be null."));
+                return;
+            }
         }
 
         //端末にAPKがインストールされていない場合は処理を終了
@@ -540,7 +543,11 @@ public class NCMBInstallation extends NCMBObject {
 
         // NCMB/channels/channelName 作成
         File writeFile = new File(channelDir, channelName);
-        NCMBLocalFile.writeFile(writeFile, localData);
+        try {
+            NCMBLocalFile.writeFile(writeFile, localData);
+        } catch (NCMBException e) {
+            throw new RuntimeException();
+        }
     }
 
     /**

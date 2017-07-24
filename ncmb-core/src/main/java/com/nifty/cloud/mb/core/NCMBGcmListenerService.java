@@ -26,6 +26,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -111,7 +112,12 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 File channelDirectory = new File(this.getDir(NCMBLocalFile.FOLDER_NAME, Context.MODE_PRIVATE), NCMBInstallation.CHANNELS_FOLDER_NAME);
                 File channelFile = new File(channelDirectory, channel);
                 if (channelFile.exists()) {
-                    JSONObject json = NCMBLocalFile.readFile(channelFile);
+                    JSONObject json = new JSONObject();
+                    try {
+                        json = NCMBLocalFile.readFile(channelFile);
+                    } catch (NCMBException e) {
+                        Log.e("Error", e.toString());
+                    }
                     if (json.has("activityClass")) {
                         activityName = json.getString("activityClass");
                     }
@@ -137,7 +143,6 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 new ComponentName(packageName, activityName);
         intent.setComponent(componentName);
         intent.putExtras(pushData);
-
 
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, new Random().nextInt(), intent,

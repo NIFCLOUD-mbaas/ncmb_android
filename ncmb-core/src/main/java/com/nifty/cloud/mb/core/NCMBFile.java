@@ -320,7 +320,7 @@ public class NCMBFile extends NCMBBase {
                 aclJson = getAcl().toJson();
             }
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid acl");
+            throw new NCMBException(NCMBException.INVALID_JSON, "Invalid acl");
         }
         return aclJson;
     }

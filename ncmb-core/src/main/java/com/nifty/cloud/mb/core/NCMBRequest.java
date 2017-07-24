@@ -298,7 +298,7 @@ public class NCMBRequest {
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
         String query = "";
 
@@ -321,7 +321,7 @@ public class NCMBRequest {
                 }
                 this.url = new URL(this.url.toString() + query);
             } catch (UnsupportedEncodingException | JSONException | MalformedURLException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(e);
             }
         }
 

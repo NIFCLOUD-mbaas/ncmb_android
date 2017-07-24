@@ -585,7 +585,9 @@ public class NCMBInstallationServiceTest {
                 Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
 
                 //check currentInstallation
-                NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
+                NCMBInstallation currentInstallation = null;
+                currentInstallation = NCMBInstallation.getCurrentInstallation();
+
                 Assert.assertNull(currentInstallation.getObjectId());
             }
         });

@@ -205,7 +205,7 @@ public class NCMBScriptService extends NCMBService {
                 throw new NCMBException(statusCode, message);
             }
         } catch (IOException | JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

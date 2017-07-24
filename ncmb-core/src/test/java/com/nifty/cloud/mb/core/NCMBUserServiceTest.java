@@ -1098,6 +1098,7 @@ public class NCMBUserServiceTest {
                 Assert.assertNull(NCMB.getCurrentContext().userId);
                 Assert.assertNull(NCMB.getCurrentContext().sessionToken);
                 Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+
                 callbackFlag = true;
             }
         });
@@ -1203,6 +1204,7 @@ public class NCMBUserServiceTest {
                 } else {
                     Assert.assertEquals(NCMBException.INVALID_AUTH_HEADER, e.getCode());
                     Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+
                     Assert.assertNull(NCMB.getCurrentContext().sessionToken);
                     Assert.assertNull(NCMB.getCurrentContext().userId);
                 }

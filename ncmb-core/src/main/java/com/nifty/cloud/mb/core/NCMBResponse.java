@@ -93,7 +93,7 @@ public class NCMBResponse {
                 //throw new NCMBException(mbStatus, responseData.getString("error"));
             }
         } catch (IOException | JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(e);
         }
 
         //Checking invalid sessionToken
