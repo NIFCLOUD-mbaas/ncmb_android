@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import org.json.JSONArray;
@@ -63,12 +78,12 @@ public class NCMBFileService extends NCMBService {
      */
     public JSONObject saveFile(String fileName, byte[] fileData, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
+            throw new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty");
         }
         String url = createURL(fileName);
         NCMBResponse response = sendRequestFile(url, NCMBRequest.HTTP_METHOD_POST, fileName, fileData, aclJson);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_CREATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
         return response.responseData;
     }
@@ -83,7 +98,7 @@ public class NCMBFileService extends NCMBService {
      */
     public void saveFileInBackground(String fileName, byte[] fileData, JSONObject aclJson, ExecuteServiceCallback callback) {
         if (!validateFileName(fileName)) {
-            callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
+            callback.done(null, new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty"));
         }
 
         String url = createURL(fileName);
@@ -126,18 +141,18 @@ public class NCMBFileService extends NCMBService {
      */
     public JSONObject updateFile(String fileName, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
+            throw new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty");
         }
         String url = createURL(fileName);
         JSONObject content = new JSONObject();
         try {
             content.put("acl", aclJson);
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
         NCMBResponse response = sendRequest(url, NCMBRequest.HTTP_METHOD_PUT, content.toString());
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
         return response.responseData;
     }
@@ -153,7 +168,7 @@ public class NCMBFileService extends NCMBService {
     public void updateFileInBackground(String fileName, JSONObject aclJson, ExecuteServiceCallback callback) {
         if (!validateFileName(fileName)) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
+                callback.done(null, new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty"));
             }
         }
         JSONObject content = new JSONObject();
@@ -161,7 +176,7 @@ public class NCMBFileService extends NCMBService {
             content.put("acl", aclJson);
         } catch (JSONException e) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                callback.done(null, new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
             }
         }
 
@@ -203,14 +218,14 @@ public class NCMBFileService extends NCMBService {
      */
     public JSONObject deleteFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
+            throw new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty");
         }
 
         String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_DELETE;
         NCMBResponse response = sendRequest(url, type);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
         return response.responseData;
     }
@@ -224,7 +239,7 @@ public class NCMBFileService extends NCMBService {
     public void deleteFileInBackground(String fileName, ExecuteServiceCallback callback) {
         if (!validateFileName(fileName)) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
+                callback.done(null, new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty"));
             }
         }
 
@@ -266,14 +281,14 @@ public class NCMBFileService extends NCMBService {
      */
     public byte[] fetchFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty");
+            throw new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty");
         }
 
         String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
         return response.responseByte;
     }
@@ -287,7 +302,7 @@ public class NCMBFileService extends NCMBService {
     public void fetchFileInBackground(String fileName, FetchFileCallback callback) {
         if (!validateFileName(fileName)) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, "fileName is must not be null or empty"));
+                callback.done(null, new NCMBException(NCMBException.REQUIRED, "fileName is must not be null or empty"));
             }
         }
 
@@ -333,7 +348,7 @@ public class NCMBFileService extends NCMBService {
         String type = NCMBRequest.HTTP_METHOD_GET;
         NCMBResponse response = sendRequest(url, type, null, conditions);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid status code");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
         return createSearchResults(response.responseData);
     }

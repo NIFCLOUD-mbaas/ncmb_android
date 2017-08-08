@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.content.pm.PackageManager;
@@ -83,14 +98,14 @@ public class NCMBInstallationService extends NCMBService {
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
         } catch (PackageManager.NameNotFoundException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+            throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
         }
 
         //connect
         RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_CREATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Created failed.");
         }
 
         //create currentInstallation
@@ -120,7 +135,7 @@ public class NCMBInstallationService extends NCMBService {
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
@@ -179,14 +194,14 @@ public class NCMBInstallationService extends NCMBService {
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
             RequestParams request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             NCMBResponse response = sendRequest(request);
             if (response.statusCode != HTTP_STATUS_INSTALLATION_UPDATED) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "Updated failed.");
+                throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Updated failed.");
             }
 
             //update currentInstallation
@@ -219,7 +234,7 @@ public class NCMBInstallationService extends NCMBService {
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
@@ -277,7 +292,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             NCMBResponse response = sendRequest(request);
             if (response.statusCode != HTTP_STATUS_INSTALLATION_DELETED) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
+                throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.");
             }
 
             //clear currentInstallation
@@ -353,7 +368,7 @@ public class NCMBInstallationService extends NCMBService {
         RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Getting failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Getting failed.");
         }
 
         return new NCMBInstallation(response.responseData);
@@ -410,7 +425,7 @@ public class NCMBInstallationService extends NCMBService {
         RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Gotten failed.");
         }
 
         //return the value of the key 'results'
@@ -631,7 +646,7 @@ public class NCMBInstallationService extends NCMBService {
                 base.put(key, compare.get(key));
             }
         } catch (JSONException error) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, error.getMessage());
         }
     }
 
