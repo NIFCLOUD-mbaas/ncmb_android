@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.app.NotificationManager;
@@ -11,6 +26,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
@@ -96,7 +112,12 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 File channelDirectory = new File(this.getDir(NCMBLocalFile.FOLDER_NAME, Context.MODE_PRIVATE), NCMBInstallation.CHANNELS_FOLDER_NAME);
                 File channelFile = new File(channelDirectory, channel);
                 if (channelFile.exists()) {
-                    JSONObject json = NCMBLocalFile.readFile(channelFile);
+                    JSONObject json = new JSONObject();
+                    try {
+                        json = NCMBLocalFile.readFile(channelFile);
+                    } catch (NCMBException e) {
+                        Log.e("Error", e.toString());
+                    }
                     if (json.has("activityClass")) {
                         activityName = json.getString("activityClass");
                     }
@@ -122,7 +143,6 @@ public class NCMBGcmListenerService extends GcmListenerService {
                 new ComponentName(packageName, activityName);
         intent.setComponent(componentName);
         intent.putExtras(pushData);
-
 
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, new Random().nextInt(), intent,

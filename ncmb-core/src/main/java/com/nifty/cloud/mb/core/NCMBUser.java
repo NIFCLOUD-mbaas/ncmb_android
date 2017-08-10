@@ -1,6 +1,22 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -464,7 +480,7 @@ public class NCMBUser extends NCMBObject {
         try {
             return service.registerByOauth(createAuthData(authData));
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
     }
 
@@ -541,7 +557,7 @@ public class NCMBUser extends NCMBObject {
             }
         } catch (JSONException e) {
             if (callback != null) {
-                callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                callback.done(null, new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
             }
         }
     }
@@ -723,7 +739,7 @@ public class NCMBUser extends NCMBObject {
                     mFields.put("updateDate", response.getString("updateDate"));
                 }
             } catch (JSONException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
             }
         }
 
@@ -763,7 +779,7 @@ public class NCMBUser extends NCMBObject {
                 }
             } catch (JSONException e) {
                 if (callback != null) {
-                    callback.done(new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                    callback.done(new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
             }
         }
@@ -851,24 +867,23 @@ public class NCMBUser extends NCMBObject {
      * @return user
      */
     public static NCMBUser getCurrentUser() {
-        try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
+        //null check
+        NCMBLocalFile.checkNCMBContext();
 
+        try {
             //create currentUser
             if (currentUser == null) {
+                currentUser = new NCMBUser();
                 //ローカルファイルにログイン情報があれば取得、なければ新規作成
                 File currentUserFile = NCMBLocalFile.create(USER_FILENAME);
                 if (currentUserFile.exists()) {
                     //ローカルファイルからログイン情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentUserFile);
                     currentUser = new NCMBUser(localData);
-                } else {
-                    currentUser = new NCMBUser();
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            Log.e("Error", error.toString());
         }
         return currentUser;
     }
