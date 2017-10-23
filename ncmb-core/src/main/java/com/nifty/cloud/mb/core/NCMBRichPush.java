@@ -91,7 +91,11 @@ public class NCMBRichPush extends Dialog {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setUseWideViewPort(true);
-        if(Arrays.asList(arrOfficeFilenameExt).contains(this.requestUrl.toLowerCase())) {
+        String extension = "";
+        if(this.requestUrl.contains(".")) {
+            extension = this.requestUrl.substring(this.requestUrl.lastIndexOf("."));
+        }
+        if(Arrays.asList(arrOfficeFilenameExt).contains(extension)) {
             webView.loadUrl(new StringBuilder(GOOGLE_DOCS_BASE_VIEWER_URL).append(this.requestUrl).toString());
         } else {
             webView.loadUrl(this.requestUrl);
