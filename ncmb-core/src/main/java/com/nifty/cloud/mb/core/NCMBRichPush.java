@@ -46,7 +46,7 @@ public class NCMBRichPush extends Dialog {
 
     private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     private static final String GOOGLE_DOCS_BASE_VIEWER_URL = "http://docs.google.com/gview?embedded=true&url=";
-    public static final String[] arrOfficeFilenameExt = new String[] {".pdf", ".xls", ".xlsx", ".doc", ".docx", ".ppt", ".ppt"};
+    public static final String[] arrOfficeFilenameExt = new String[] {".pdf", ".xls", ".xlsx", ".doc", ".docx", ".ppt", ".pptx"};
     private LinearLayout webBackView;
     private FrameLayout richPushHandlerContainer;
     private ImageView closeImage;
