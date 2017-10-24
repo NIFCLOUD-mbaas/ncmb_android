@@ -28,7 +28,7 @@ public class NCMB {
     /**
      * Version of this SDK
      */
-    public static final String SDK_VERSION = "2.3.0";
+    public static final String SDK_VERSION = "2.3.1";
 
     /**
      * Prefix of keys in metadata for NCMB settings
