@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 /**
  * The NCMB Class contains sdk initialize method and factory method for Service class
@@ -27,7 +28,7 @@ public class NCMB {
     /**
      * Version of this SDK
      */
-    public static final String SDK_VERSION = "2.3.0";
+    public static final String SDK_VERSION = "2.3.1";
 
     /**
      * Prefix of keys in metadata for NCMB settings
@@ -152,6 +153,11 @@ public class NCMB {
             editor.putString(CLIENT_KEY, clientKey);
             editor.putString(API_BASE_URL, apiBaseUrl);
             editor.apply();
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NCMBNotificationUtils utils = new NCMBNotificationUtils(context);
+            utils.settingDefaultChannels();
         }
     }
 
