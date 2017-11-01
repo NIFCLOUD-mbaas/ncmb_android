@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * NCMBQuery is used to search data from NIFTY Cloud mobile backend
+ * NCMBQuery is used to search data from NIF Cloud mobile backend
  */
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;
@@ -54,9 +54,9 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend
+     * search data from NIF Cloud mobile backend
      * @return NCMBObject(include extend class) list of search result
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List<T> find () throws NCMBException {
         if (mClassName.equals("user")) {
@@ -82,7 +82,7 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend asynchronously
+     * search data from NIF Cloud mobile backend asynchronously
      * @param callback executed callback after data search
      */
     public void findInBackground (final FindCallback<T> callback) {
@@ -725,7 +725,7 @@ public class NCMBQuery<T extends NCMBBase> {
     /**
      * return the number of search results
      * @return number of search results
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public int count () throws NCMBException {
         countFlag = true;

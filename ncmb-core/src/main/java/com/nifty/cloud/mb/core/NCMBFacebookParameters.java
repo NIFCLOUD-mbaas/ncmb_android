@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 
 /**
- * Parameters Object for login to NIFTY Cloud mobile backend with Facebook Account
+ * Parameters Object for login to NIF Cloud mobile backend with Facebook Account
  */
 public class NCMBFacebookParameters {
 
