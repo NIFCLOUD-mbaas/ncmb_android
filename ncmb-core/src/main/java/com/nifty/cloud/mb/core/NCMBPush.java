@@ -648,7 +648,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Send push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void send() throws NCMBException {
         //connect
@@ -731,7 +731,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Get push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void fetch() throws NCMBException {
         //connect
@@ -785,7 +785,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Delete push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void delete() throws NCMBException {
         //connect

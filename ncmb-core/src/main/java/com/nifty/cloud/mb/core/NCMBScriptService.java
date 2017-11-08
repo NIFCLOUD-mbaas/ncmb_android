@@ -81,7 +81,7 @@ public class NCMBScriptService extends NCMBService {
     }
 
     /**
-     * execute script to Nifty cloud mobile backend
+     * execute script to NIF Cloud mobile backend
      *
      * @param scriptName script name
      * @param method     HTTP method
@@ -215,7 +215,7 @@ public class NCMBScriptService extends NCMBService {
     }
 
     /**
-     * execute script to Nifty cloud mobile backend in background thread
+     * execute script to NIF Cloud mobile backend in background thread
      *
      * @param scriptName script name
      * @param method     HTTP method

@@ -79,7 +79,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param params push parameters
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject sendPush(JSONObject params) throws NCMBException {
         if (params == null) {
@@ -161,7 +161,7 @@ public class NCMBPushService extends NCMBService {
      * @param pushId object id
      * @param params update information
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject updatePush(String pushId, JSONObject params) throws NCMBException {
         if (pushId == null) {
@@ -231,7 +231,7 @@ public class NCMBPushService extends NCMBService {
      * Delete push object
      *
      * @param pushId object id
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void deletePush(String pushId) throws NCMBException {
         //null check
@@ -292,7 +292,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param pushId object id
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBPush fetchPush(String pushId) throws NCMBException {
         //null check
@@ -353,7 +353,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param conditions search conditions
      * @return List
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List searchPush(JSONObject conditions) throws NCMBException {
         //connect

@@ -254,9 +254,9 @@ public class NCMBUser extends NCMBObject {
     // action methods
 
     /**
-     * sign up to NIFTY Cloud mobile backend
+     * sign up to NIF Cloud mobile backend
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void signUp() throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -266,7 +266,7 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * sign up to NIFTY Cloud mobile backend
+     * sign up to NIF Cloud mobile backend
      *
      * @param callback callback for after sign up
      */
@@ -301,7 +301,7 @@ public class NCMBUser extends NCMBObject {
      * Mail request of user authentication
      *
      * @param mailAddress e-mail address for user authentication
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static void requestAuthenticationMail(String mailAddress) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -329,7 +329,7 @@ public class NCMBUser extends NCMBObject {
      * Request Email for the password reset
      *
      * @param mailAddress mail address
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static void requestPasswordReset(String mailAddress) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -360,7 +360,7 @@ public class NCMBUser extends NCMBObject {
      * @param mailAddress mailAddress
      * @param password    password
      * @return NCMBUser object that logged-in
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static NCMBUser loginWithMailAddress(String mailAddress, String password) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -389,7 +389,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * Login with anonymous
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static NCMBUser loginWithAnonymous() throws NCMBException {
         NCMBAnonymousParameters anonymousParameters = new NCMBAnonymousParameters(createUUID());
@@ -419,7 +419,7 @@ public class NCMBUser extends NCMBObject {
      * @param userName user name
      * @param password password
      * @return NCMBUser object that logged-in
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static NCMBUser login(String userName, String password) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -432,7 +432,7 @@ public class NCMBUser extends NCMBObject {
      * @param userName user name
      * @param password password
      * @param callback callback when finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static void loginInBackground(String userName, String password,
                                          LoginCallback callback) throws NCMBException {
@@ -442,9 +442,9 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * logout from NIFTY Cloud mobile backend
+     * logout from NIF Cloud mobile backend
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static void logout() throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -452,7 +452,7 @@ public class NCMBUser extends NCMBObject {
     }
 
     /**
-     * logout from NIFTY Cloud mobile backend
+     * logout from NIF Cloud mobile backend
      *
      * @param callback Callback is executed after logout
      */
@@ -472,7 +472,7 @@ public class NCMBUser extends NCMBObject {
      *
      * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
      * @return Authenticated user
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public static NCMBUser loginWith(Object authData) throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -566,7 +566,7 @@ public class NCMBUser extends NCMBObject {
      * link specified authentication data for current user
      *
      * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void linkWith(Object params) throws NCMBException {
 

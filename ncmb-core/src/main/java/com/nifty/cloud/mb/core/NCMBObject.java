@@ -55,7 +55,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * save current NCMBObject to data store
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void save() throws NCMBException {
         NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
@@ -125,7 +125,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * fetch current NCMBObject data from data store
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void fetch() throws NCMBException {
         NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);
@@ -164,7 +164,7 @@ public class NCMBObject extends NCMBBase{
 
     /**
      * delete current NCMBObject from data store
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void deleteObject() throws NCMBException {
         NCMBObjectService objService = (NCMBObjectService) NCMB.factory(NCMB.ServiceType.OBJECT);

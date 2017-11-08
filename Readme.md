@@ -1,4 +1,4 @@
-## Android SDK for NiftyCloud mobile backend
+## Android SDK for NIF Cloud mobile backend
 
 [![Build Status](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android)
 
@@ -95,6 +95,6 @@ obj.saveInBackground(new DoneCallback() {
 
 ## 参考URL集
 
-- [ニフティクラウド mobile backend](http://mb.cloud.nifty.com)
+- [ニフクラ mobile backend](http://mb.cloud.nifty.com)
 - [ドキュメント](http://mb.cloud.nifty.com/doc)
 - [ユーザーコミュニティ](https://github.com/NIFTYCloud-mbaas/UserCommunity)
