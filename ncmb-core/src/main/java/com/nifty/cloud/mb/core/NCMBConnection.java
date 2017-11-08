@@ -67,7 +67,7 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backed api synchronously
+     * Request NIF Cloud mobile backed api synchronously
      *
      * @return result object from NIF Cloud mobile backend
      * @throws NCMBException exception from NIF Cloud mobile backend
@@ -149,7 +149,7 @@ public class NCMBConnection {
                         } else {
                             res = new NCMBResponse(urlConnection.getErrorStream(), urlConnection.getResponseCode(), urlConnection.getHeaderFields());
                         }
-                        
+
                         // response signature check
                         responseSignatureCheck(urlConnection, res, ncmbRequest);
 
@@ -259,5 +259,3 @@ public class NCMBConnection {
         return mimeType;
     }
 }
-
-
