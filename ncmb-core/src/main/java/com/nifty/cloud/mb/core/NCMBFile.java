@@ -26,7 +26,7 @@ import java.util.List;
  * NCMBFile class.<br>
  * NCMBFile can not add any field.<br>
  * Information about the field names that can be set , refer to the following reference .<br>
- * @see <a target="_blank" href="http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html">NIFTY Cloud mobile backned API Reference(Japanese)</a>
+ * @see <a target="_blank" href="http://mb.cloud.nifty.com/doc/current/rest/filestore/fileRegistration.html">NIF Cloud mobile backned API Reference(Japanese)</a>
  */
 public class NCMBFile extends NCMBBase {
 

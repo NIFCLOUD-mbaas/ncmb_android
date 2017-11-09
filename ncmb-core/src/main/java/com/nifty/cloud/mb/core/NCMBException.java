@@ -142,7 +142,7 @@ public class NCMBException extends Exception {
 
     /**
      * E502001 ストレージエラー<br>
-     * NIFTY Cloud ストレージでエラーが発生した場合のエラー
+     * NIF Cloud ストレージでエラーが発生した場合のエラー
      */
     public static final String STORAGE_ERROR = "E502001";
 
