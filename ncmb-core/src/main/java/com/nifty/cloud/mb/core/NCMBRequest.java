@@ -312,7 +312,9 @@ public class NCMBRequest {
                     //String value = queryParam.get(key).toString();
                     //Log.v("tag", "KEY:" + key + " VALUE:" + value);
                     String param = key + "=" + URLEncoder.encode(queryParam.get(key).toString(), "UTF-8");
-                    parameterList.add(param);//シグネチャ生成で使用
+                    if (NCMBRequest.HTTP_METHOD_GET.equals(method)) {
+                        parameterList.add(param);//シグネチャ生成で使用
+                    }
                     query = query + param;
                     if (keys.hasNext()) {
                         query = query + "&";//検索条件 区切り
