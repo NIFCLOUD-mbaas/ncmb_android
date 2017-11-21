@@ -35,11 +35,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * NCMBConnection is a class that communicates with NIFTY Cloud mobile backend
+ * NCMBConnection is a class that communicates with NIF Cloud mobile backend
  */
 public class NCMBConnection {
 
-    //time out millisecond from NIFTY Cloud mobile backend
+    //time out millisecond from NIF Cloud mobile backend
     static int sConnectionTimeout = 10000;
 
     //API request object
@@ -67,10 +67,10 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backed api synchronously
+     * Request NIF Cloud mobile backed api synchronously
      *
-     * @return result object from NIFTY Cloud mobile backend
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @return result object from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public NCMBResponse sendRequest() throws NCMBException {
 
@@ -149,7 +149,7 @@ public class NCMBConnection {
                         } else {
                             res = new NCMBResponse(urlConnection.getErrorStream(), urlConnection.getResponseCode(), urlConnection.getHeaderFields());
                         }
-                        
+
                         // response signature check
                         responseSignatureCheck(urlConnection, res, ncmbRequest);
 
@@ -216,7 +216,7 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backend api asynchronously
+     * Request NIF Cloud mobile backend api asynchronously
      *
      * @param callback execute callback after api request
      */
@@ -259,5 +259,3 @@ public class NCMBConnection {
         return mimeType;
     }
 }
-
-

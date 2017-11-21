@@ -34,7 +34,7 @@ public class NCMBNotificationUtils extends ContextWrapper{
     // デフォルトチャンネル名
     private static final String DEFAULT_CHANNEL_NAME = "NCMB Push Channel";
     // デフォルトチャンネル説明
-    private static final String DEFAULT_CHANNEL_DES = "Nifty Cloud mobile backend push notification channel";
+    private static final String DEFAULT_CHANNEL_DES = "NIF Cloud mobile backend push notification channel";
 
     public NCMBNotificationUtils(Context base) {
         super(base);

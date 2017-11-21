@@ -18,7 +18,7 @@ package com.nifty.cloud.mb.core;
 import android.support.annotation.NonNull;
 
 /**
- * Parameters Object for login to NIFTY Cloud mobile backend with Anonymous Account
+ * Parameters Object for login to NIF Cloud mobile backend with Anonymous Account
  */
 class NCMBAnonymousParameters {
 

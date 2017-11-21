@@ -16,7 +16,7 @@
 package com.nifty.cloud.mb.core;
 
 /**
- * NCMBException is a class that defines the error to be returened from NIFTY Cloud mobile backend
+ * NCMBException is a class that defines the error to be returened from NIF Cloud mobile backend
  */
 public class NCMBException extends Exception {
 
@@ -142,7 +142,7 @@ public class NCMBException extends Exception {
 
     /**
      * E502001 ストレージエラー<br>
-     * NIFTY Cloud ストレージでエラーが発生した場合のエラー
+     * NIF Cloud ストレージでエラーが発生した場合のエラー
      */
     public static final String STORAGE_ERROR = "E502001";
 

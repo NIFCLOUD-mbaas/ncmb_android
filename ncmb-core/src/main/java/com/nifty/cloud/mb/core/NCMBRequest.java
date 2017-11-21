@@ -241,7 +241,7 @@ public class NCMBRequest {
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
         this(url, method, content, null,null, HEADER_CONTENT_TYPE_JSON, queryParam, sessionToken, applicationKey, clientKey, null);
@@ -258,7 +258,7 @@ public class NCMBRequest {
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String fileName, byte[] fileData, JSONObject aclJson, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
         this(url, method, aclJson.toString(),fileName, fileData, HEADER_CONTENT_TYPE_FILE, null, sessionToken, applicationKey, clientKey, null);
@@ -278,7 +278,7 @@ public class NCMBRequest {
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
      * @param timestamp      timestamp
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content,String fileName, byte[] fileData, String contentType, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey, String timestamp) throws NCMBException {
         this.method = method;
@@ -312,7 +312,9 @@ public class NCMBRequest {
                     //String value = queryParam.get(key).toString();
                     //Log.v("tag", "KEY:" + key + " VALUE:" + value);
                     String param = key + "=" + URLEncoder.encode(queryParam.get(key).toString(), "UTF-8");
-                    parameterList.add(param);//シグネチャ生成で使用
+                    if (NCMBRequest.HTTP_METHOD_GET.equals(method)) {
+                        parameterList.add(param);//シグネチャ生成で使用
+                    }
                     query = query + param;
                     if (keys.hasNext()) {
                         query = query + "&";//検索条件 区切り

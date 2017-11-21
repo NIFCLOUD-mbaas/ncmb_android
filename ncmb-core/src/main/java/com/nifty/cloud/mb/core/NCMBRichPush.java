@@ -37,12 +37,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.Arrays;
+
 /**
  * NCMBRichPush provide dialog for rich push notification
  */
 public class NCMBRichPush extends Dialog {
 
     private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    private static final String GOOGLE_DOCS_BASE_VIEWER_URL = "http://docs.google.com/gview?embedded=true&url=";
+    public static final String[] arrOfficeFilenameExt = new String[] {".pdf", ".xls", ".xlsx", ".doc", ".docx", ".ppt", ".pptx"};
     private LinearLayout webBackView;
     private FrameLayout richPushHandlerContainer;
     private ImageView closeImage;
@@ -87,7 +91,15 @@ public class NCMBRichPush extends Dialog {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setUseWideViewPort(true);
-        webView.loadUrl(this.requestUrl);
+        String extension = "";
+        if(this.requestUrl.contains(".")) {
+            extension = this.requestUrl.substring(this.requestUrl.lastIndexOf("."));
+        }
+        if(Arrays.asList(arrOfficeFilenameExt).contains(extension)) {
+            webView.loadUrl(new StringBuilder(GOOGLE_DOCS_BASE_VIEWER_URL).append(this.requestUrl).toString());
+        } else {
+            webView.loadUrl(this.requestUrl);
+        }
         webView.setLayoutParams(FILL);
 
         this.webBackView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

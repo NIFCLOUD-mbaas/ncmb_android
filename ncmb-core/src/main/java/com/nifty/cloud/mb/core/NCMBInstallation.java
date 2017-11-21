@@ -603,7 +603,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Save installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void save() throws NCMBException {
         //connect
@@ -683,7 +683,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Override
     public void fetch() throws NCMBException {
@@ -725,7 +725,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Delete installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void delete() throws NCMBException {
         //connect
