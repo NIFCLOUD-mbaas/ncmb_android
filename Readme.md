@@ -1,6 +1,6 @@
-## Android SDK for NiftyCloud mobile backend
+## Android SDK for NIF Cloud mobile backend
 
-[![Build Status](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFTYCloud-mbaas/ncmb_android)
+[![Build Status](https://travis-ci.org/NIFCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCloud-mbaas/ncmb_android)
 
 ## ダウンロード
 
@@ -35,7 +35,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 
 ## 動作環境
 
-本SDKは、Android 4.x / 5.x / 6.0 にて動作確認を行っております。
+本SDKは、Android 4.x ～ 8.0 にて動作確認を行っております。
 
 ## インストール
 
@@ -95,6 +95,6 @@ obj.saveInBackground(new DoneCallback() {
 
 ## 参考URL集
 
-- [ニフティクラウド mobile backend](http://mb.cloud.nifty.com)
+- [ニフクラ mobile backend](http://mb.cloud.nifty.com)
 - [ドキュメント](http://mb.cloud.nifty.com/doc)
-- [ユーザーコミュニティ](https://github.com/NIFTYCloud-mbaas/UserCommunity)
+- [ユーザーコミュニティ](https://github.com/NIFCloud-mbaas/UserCommunity)

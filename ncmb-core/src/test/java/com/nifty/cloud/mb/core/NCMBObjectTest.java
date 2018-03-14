@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 //import junit.framework.Assert;
@@ -23,6 +38,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * NCMBObjectTest
@@ -350,7 +366,7 @@ public class NCMBObjectTest {
         try {
             obj.fetch();
         } catch (NCMBException e) {
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
@@ -419,7 +435,7 @@ public class NCMBObjectTest {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });
@@ -459,7 +475,7 @@ public class NCMBObjectTest {
         try {
             obj.deleteObject();
         } catch (NCMBException e) {
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
@@ -505,7 +521,7 @@ public class NCMBObjectTest {
                 if (e == null) {
                     Assert.fail("delete object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });
@@ -609,5 +625,24 @@ public class NCMBObjectTest {
         );
     }
 
+    @Test
+    public void get_Allkeys() throws Exception {
+        //user Classを登録する
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+
+        user.signUp();
+
+        List userKeyArray = user.allKeys();
+        //userKeyArrayの取得キー結果 => ["createDate","objectId","sessionToken","userName","authData"]
+
+        Assert.assertEquals("createDate", userKeyArray.get(0));
+        Assert.assertEquals("objectId", userKeyArray.get(1));
+        Assert.assertEquals("sessionToken", userKeyArray.get(2));
+        Assert.assertEquals("userName", userKeyArray.get(3));
+        Assert.assertEquals("authData", userKeyArray.get(4));
+
+    }
 
 }

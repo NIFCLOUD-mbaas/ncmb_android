@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     NCMBUser.loginWith(parameters);
-                    String msg = "Login to NIFTYCloud mobile backend with Twitter account";
+                    String msg = "Login to NIF Cloud mobile backend with Twitter account";
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                 } catch (NCMBException e) {
                     e.printStackTrace();

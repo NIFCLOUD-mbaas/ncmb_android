@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.os.AsyncTask;
@@ -20,11 +35,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * NCMBConnection is a class that communicates with NIFTY Cloud mobile backend
+ * NCMBConnection is a class that communicates with NIF Cloud mobile backend
  */
 public class NCMBConnection {
 
-    //time out millisecond from NIFTY Cloud mobile backend
+    //time out millisecond from NIF Cloud mobile backend
     static int sConnectionTimeout = 10000;
 
     //API request object
@@ -52,10 +67,10 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backed api synchronously
+     * Request NIF Cloud mobile backed api synchronously
      *
-     * @return result object from NIFTY Cloud mobile backend
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @return result object from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public NCMBResponse sendRequest() throws NCMBException {
 
@@ -134,26 +149,20 @@ public class NCMBConnection {
                         } else {
                             res = new NCMBResponse(urlConnection.getErrorStream(), urlConnection.getResponseCode(), urlConnection.getHeaderFields());
                         }
-                        
+
                         // response signature check
                         responseSignatureCheck(urlConnection, res, ncmbRequest);
 
 
                     } catch (IOException e) {
-                        // Android4.3以下は認証エラーの場合、IOExceptionが発生するため一律でCurrentUserを破棄する
-                        if (e.getMessage().equals("No authentication challenges found")) {
-                            NCMBUserService.clearCurrentUser();
-                        }
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                        throw new NCMBException(NCMBException.AUTH_FAILURE, e.getMessage());
                     } finally {
                         //Disconnect HTTPURLConnection
                         if (urlConnection != null) {
                             urlConnection.disconnect();
                         }
                     }
-
                     return res;
-                    //return null;
                 }
 
             });
@@ -165,7 +174,7 @@ public class NCMBConnection {
             }
             return res;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(e);
         }
     }
 
@@ -178,9 +187,9 @@ public class NCMBConnection {
                 // file data
                 String hexadecimal = asHex(res.responseByte);
                 hashData = req.getSignatureHashData() + "\n" + hexadecimal;
-            } else if(res.responseData != null){
+            } else if(res.responseDataString != null){
                 // json data
-                hashData = req.getSignatureHashData() + "\n" + res.responseData.toString().replace("\\","");
+                hashData = req.getSignatureHashData() + "\n" + res.responseDataString.replace("\\","");
             }else {
                 // delete,logout API
                 hashData = req.getSignatureHashData();
@@ -207,7 +216,7 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIFTY Cloud mobile backend api asynchronously
+     * Request NIF Cloud mobile backend api asynchronously
      *
      * @param callback execute callback after api request
      */
@@ -250,5 +259,3 @@ public class NCMBConnection {
         return mimeType;
     }
 }
-
-

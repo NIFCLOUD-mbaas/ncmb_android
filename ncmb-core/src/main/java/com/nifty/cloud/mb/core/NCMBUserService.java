@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import org.json.JSONArray;
@@ -84,7 +99,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @return new NCMBUser object that registered
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBUser registerByName(String userName, String password) throws NCMBException {
         try {
@@ -103,7 +118,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void registerByNameInBackground(String userName, String password, LoginCallback callback)
             throws NCMBException {
@@ -187,7 +202,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param oauthOptions OAuth options
      * @return new NCMBUser object that registered
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBUser registerByOauth(JSONObject oauthOptions) throws NCMBException {
         JSONObject params = registerByOauthSetup(oauthOptions);
@@ -199,7 +214,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param oauthOptions OAuth options
      * @param callback     callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void registerByOauthInBackground(JSONObject oauthOptions, LoginCallback callback) throws NCMBException {
         JSONObject params = registerByOauthSetup(oauthOptions);
@@ -256,7 +271,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void inviteByMailCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_REQUEST_ACCEPTED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Invalid response from API");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid response from API");
         }
     }
 
@@ -265,7 +280,7 @@ public class NCMBUserService extends NCMBService {
      * ( /requestMailAddressUserEntry API )
      *
      * @param mailAddress mail address
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void inviteByMail(String mailAddress) throws NCMBException {
         RequestParams reqParams = inviteByMailParams(mailAddress);
@@ -280,7 +295,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param mailAddress mail address
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void inviteByMailInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = inviteByMailParams(mailAddress);
@@ -325,7 +340,7 @@ public class NCMBUserService extends NCMBService {
      * Send Email for the password reset in background thread
      *
      * @param mailAddress mail address
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void requestPasswordReset(String mailAddress) throws NCMBException {
         RequestParams reqParams = null;
@@ -342,7 +357,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param mailAddress mail address
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void requestPasswordResetInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = null;
@@ -516,7 +531,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId user id
      * @return NCMBUser instance
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBUser fetchUser(String userId) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
@@ -531,7 +546,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId   user id
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void fetchUserInBackground(String userId, final FetchCallback callback) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
@@ -579,7 +594,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void updateUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Update user info failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Update user info failed");
         }
     }
 
@@ -589,7 +604,7 @@ public class NCMBUserService extends NCMBService {
      * @param userId user id
      * @param params update values
      * @return result of update user
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject updateUser(String userId, JSONObject params) throws NCMBException {
         RequestParams reqParams = updateUserParams(userId, params);
@@ -598,7 +613,7 @@ public class NCMBUserService extends NCMBService {
         try {
             params.put("objectId", userId);
         } catch (JSONException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.getMessage());
         }
         updateUserCheckResponse(response);
         writeCurrentUser(params, response.responseData);
@@ -611,7 +626,7 @@ public class NCMBUserService extends NCMBService {
      * @param userId   user id
      * @param params   update values
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void updateUserInBackground(final String userId, final JSONObject params, final ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = updateUserParams(userId, params);
@@ -626,7 +641,7 @@ public class NCMBUserService extends NCMBService {
                 } catch (NCMBException e) {
                     callback.done(null, e);
                 } catch (JSONException e) {
-                    callback.done(null, new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage()));
+                    callback.done(null, new NCMBException(NCMBException.INVALID_JSON, e.getMessage()));
                 }
 
                 ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
@@ -683,7 +698,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @return new NCMBUser object that logged-in
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBUser loginByName(String userName, String password) throws NCMBException {
         RequestParams requestParams = loginByNameParams(userName, password);
@@ -698,7 +713,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void loginByNameInBackground(String userName, String password,
                                         LoginCallback callback) throws NCMBException {
@@ -733,7 +748,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @return parameters in object
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     protected RequestParams loginByMailParams(String mailAddress, String password) throws NCMBException {
         try {
@@ -771,7 +786,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @return new NCMBUser object that loggged-in
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBUser loginByMail(String mailAddress, String password) throws NCMBException {
         RequestParams params = loginByMailParams(mailAddress, password);
@@ -786,7 +801,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void loginByMailInBackground(String mailAddress, String password,
                                         LoginCallback callback) throws NCMBException {
@@ -866,7 +881,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void deleteUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Delete user failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Delete user failed");
         }
     }
 
@@ -874,7 +889,7 @@ public class NCMBUserService extends NCMBService {
      * Delete user by given id
      *
      * @param userId user id
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void deleteUser(String userId) throws NCMBException {
         RequestParams reqParams = deleteUserParams(userId);
@@ -892,7 +907,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId   user id
      * @param callback Callback is executed after delete user
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void deleteUserInBackground(final String userId, ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = deleteUserParams(userId);
@@ -937,14 +952,14 @@ public class NCMBUserService extends NCMBService {
      */
     protected void logoutCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Logout failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Logout failed");
         }
     }
 
     /**
      * Logout from session
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void logout() throws NCMBException {
         RequestParams reqParams = logoutParams();
@@ -961,7 +976,7 @@ public class NCMBUserService extends NCMBService {
      * Logout from session in background
      *
      * @param callback callback when logout completed
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void logoutInBackground(DoneCallback callback) throws NCMBException {
         RequestParams reqParams = logoutParams();
@@ -1013,7 +1028,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected void searchUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Search user failed");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Search user failed");
         }
     }
 
@@ -1046,7 +1061,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param conditions search conditions, if no condition set to null
      * @return result of search user
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public ArrayList<NCMBUser> searchUser(JSONObject conditions) throws NCMBException {
         RequestParams reqParams = searchUserParams(conditions);
@@ -1118,7 +1133,7 @@ public class NCMBUserService extends NCMBService {
             try {
                 NCMB.getCurrentContext().sessionToken = currentData.getString("sessionToken");
             } catch (JSONException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
             }
         }
     }
@@ -1151,7 +1166,7 @@ public class NCMBUserService extends NCMBService {
                 base.put(key, compare.get(key));
             }
         } catch (JSONException error) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage());
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, error.getMessage());
         }
     }
 }

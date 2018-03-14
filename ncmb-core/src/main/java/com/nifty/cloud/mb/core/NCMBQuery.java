@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
@@ -17,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * NCMBQuery is used to search data from NIFTY Cloud mobile backend
+ * NCMBQuery is used to search data from NIF Cloud mobile backend
  */
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;
@@ -39,9 +54,9 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend
+     * search data from NIF Cloud mobile backend
      * @return NCMBObject(include extend class) list of search result
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List<T> find () throws NCMBException {
         if (mClassName.equals("user")) {
@@ -67,7 +82,7 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend asynchronously
+     * search data from NIF Cloud mobile backend asynchronously
      * @param callback executed callback after data search
      */
     public void findInBackground (final FindCallback<T> callback) {
@@ -584,7 +599,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * @param center center location for data searching
      * @param distance search radius distance from center point in kilometers
      */
-    public void whereWithinKilometers(String key, Location center, int distance){
+    public void whereWithinKilometers(String key, Location center, double distance){
         try {
             JSONObject newCondition = new JSONObject();
             if (mWhereConditions.has(key)){
@@ -710,7 +725,7 @@ public class NCMBQuery<T extends NCMBBase> {
     /**
      * return the number of search results
      * @return number of search results
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public int count () throws NCMBException {
         countFlag = true;
