@@ -16,12 +16,12 @@ allprojects {
     }
 }
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -32,21 +32,27 @@ android {
         }
     }
 }
+repositories {
+    maven {
+        url 'https://maven.google.com'
+        // Alternative URL is 'https://dl.google.com/dl/android/maven2/'
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:8.3.0'
+    compile 'com.google.android.gms:play-services-gcm:11.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:appcompat-v7:26.0.2'
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.robolectric:shadows-httpclient:3.0'
     testCompile 'com.squareup.okhttp:mockwebserver:2.3.0'
     testCompile 'org.mockito:mockito-core:1.+'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.2'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.2'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.2'
-    testCompile 'org.powermock:powermock-classloading-xstream:1.6.2'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.5'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.5'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.5'
+    testCompile 'org.powermock:powermock-classloading-xstream:1.6.5'
     testCompile 'org.yaml:snakeyaml:1.15'
     testCompile 'org.skyscreamer:jsonassert:1.2.+'
     testCompile "org.robolectric:shadows-play-services:3.0"

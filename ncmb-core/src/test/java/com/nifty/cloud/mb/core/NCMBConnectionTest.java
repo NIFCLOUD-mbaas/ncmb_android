@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -11,6 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 
@@ -29,6 +45,12 @@ public class NCMBConnectionTest {
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
+
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
+                "appKey",
+                "cliKey",
+                mServer.getUrl("/").toString(),
+                null);
     }
 
     @After
@@ -272,7 +294,7 @@ public class NCMBConnectionTest {
         } catch (NCMBException e) {
             error = e;
         } catch (JSONException e) {
-            error = new NCMBException(NCMBException.GENERIC_ERROR, "Invalid json query");
+            error = new NCMBException(NCMBException.INVALID_JSON, "Invalid json query");
         }
 
         //NCMBURLConnectionを作成
