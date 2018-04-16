@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
@@ -353,6 +368,23 @@ public class NCMBQueryTest {
     }
 
     @Test
+    public void set_condition_within_kilometers_double() throws Exception {
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+
+        Location point = new Location("sdk-test");
+        point.setLatitude(30.0);
+        point.setLongitude(30.0);
+
+        query.whereWithinKilometers("location", point, 0.1);
+
+        JSONAssert.assertEquals(
+                query.getConditions(),
+                new JSONObject("{\"where\":{\"location\":{\"$nearSphere\":{\"__type\":\"GeoPoint\",\"latitude\":30.0,\"longitude\":30.0},\"$maxDistanceInKilometers\":0.1}}}"),
+                true
+        );
+    }
+
+    @Test
     public void set_condition_within_miles() throws Exception {
         NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
 
@@ -537,6 +569,38 @@ public class NCMBQueryTest {
                 }
             }
         });
+    }
+
+    @Test
+    public void count_file() throws Exception {
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+
+        int result = query.count();
+        Assert.assertEquals(result, 50);
+    }
+
+    @Test
+    public void count_file_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
+        NCMBQuery<NCMBFile> query = NCMBFile.getQuery();
+
+        query.countInBackground(new CountCallback() {
+            @Override
+            public void done(int result, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+
+                    Assert.assertEquals(result, 50);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test

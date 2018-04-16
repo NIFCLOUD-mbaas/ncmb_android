@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -443,13 +458,13 @@ public class NCMBRoleServiceTest {
      * - 結果：例外が発生しないこと
      */
     @Test
-    public void setAcl() throws Exception {
+    public void updateAcl() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
         try {
             NCMBAcl acl = generateAcl();
-            roleService.setAcl(roleId, acl);
+            roleService.updateAcl(roleId, acl);
         } catch (NCMBException e) {
             Assert.fail(e.getMessage());
         }
@@ -460,12 +475,12 @@ public class NCMBRoleServiceTest {
      * - 結果：callback に例外が返らないこと
      */
     @Test
-    public void setAclInBackground() throws Exception {
+    public void updateAclInBackground() throws Exception {
         NCMBRoleService roleService = getRoleService();
         String roleId = "dummyRoleId";
 
         NCMBAcl acl = generateAcl();
-        roleService.setAclInBackground(roleId, acl, new DoneCallback() {
+        roleService.updateAclInBackground(roleId, acl, new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);

@@ -1,8 +1,24 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -358,33 +374,33 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get current installation object
      *
-     * @return Installation
+     * @return NCMBInstallation object that is created from data that is saved to local file.<br>
+     * If local file is not available, it returns empty NCMBInstallation object
      */
     public static NCMBInstallation getCurrentInstallation() {
+        //null check
+        NCMBLocalFile.checkNCMBContext();
         try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
-
             //create currentInstallation
             if (currentInstallation == null) {
+                currentInstallation = new NCMBInstallation();
                 //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                 File currentInstallationFile = NCMBLocalFile.create(INSTALLATION_FILENAME);
                 if (currentInstallationFile.exists()) {
                     //ローカルファイルから端末情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentInstallationFile);
                     currentInstallation = new NCMBInstallation(localData);
-                } else {
-                    currentInstallation = new NCMBInstallation();
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            Log.e("Error", error.toString());
         }
         return currentInstallation;
     }
 
     /**
      * Create query for installation class
+     *
      * @return NCMBQuery for installation class
      */
     public static NCMBQuery<NCMBInstallation> getQuery() {
@@ -419,7 +435,10 @@ public class NCMBInstallation extends NCMBObject {
     public void getRegistrationIdInBackground(String senderId, final DoneCallback callback) {
         //Nullチェック
         if (senderId == null && NCMB.getCurrentContext().context == null) {
-            throw new RuntimeException("applicationContext or senderId is must not be null.");
+            if (callback != null) {
+                callback.done(new NCMBException(NCMBException.REQUIRED, "applicationContext or senderId is must not be null."));
+                return;
+            }
         }
 
         //端末にAPKがインストールされていない場合は処理を終了
@@ -524,7 +543,11 @@ public class NCMBInstallation extends NCMBObject {
 
         // NCMB/channels/channelName 作成
         File writeFile = new File(channelDir, channelName);
-        NCMBLocalFile.writeFile(writeFile, localData);
+        try {
+            NCMBLocalFile.writeFile(writeFile, localData);
+        } catch (NCMBException e) {
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -580,7 +603,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Save installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void save() throws NCMBException {
         //connect
@@ -660,7 +683,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Override
     public void fetch() throws NCMBException {
@@ -702,7 +725,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Delete installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void delete() throws NCMBException {
         //connect
