@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.os.Build;
@@ -226,7 +241,7 @@ public class NCMBRequest {
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
         this(url, method, content, null,null, HEADER_CONTENT_TYPE_JSON, queryParam, sessionToken, applicationKey, clientKey, null);
@@ -243,7 +258,7 @@ public class NCMBRequest {
      * @param sessionToken   sessionToken
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String fileName, byte[] fileData, JSONObject aclJson, String sessionToken, String applicationKey, String clientKey) throws NCMBException {
         this(url, method, aclJson.toString(),fileName, fileData, HEADER_CONTENT_TYPE_FILE, null, sessionToken, applicationKey, clientKey, null);
@@ -263,7 +278,7 @@ public class NCMBRequest {
      * @param applicationKey applicationKey
      * @param clientKey      clientKey
      * @param timestamp      timestamp
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBRequest(String url, String method, String content,String fileName, byte[] fileData, String contentType, JSONObject queryParam, String sessionToken, String applicationKey, String clientKey, String timestamp) throws NCMBException {
         this.method = method;
@@ -283,7 +298,7 @@ public class NCMBRequest {
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+            throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
         }
         String query = "";
 
@@ -297,7 +312,9 @@ public class NCMBRequest {
                     //String value = queryParam.get(key).toString();
                     //Log.v("tag", "KEY:" + key + " VALUE:" + value);
                     String param = key + "=" + URLEncoder.encode(queryParam.get(key).toString(), "UTF-8");
-                    parameterList.add(param);//シグネチャ生成で使用
+                    if (NCMBRequest.HTTP_METHOD_GET.equals(method)) {
+                        parameterList.add(param);//シグネチャ生成で使用
+                    }
                     query = query + param;
                     if (keys.hasNext()) {
                         query = query + "&";//検索条件 区切り
@@ -306,7 +323,7 @@ public class NCMBRequest {
                 }
                 this.url = new URL(this.url.toString() + query);
             } catch (UnsupportedEncodingException | JSONException | MalformedURLException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, e.getMessage());
+                throw new NCMBException(e);
             }
         }
 

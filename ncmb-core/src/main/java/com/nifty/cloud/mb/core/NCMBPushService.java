@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import org.json.JSONArray;
@@ -64,7 +79,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param params push parameters
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject sendPush(JSONObject params) throws NCMBException {
         if (params == null) {
@@ -84,7 +99,7 @@ public class NCMBPushService extends NCMBService {
         RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_CREATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Created failed.");
         }
 
         return response.responseData;
@@ -146,7 +161,7 @@ public class NCMBPushService extends NCMBService {
      * @param pushId object id
      * @param params update information
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject updatePush(String pushId, JSONObject params) throws NCMBException {
         if (pushId == null) {
@@ -161,7 +176,7 @@ public class NCMBPushService extends NCMBService {
         NCMBResponse response = sendRequest(request);
 
         if (response.statusCode != HTTP_STATUS_PUSH_UPDATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Updated failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Updated failed.");
         }
 
         return response.responseData;
@@ -216,7 +231,7 @@ public class NCMBPushService extends NCMBService {
      * Delete push object
      *
      * @param pushId object id
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void deletePush(String pushId) throws NCMBException {
         //null check
@@ -228,7 +243,7 @@ public class NCMBPushService extends NCMBService {
         RequestParams request = createRequestParams(pushId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_PUSH_DELETED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.");
         }
     }
 
@@ -277,7 +292,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param pushId object id
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public NCMBPush fetchPush(String pushId) throws NCMBException {
         //null check
@@ -289,7 +304,7 @@ public class NCMBPushService extends NCMBService {
         RequestParams request = createRequestParams(pushId, null, null, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_PUSH_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Gotten failed.");
         }
         return new NCMBPush(response.responseData);
     }
@@ -338,14 +353,14 @@ public class NCMBPushService extends NCMBService {
      *
      * @param conditions search conditions
      * @return List
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List searchPush(JSONObject conditions) throws NCMBException {
         //connect
         RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_PUSH_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Gotten failed.");
         }
         //return the value of the key 'results'
         return createSearchResults(response.responseData);
