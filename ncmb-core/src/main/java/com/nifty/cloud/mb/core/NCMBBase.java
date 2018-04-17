@@ -593,9 +593,8 @@ public class NCMBBase {
                 location.setLongitude(geolocationJson.getDouble("longitude"));
                 location.setLatitude(geolocationJson.getDouble("latitude"));
                 return location;
-            } else {
-                return null;
             }
+            return null;
         } catch (JSONException e) {
             return null;
         }
