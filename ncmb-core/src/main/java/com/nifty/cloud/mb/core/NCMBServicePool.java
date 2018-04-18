@@ -92,6 +92,12 @@ public class NCMBServicePool {
             case PUSH:
                 service = (NCMBPushService)new NCMBPushService(context);
                 break;
+            case FILE:
+                service = (NCMBFileService) new NCMBFileService(context);
+                break;
+            case SCRIPT:
+                service = (NCMBScriptService) new NCMBScriptService(context);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid serviceType");
         }
