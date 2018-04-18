@@ -1106,6 +1106,17 @@
     file: valid_post_registerUserAnonymous_response.json
 ---
   request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      userName: "Nifty Tarou"
+      password: "niftytarou"
+      testField: "test"
+  response:
+    status: 201
+    file: valid_post_registerUser_response.json
+---
+  request:
     url: /2013-09-01/files
     method: GET
     query:
