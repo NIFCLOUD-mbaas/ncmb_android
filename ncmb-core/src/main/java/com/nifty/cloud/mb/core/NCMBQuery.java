@@ -1,6 +1,23 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,15 +27,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
- * NCMBQuery is used to search data from NIFTY Cloud mobile backend
+ * NCMBQuery is used to search data from NIF Cloud mobile backend
  */
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;
 
-    private JSONObject mWhereConditions;
+    private JSONObject mWhereConditions = new JSONObject();
+    private int limitNumber = 0;
+    private int skipNumber = 0;
+    private String includeKey = "";
+    private List<String> order = new ArrayList<>();
+    private boolean countFlag = false;
 
     /**
      * Constructor
@@ -30,9 +54,9 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend
+     * search data from NIF Cloud mobile backend
      * @return NCMBObject(include extend class) list of search result
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List<T> find () throws NCMBException {
         if (mClassName.equals("user")) {
@@ -47,6 +71,9 @@ public class NCMBQuery<T extends NCMBBase> {
         } else if (mClassName.equals("installation")){
             NCMBInstallationService installationServ = (NCMBInstallationService)NCMB.factory(NCMB.ServiceType.INSTALLATION);
             return (List<T>)installationServ.searchInstallation(getConditions());
+        } else if (mClassName.equals("file")){
+            NCMBFileService fileServ = (NCMBFileService)NCMB.factory(NCMB.ServiceType.FILE);
+            return (List<T>)fileServ.searchFile(getConditions());
         } else {
             NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
             return objServ.searchObject(mClassName, getConditions());
@@ -55,7 +82,7 @@ public class NCMBQuery<T extends NCMBBase> {
     }
 
     /**
-     * search data from NIFTY Cloud mobile backend asynchronously
+     * search data from NIF Cloud mobile backend asynchronously
      * @param callback executed callback after data search
      */
     public void findInBackground (final FindCallback<T> callback) {
@@ -91,7 +118,15 @@ public class NCMBQuery<T extends NCMBBase> {
                     callback.done((List<T>) users, e);
                 }
             });
-        } else {
+        } else if (mClassName.equals("file")) {
+            NCMBFileService fileServ = (NCMBFileService)NCMB.factory(NCMB.ServiceType.FILE);
+            fileServ.searchFileInBackground(getConditions(), new SearchFileCallback() {
+                @Override
+                public void done(List<NCMBFile> files, NCMBException e) {
+                    callback.done((List<T>) files, e);
+                }
+            });
+        }else {
             NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
             objServ.searchObjectInBackground(mClassName, getConditions(), new SearchObjectCallback() {
                 @Override
@@ -112,6 +147,27 @@ public class NCMBQuery<T extends NCMBBase> {
             if (mWhereConditions != null && mWhereConditions.length() > 0){
                 conditions.put("where", mWhereConditions);
             }
+            if (limitNumber != 0) {
+                conditions.put("limit", limitNumber);
+            }
+            if (skipNumber != 0) {
+                conditions.put("skip", skipNumber);
+            }
+            if (includeKey != null && !includeKey.isEmpty()) {
+                conditions.put("include", includeKey);
+            }
+            if (order != null && order.size() != 0) {
+                String orderString = "";
+                Iterator iterator = order.iterator();
+                while(iterator.hasNext()) {
+                    orderString = orderString + iterator.next() + ",";
+                }
+
+                conditions.put("order", orderString.replaceAll(",$", ""));
+            }
+            if (countFlag) {
+                conditions.put("count", 1);
+            }
             return conditions;
         } catch (JSONException e) {
             return null;
@@ -130,6 +186,12 @@ public class NCMBQuery<T extends NCMBBase> {
             locationJson.put("latitude", ((Location) value).getLatitude());
             locationJson.put("longitude", ((Location) value).getLongitude());
             return locationJson;
+        } else if (value instanceof List) {
+            Gson gson = new Gson();
+            return new JSONArray(gson.toJson(value));
+        }else if (value instanceof Map) {
+            Gson gson = new Gson();
+            return new JSONObject(gson.toJson(value));
         } else {
             return value;
         }
@@ -537,7 +599,7 @@ public class NCMBQuery<T extends NCMBBase> {
      * @param center center location for data searching
      * @param distance search radius distance from center point in kilometers
      */
-    public void whereWithinKilometers(String key, Location center, int distance){
+    public void whereWithinKilometers(String key, Location center, double distance){
         try {
             JSONObject newCondition = new JSONObject();
             if (mWhereConditions.has(key)){
@@ -598,6 +660,99 @@ public class NCMBQuery<T extends NCMBBase> {
         } catch (JSONException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    /**
+     * set the number of acquisition of search results
+     * @param number number of acquisition (0 ~ 1000)
+     */
+    public void setLimit (int number) {
+        limitNumber = number;
+    }
+
+    /**
+     * set the number to skip the search results
+     * @param number number for skipping
+     */
+    public void setSkip (int number) {
+        skipNumber = number;
+    }
+
+    /**
+     * set to include nested Object of the specified key in the search results
+     * @param key key with pointer to a nested object
+     */
+    public void setIncludeKey (String key) {
+        if (key != null && !key.isEmpty()) {
+            includeKey = key;
+        }
+    }
+
+    /**
+     * add Order by ascending with specified key
+     * Search Results is sorted in order which key was added.
+     * @param key key for order by ascending
+     */
+    public void addOrderByAscending (String key) {
+        if (key != null && !key.isEmpty()) {
+            order.add(key);
+        }
+    }
+
+    /**
+     * add Order by descending with specified key
+     * @param key key for order by descending
+     */
+    public void addOrderByDescending (String key) {
+        if (key != null && !key.isEmpty()) {
+            order.add("-" + key);
+        }
+    }
+
+    /**
+     * remove the specified key sort conditions
+     * @param key key for remove sort conditions
+     */
+    public void deleteOrder (String key) {
+        String descendingKey = "-" + key;
+        if (order.contains(key)) {
+            order.remove(key);
+        } else if (order.contains(descendingKey)) {
+            order.remove(descendingKey);
+        }
+    }
+
+    /**
+     * return the number of search results
+     * @return number of search results
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     */
+    public int count () throws NCMBException {
+        int iSetLimitNumber = limitNumber;
+        countFlag = true;
+        limitNumber = 1;
+        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+
+        JSONObject countConditions = getConditions();
+        limitNumber = iSetLimitNumber;
+        countFlag = false;
+        return objServ.countObject(mClassName, countConditions);
+    }
+
+    /**
+     * return number of search results asynchronously
+     * @param callback callback for after object search and count results
+     */
+    public void countInBackground(CountCallback callback) {
+        int iSetLimitNumber = limitNumber;
+        countFlag = true;
+        limitNumber = 1;
+        NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
+
+        JSONObject countConditions = getConditions();
+        limitNumber = iSetLimitNumber;
+        countFlag = false;
+        objServ.countObjectInBackground(mClassName, countConditions, callback);
     }
 
 }

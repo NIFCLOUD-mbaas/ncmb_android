@@ -1,0 +1,172 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="・同期処理"
+        android:id="@+id/textView"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:onClick="onPOSTClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/POST"
+        android:id="@+id/button"
+        android:layout_below="@+id/textView"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"/>
+
+    <Button
+        android:onClick="onPUTClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/PUT"
+        android:id="@+id/button2"
+        android:layout_above="@+id/button4"
+        android:layout_toRightOf="@+id/button4"
+        android:layout_toEndOf="@+id/button4"/>
+
+    <Button
+        android:onClick="onDELETEClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/DELETE"
+        android:id="@+id/button3"
+        android:layout_below="@+id/textView"
+        android:layout_toRightOf="@+id/button2"
+        android:layout_toEndOf="@+id/button2"/>
+
+    <Button
+        android:onClick="onGETClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/GET"
+        android:id="@+id/button4"
+        android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignStart="@+id/button"/>
+
+    <Button
+        android:onClick="onGETQueryClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/GET_Query"
+        android:id="@+id/button5"
+        android:layout_below="@+id/button2"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignStart="@+id/button2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="・非同期処理"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/button4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="39dp"/>
+
+    <Button
+        android:onClick="onAsyncPOSTClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/POST"
+        android:id="@+id/button6"
+        android:layout_alignTop="@+id/button8"
+        android:layout_alignLeft="@+id/button4"
+        android:layout_alignStart="@+id/button4"/>
+
+    <Button
+        android:onClick="onAsyncPUTClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/PUT"
+        android:id="@+id/button7"
+        android:layout_alignTop="@+id/button6"
+        android:layout_alignLeft="@+id/button5"
+        android:layout_alignStart="@+id/button5"/>
+
+    <Button
+        android:onClick="onAsyncDELETEClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/DELETE"
+        android:id="@+id/button8"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/button3"
+        android:layout_alignStart="@+id/button3"/>
+
+    <Button
+        android:onClick="onAsyncGETClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/GET"
+        android:id="@+id/button9"
+        android:layout_below="@+id/button6"
+        android:layout_alignLeft="@+id/button6"
+        android:layout_alignStart="@+id/button6"/>
+
+    <Button
+        android:onClick="onAsyncGETQueryClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/GET_Query"
+        android:id="@+id/button10"
+        android:layout_below="@+id/button7"
+        android:layout_alignLeft="@+id/button7"
+        android:layout_alignStart="@+id/button7"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="・その他"
+        android:id="@+id/textView3"
+        android:layout_marginTop="34dp"
+        android:layout_below="@+id/button9"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:onClick="onPOST_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POST_JP"
+        android:id="@+id/button11"
+        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/button9"
+        android:layout_alignStart="@+id/button9"/>
+
+    <Button
+        android:onClick="onPUT_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PUT_JP"
+        android:id="@+id/button12"
+        android:layout_alignTop="@+id/button11"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"/>
+
+    <Button
+        android:onClick="onDELETE_JP_Clicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DELETE_JP"
+        android:id="@+id/button13"
+        android:layout_alignTop="@+id/button12"
+        android:layout_toRightOf="@+id/button12"
+        android:layout_toEndOf="@+id/button12"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"/>
+
+</RelativeLayout>

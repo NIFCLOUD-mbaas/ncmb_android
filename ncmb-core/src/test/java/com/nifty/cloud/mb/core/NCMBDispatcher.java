@@ -1,6 +1,23 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.mockwebserver.Dispatcher;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -20,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
@@ -59,10 +77,19 @@ public class NCMBDispatcher {
                 if (pathAndQuery.length > 1) {
                     query = pathAndQuery[1];
                 }
+
                 if (!requestMap.get("url").equals(path)) {
                     continue;
                     //return defaultErrorResponse();
                 }
+
+                if (requestMap.get("url").equals("/2013-09-01/classes/ResponseSignatureTest")) {
+                    return new MockResponse().setResponseCode((int) responseMap.get("status"))
+                            .setHeader("Content-Type", "application/json")
+                            .setHeader("X-NCMB-Response-Signature", "tLdHmmi7td5+YnjdPxhPYfjV6Lh8pZNBrd2kH7EejnU=")
+                            .setBody(readJsonResponse(responseMap.get("file").toString()));
+                }
+
                 if (!requestMap.get("method").equals(request.getMethod())){
                     continue;
                     //return defaultErrorResponse();
@@ -85,7 +112,11 @@ public class NCMBDispatcher {
                             requestBody = request.getBody().readString(request.getBodySize(), Charset.forName("UTF-8"));
                         }
                         Object mockBody = requestMap.get("body");
-                        String mockBodyStr = new Gson().toJson(mockBody);
+                        Gson gson = new GsonBuilder().serializeNulls().create();
+                        String mockBodyStr = gson.toJson(mockBody);
+                        System.out.println("mock:" + mockBodyStr);
+                        System.out.println("req:" + requestBody);
+
                         if (checkRequestBody(mockBodyStr, requestBody)) {
                             //Responseをreturn
                             return new MockResponse().setResponseCode((int)responseMap.get("status"))
@@ -98,6 +129,31 @@ public class NCMBDispatcher {
                         return defaultErrorResponse();
                     }
                 }
+
+                if (requestMap.containsKey("header")) {
+                    Headers requestHeaders = request.getHeaders();
+                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    String mock = gson.toJson(requestMap.get("header"));
+                    try {
+                        JSONObject mockHeaders = new JSONObject(requestMap.get("header").toString());
+                        //System.out.println("mock:" + mockHeaders);
+                        //System.out.println("req:" + requestHeaders);
+
+                        Iterator keys = mockHeaders.keys();
+                        while(keys.hasNext() ) {
+                            String key = (String)keys.next();
+                            if (requestHeaders.get(key) != null && requestHeaders.get(key).equals(mockHeaders.getString(key))) {
+                                return new MockResponse().setResponseCode((int)responseMap.get("status"))
+                                        .setHeader("Content-Type", "application/json")
+                                        .setBody(readJsonResponse(responseMap.get("file").toString()));
+                            }
+                        }
+                    } catch (JSONException e) {
+                        return defaultErrorResponse();
+                    }
+                    continue;
+                }
+
                 return new MockResponse().setResponseCode((int)responseMap.get("status"))
                         .setHeader("Content-Type", "application/json")
                         .setBody(readJsonResponse(responseMap.get("file").toString()));
@@ -129,7 +185,10 @@ public class NCMBDispatcher {
             for (String query: queryArray) {
                 String[] queryData = query.split("=", 0);
                 String key = queryData[0];
-                String value = queryData[1];
+                String value = "";
+                if(queryData.length == 2){
+                    value = queryData[1];
+                }
                 if (value.matches(NUMBER_PATTERN)){
                     realQueryMap.put(key, Integer.parseInt(value));
                 } else if (value.matches(BOOL_PATTERN)){
@@ -143,7 +202,7 @@ public class NCMBDispatcher {
 
             System.out.println("mockQuery:" + mockQuery.toString());
             System.out.println("realQuery:" + realQuery.toString());
-            if (!compareJSON(mockQuery, realQuery, JSONCompareMode.LENIENT).passed()){
+            if (!compareJSON(mockQuery, realQuery, JSONCompareMode.NON_EXTENSIBLE).passed()){
                 return false;
             }
         } catch (JSONException e) {
@@ -166,7 +225,7 @@ public class NCMBDispatcher {
             if (mockBody.length() != realBody.length()) {
                 return false;
             }
-            if (!compareJSON(mockBody, realBody, JSONCompareMode.LENIENT).passed()){
+            if (!compareJSON(mockBody, realBody, JSONCompareMode.NON_EXTENSIBLE).passed()){
                 return false;
             }
             /*

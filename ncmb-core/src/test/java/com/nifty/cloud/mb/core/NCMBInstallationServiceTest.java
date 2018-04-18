@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.app.Activity;
@@ -18,9 +33,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.httpclient.FakeHttp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,20 +57,23 @@ import java.util.SimpleTimeZone;
 /**
  * Test for NCMBInstallationServiceTest
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationServiceTest {
 
     private MockWebServer mServer;
     static final String PACKAGE_NAME = "com.nifty.cloud.mb.core";
     static final String APP_VERSION = "1.0";
     static final String APP_NAME = "ncmb-core";
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
 
+        FakeHttp.getFakeHttpLayer().interceptHttpRequests(false);
+
         //set application information
-        RobolectricPackageManager rpm = (RobolectricPackageManager) Robolectric.application.getPackageManager();
+        RobolectricPackageManager rpm = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.packageName = PACKAGE_NAME;
         packageInfo.versionName = APP_VERSION;
@@ -60,6 +81,7 @@ public class NCMBInstallationServiceTest {
         packageInfo.applicationInfo.packageName = PACKAGE_NAME;
         packageInfo.applicationInfo.name = APP_NAME;
         rpm.addPackage(packageInfo);
+        RuntimeEnvironment.setRobolectricPackageManager(rpm);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -68,15 +90,26 @@ public class NCMBInstallationServiceTest {
         String mockServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application,
                 "applicationKey",
                 "clientKey",
                 mockServerUrl,
                 null);
 
+
+        Assert.assertEquals(
+                NCMB.getCurrentContext().context.getApplicationInfo().name,
+                APP_NAME
+        );
+
         MockitoAnnotations.initMocks(this);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -104,6 +137,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void createInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.createInstallationInBackground("xxxxxxxxxxxxxxxxxxx", new JSONObject(), new ExecuteServiceCallback() {
             @Override
@@ -115,8 +149,14 @@ public class NCMBInstallationServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -147,6 +187,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void updateInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         JSONObject json = new JSONObject();
         json.put("key", "value_update");
@@ -160,8 +201,14 @@ public class NCMBInstallationServiceTest {
                 } catch (JSONException error) {
                     Assert.assertNull(error);
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -188,14 +235,21 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void deleteInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         installationService.deleteInstallationInBackground("7FrmPTBKSNtVjajm", new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -203,13 +257,13 @@ public class NCMBInstallationServiceTest {
      * - 結果：objectId,valueを含むJSONObjectが返却される事
      */
     @Test
-    public void getInstallation() throws Exception {
+    public void fetchInstallation() throws Exception {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject json = installationService.getInstallation("7FrmPTBKSNtVjajm");
+        NCMBInstallation installation = installationService.fetchInstallation("7FrmPTBKSNtVjajm");
 
         //checkAssert
-        Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-        Assert.assertEquals("value", json.getString("key"));
+        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getString("objectId"));
+        Assert.assertEquals("value", installation.getString("key"));
     }
 
     /**
@@ -217,21 +271,25 @@ public class NCMBInstallationServiceTest {
      * - 結果：objectId,valueを含むJSONObjectが返却される事
      */
     @Test
-    public void getInstallationInBackground() throws Exception {
+    public void fetchInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        installationService.getInstallationInBackground("7FrmPTBKSNtVjajm", new ExecuteServiceCallback() {
+        installationService.fetchInstallationInBackground("7FrmPTBKSNtVjajm", new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(JSONObject json, NCMBException e) {
+            public void done(NCMBInstallation installation, NCMBException e) {
                 //checkAssert
                 Assert.assertNull(e);
-                try {
-                    Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
-                    Assert.assertEquals("value", json.getString("key"));
-                } catch (JSONException error) {
-                    Assert.assertNull(error);
-                }
+                Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getString("objectId"));
+                Assert.assertEquals("value", installation.getString("key"));
+
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -261,6 +319,7 @@ public class NCMBInstallationServiceTest {
      */
     @Test
     public void searchInstallationInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //search condition
         JSONObject query = new JSONObject();
         query.put("where", new JSONObject("{deviceType:android}"));
@@ -275,8 +334,14 @@ public class NCMBInstallationServiceTest {
                 for (int i = 0; i < results.size(); i++) {
                     Assert.assertEquals("android", results.get(i).getDeviceType());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -286,8 +351,7 @@ public class NCMBInstallationServiceTest {
     @Test
     public void installationPropertyCheck() throws Exception {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject params = installationService.getInstallation("7FrmPTBKSNtVjajm");
-        NCMBInstallation installation = new NCMBInstallation(params);
+        NCMBInstallation installation = installationService.fetchInstallation("7FrmPTBKSNtVjajm");
 
         //checkAssert
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -331,7 +395,7 @@ public class NCMBInstallationServiceTest {
         NCMBInstallation.subscribe(channel, activity.getClass(), android.R.drawable.sym_def_app_icon);
 
         //get file data
-        File dir = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "channels");
+        File dir = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "channels");
         File file = new File(dir, channel);
         JSONObject json = NCMBLocalFile.readFile(file);
 
@@ -483,7 +547,7 @@ public class NCMBInstallationServiceTest {
         //connect auto delete
         NCMBException error = null;
         try {
-            installationService.updateInstallation(currentInstallation.getObjectId(), null);
+            installationService.updateInstallation("errorObjectId", null);
         } catch (NCMBException e) {
             error = e;
         }
@@ -513,7 +577,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getDeviceToken());
 
         //connect auto delete inBackground
-        installationService.deleteInstallationInBackground(currentInstallation.getObjectId(), new DoneCallback() {
+        installationService.deleteInstallationInBackground("errorObjectId", new DoneCallback() {
 
             @Override
             public void done(NCMBException e) {
@@ -521,7 +585,9 @@ public class NCMBInstallationServiceTest {
                 Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
 
                 //check currentInstallation
-                NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
+                NCMBInstallation currentInstallation = null;
+                currentInstallation = NCMBInstallation.getCurrentInstallation();
+
                 Assert.assertNull(currentInstallation.getObjectId());
             }
         });
@@ -540,8 +606,8 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("2014-06-03T11:28:30.348Z", json.getString("createDate"));
 
         //check new create localFile
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
-        if (!localFile.exists()){
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
+        if (!localFile.exists()) {
             Assert.fail("currentInstallationFile is not created.");
         }
 
@@ -570,20 +636,20 @@ public class NCMBInstallationServiceTest {
     public void currentInstallation_v1_From_v2() throws Exception {
         //create currentInstallation data
         JSONObject localFileData = new JSONObject();
-        localFileData.put("appVersion","1.0");
-        localFileData.put("deviceToken","dummyDeviceToken");
-        localFileData.put("objectId","7FrmPTBKSNtVjajm");
-        localFileData.put("key","value");
-        localFileData.put("applicationName","AndroidSDK_v1");
-        localFileData.put("classname","installation");
-        localFileData.put("channels",new JSONArray("[Ch2]"));
-        localFileData.put("timeZone","Asia\\/Tokyo");
-        localFileData.put("createDate","2015-09-10T02:24:03.597Z");
-        localFileData.put("updateDate","2015-09-11T02:24:03.597Z");
+        localFileData.put("appVersion", "1.0");
+        localFileData.put("deviceToken", "dummyDeviceToken");
+        localFileData.put("objectId", "non-update-value-id");
+        localFileData.put("key", "value");
+        localFileData.put("applicationName", "AndroidSDK_v1");
+        localFileData.put("classname", "installation");
+        localFileData.put("channels", new JSONArray("[Ch2]"));
+        localFileData.put("timeZone", "Asia\\/Tokyo");
+        localFileData.put("createDate", "2015-09-10T02:24:03.597Z");
+        localFileData.put("updateDate", "2015-09-11T02:24:03.597Z");
         localFileData.put("sdkVersion", "1.5.0");
 
         //create currentInstallation from v1 path
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentInstallation");
         try {
             FileOutputStream out = new FileOutputStream(localFile);
             out.write(localFileData.toString().getBytes("UTF-8"));
@@ -595,13 +661,13 @@ public class NCMBInstallationServiceTest {
         //check currentInstallation
         NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
         Assert.assertEquals("1.5.0", currentInstallation.getSDKVersion());
-        Assert.assertEquals("7FrmPTBKSNtVjajm", currentInstallation.getObjectId());
+        Assert.assertEquals("non-update-value-id", currentInstallation.getObjectId());
         Assert.assertEquals("value", currentInstallation.getString("key"));
         Assert.assertEquals("dummyDeviceToken", currentInstallation.getDeviceToken());
         Assert.assertEquals("1.0", currentInstallation.getAppVersion());
         Assert.assertEquals("AndroidSDK_v1", currentInstallation.getApplicationName());
-        Assert.assertEquals(new JSONArray("[Ch2]"),currentInstallation.getChannels());
-        Assert.assertEquals("Asia\\/Tokyo",currentInstallation.getTimeZone());
+        Assert.assertEquals(new JSONArray("[Ch2]"), currentInstallation.getChannels());
+        Assert.assertEquals("Asia\\/Tokyo", currentInstallation.getTimeZone());
         DateFormat format = NCMBDateFormat.getIso8601();
         Date resultCreateDate = format.parse("2015-09-10T02:24:03.597Z");
         Assert.assertEquals(resultCreateDate, currentInstallation.getCreateDate());
@@ -613,7 +679,7 @@ public class NCMBInstallationServiceTest {
         JSONObject updateJson = installationService.updateInstallation(currentInstallation.getObjectId(), null);
         Assert.assertEquals("2014-06-04T11:28:30.348Z", updateJson.getString("updateDate"));
         currentInstallation = NCMBInstallation.getCurrentInstallation();
-        Assert.assertEquals("2.0.0", currentInstallation.getSDKVersion());
+        Assert.assertEquals("2.3.2", currentInstallation.getSDKVersion());
     }
 
     /*
@@ -629,7 +695,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("7FrmPTBKSNtVjajm", json.getString("objectId"));
 
         //PUT params check
-        json = installationService.updateInstallation(json.getString("objectId"), null);
+        json = installationService.updateInstallation("non-update-value-id", null);
         Assert.assertEquals("2014-06-04T11:28:30.348Z", json.getString("updateDate"));
     }
 

@@ -1,4 +1,23 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -11,8 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,11 +42,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBPushTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
@@ -32,10 +55,9 @@ public class NCMBPushTest {
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         //initialize
-        NCMB.initialize(Robolectric.application.getApplicationContext(),
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey",
                 mServer.getUrl("/").toString(),
@@ -43,6 +65,11 @@ public class NCMBPushTest {
 
         //log stream
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -146,6 +173,7 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_post() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message");
@@ -155,8 +183,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("message", push.getMessage());
@@ -172,17 +206,12 @@ public class NCMBPushTest {
      */
     @Test
     public void sendInBackground_put() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBPush push = new NCMBPush();
         push.setMessage("message1");
         push.setTitle("title1");
-        push.sendInBackground(new DoneCallback() {
-
-            @Override
-            public void done(NCMBException e) {
-                Assert.assertNull(e);
-            }
-        });
+        push.send();
 
         //check
         Assert.assertEquals("message1", push.getMessage());
@@ -199,8 +228,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("message_update", push.getMessage());
@@ -220,6 +255,10 @@ public class NCMBPushTest {
         push.setMessage("message");
         push.setTitle("title");
         push.sendInBackground();
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
 
         //check
         Assert.assertEquals("message", push.getMessage());
@@ -308,15 +347,22 @@ public class NCMBPushTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //get
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
-        push.fetchInBackground(new DoneCallback() {
+        push.fetchInBackground(new FetchCallback<NCMBPush>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBPush fetchedPush, NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         checkGetResponse(push);
@@ -333,8 +379,35 @@ public class NCMBPushTest {
         push.setObjectId("7FrmPTBKSNtVjajm");
         push.fetchInBackground();
 
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
         //check
         checkGetResponse(push);
+    }
+
+    /**
+     * - 内容：fetchInBackgroundが成功することを確認する
+     * - 結果：非同期でプッシュ通知が取得できること
+     */
+    @Test
+    public void fetchInBackground_with_callback() throws Exception {
+        NCMBPush push = new NCMBPush();
+        push.setObjectId("7FrmPTBKSNtVjajm");
+        push.fetchInBackground(new FetchCallback<NCMBPush>() {
+            @Override
+            public void done(NCMBPush fetchedPush, NCMBException e) {
+                try {
+                    checkGetResponse(fetchedPush);
+                } catch (Exception e1) {
+                    Assert.fail(e1.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
     }
 
     /**
@@ -383,6 +456,7 @@ public class NCMBPushTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //delete
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
@@ -390,8 +464,14 @@ public class NCMBPushTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertNull(push.getObjectId());
@@ -407,6 +487,10 @@ public class NCMBPushTest {
         NCMBPush push = new NCMBPush();
         push.setObjectId("7FrmPTBKSNtVjajm");
         push.deleteInBackground();
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
 
         //check
         Assert.assertNull(push.getObjectId());
@@ -442,8 +526,8 @@ public class NCMBPushTest {
     public void checkInstanceGet() throws Exception {
         //set Instance data
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        JSONObject json = pushService.getPush("7FrmPTBKSNtVjajm");
-        NCMBPush push = new NCMBPush(json);
+        NCMBPush fetchedPush = pushService.fetchPush("7FrmPTBKSNtVjajm");
+        NCMBPush push = new NCMBPush(fetchedPush.mFields);
 
         //check get
         checkGetResponse(push);
@@ -467,7 +551,7 @@ public class NCMBPushTest {
         push.setBadgeSetting(0);
         push.setTarget(new JSONArray("[android,ios]"));
         NCMBQuery<NCMBInstallation> query = new NCMBQuery<>("installation");
-        query.whereEqualTo("channels","Ch1");
+        query.whereEqualTo("channels", "Ch1");
         push.setSearchCondition(query);
         push.setUserSettingValue(new JSONObject("{score:100}"));
         push.setBadgeIncrementFlag(true);
@@ -608,7 +692,7 @@ public class NCMBPushTest {
         Assert.assertNull(push.getRichUrl());
         Assert.assertNull(push.getCategory());
         Assert.assertNull(push.getAction());
-        Assert.assertEquals(0,push.getBadgeSetting());
+        Assert.assertEquals(0, push.getBadgeSetting());
         Assert.assertNull(push.getTarget());
         Assert.assertNull(push.getSearchCondition());
         Assert.assertNull(push.getUserSettingValue());
@@ -622,6 +706,21 @@ public class NCMBPushTest {
     }
 
     //endregion
+
+    @Test
+    public void NCMBGcmReceiverSavedRecentPushNotoficationId() {
+
+        String testPushId = "testPushId";
+
+        NCMBGcmReceiver receiver = new NCMBGcmReceiver();
+        Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), NCMBGcmListenerService.class);
+        intent.putExtra("com.nifty.PushId", testPushId);
+        receiver.onReceive(ShadowApplication.getInstance().getApplicationContext(), intent);
+
+
+        SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
+        Assert.assertEquals(testPushId, sp.getString("recentPushId", ""));
+    }
 
     void checkGetResponse(NCMBPush push) throws Exception {
         //check String

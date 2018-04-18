@@ -1,44 +1,65 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Test for NCMBInstallationTest
  */
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = "src/main/AndroidManifest.xml")
 public class NCMBInstallationTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
 
         //set application information
-        RobolectricPackageManager rpm = (RobolectricPackageManager) Robolectric.application.getPackageManager();
+        RobolectricPackageManager rpm = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.packageName = NCMBInstallationServiceTest.PACKAGE_NAME;
         packageInfo.versionName = NCMBInstallationServiceTest.APP_VERSION;
@@ -54,7 +75,7 @@ public class NCMBInstallationTest {
         String mockServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "applicationKey",
                 "clientKey",
                 mockServerUrl,
@@ -63,6 +84,11 @@ public class NCMBInstallationTest {
         MockitoAnnotations.initMocks(this);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -72,12 +98,33 @@ public class NCMBInstallationTest {
     }
 
     /**
+     * - 内容：GooglePlay開発者サービスが古い状態で端末登録を行った際にエラーが発生することを確認する
+     * - 結果：エラーが発生すること
+     */
+    @Test
+    public void checkPlayServices() throws Exception {
+        //isGooglePlayServicesAvailableメソッドの結果をSERVICE_VERSION_UPDATE_REQUIRED(開発者サービスが古い)に固定する
+        ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
+
+        NCMBInstallation installation = new NCMBInstallation();
+        installation.getRegistrationIdInBackground("dummySenderId", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("java.lang.IllegalArgumentException: This device is not supported google-play-services-APK.", e.getMessage());
+            }
+        });
+    }
+
+    /**
      * getRegistrationInBackgroundを呼び出すとdeviceTokenがプロパティにセットされる事
      *
      * @throws Exception
      */
     @Test
     public void getRegistrationID_with_valid_senderID() throws Exception {
+
+        callbackFlag = false;
 
         NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
         NCMBInstallation mockInstallation = spy(current);
@@ -90,9 +137,16 @@ public class NCMBInstallationTest {
                 if (e != null) {
                     e.printStackTrace();
                 }
+                callbackFlag = true;
 
             }
         });
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("testDeviceToken", mockInstallation.getDeviceToken());
     }
@@ -170,6 +224,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_post() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
@@ -177,8 +232,15 @@ public class NCMBInstallationTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -193,16 +255,12 @@ public class NCMBInstallationTest {
      */
     @Test
     public void saveInBackground_put() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         NCMBInstallation installation = new NCMBInstallation();
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.put("key", "value1");
-        installation.saveInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                Assert.assertNull(e);
-            }
-        });
+        installation.save();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -218,8 +276,14 @@ public class NCMBInstallationTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -239,6 +303,10 @@ public class NCMBInstallationTest {
         installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.put("key", "value1");
         installation.saveInBackground();
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -303,15 +371,22 @@ public class NCMBInstallationTest {
      */
     @Test
     public void fetchInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
-        installation.fetchInBackground(new DoneCallback() {
+        installation.fetchInBackground(new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBInstallation fetchedInstallation, NCMBException e) {
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -329,9 +404,12 @@ public class NCMBInstallationTest {
     public void fetchInBackground_none_callback() throws Exception {
         //post
         NCMBInstallation installation = new NCMBInstallation();
-        installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
         installation.setObjectId("7FrmPTBKSNtVjajm");
         installation.fetchInBackground();
+
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
@@ -340,6 +418,27 @@ public class NCMBInstallationTest {
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
+    }
+
+    /**
+     * - 内容：fetchInBackgroundが成功することを確認する
+     * - 結果：非同期でInstallationの取得ができること
+     */
+    @Test
+    public void fetchInBackground_with_callback() throws Exception {
+        NCMBInstallation installation = new NCMBInstallation();
+        installation.setObjectId("7FrmPTBKSNtVjajm");
+        installation.fetchInBackground(new FetchCallback<NCMBInstallation>() {
+            @Override
+            public void done(NCMBInstallation fetchedInstallation, NCMBException e) {
+                //check
+                Assert.assertEquals("7FrmPTBKSNtVjajm", fetchedInstallation.getObjectId());
+                Assert.assertEquals("value", fetchedInstallation.getString("key"));
+                Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", fetchedInstallation.getDeviceToken());
+                Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("createDate"));
+                Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("updateDate"));
+            }
+        });
     }
 
     /**
@@ -391,6 +490,7 @@ public class NCMBInstallationTest {
      */
     @Test
     public void deleteInBackground() throws Exception {
+        Assert.assertFalse(callbackFlag);
         //post
         final NCMBInstallation installation = new NCMBInstallation();
         installation.setObjectId("7FrmPTBKSNtVjajm");
@@ -399,8 +499,14 @@ public class NCMBInstallationTest {
             public void done(NCMBException e) {
                 //check
                 Assert.assertNull(e);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        junit.framework.Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -434,6 +540,38 @@ public class NCMBInstallationTest {
         Assert.assertNotNull(error);
         Assert.assertEquals("java.lang.IllegalArgumentException: objectId is must not be null.", error.getMessage());
     }
+
+    /**
+     * - 内容：currentInstallationのローカルファイルが空の状態でgetCurrentInstallationを実行した場合にエラーが発生しないこと
+     * - 結果：エラーが発生しないこと
+     */
+    @Test
+    public void currentInstallation_null() throws Exception {
+        // post
+        NCMBException error = null;
+        NCMBInstallation installation = new NCMBInstallation();
+        installation.setDeviceToken("xxxxxxxxxxxxxxxxxxx");
+        try {
+            installation.save();
+        } catch (NCMBException e) {
+            error = e;
+        }
+        Assert.assertNull(error);
+        Assert.assertEquals("7FrmPTBKSNtVjajm", NCMBInstallation.getCurrentInstallation().getObjectId());
+
+        // clear currentInstallation
+        NCMBInstallation.currentInstallation = null;
+
+        // set 0byte currentInstallation file
+        File file = NCMBLocalFile.create(NCMBInstallation.INSTALLATION_FILENAME);
+        FileOutputStream out = new FileOutputStream(file);
+        out.write("".getBytes("UTF-8"));
+        out.close();
+
+        // check
+        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation());
+    }
+
     //endregion
 
 

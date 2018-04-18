@@ -129,13 +129,87 @@
     url: /2013-09-01/installations
     method: POST
     body:
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.3.2"
+      timeZone: "Asia/Tokyo"
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.3.2"
+      timeZone: "Etc/UTC"
+      key: "value"
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.3.2"
+      timeZone: "UTC"
+      key: "value"
+  response:
+    status: 201
+    file: valid_post_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
       error: "test"
       deviceToken: "xxxxxxxxxxxxxxxxxxx"
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.0.0"
+      sdkVersion: "2.3.2"
       timeZone: "Asia/Tokyo"
+  response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      error: "test"
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.3.2"
+      timeZone: "Etc/UTC"
+  response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+      error: "test"
+      deviceToken: "xxxxxxxxxxxxxxxxxxx"
+      deviceType: "android"
+      applicationName: "ncmb-core"
+      appVersion: "1.0"
+      sdkVersion: "2.3.2"
+      timeZone: "UTC"
   response:
     status: 201
     file: valid_post_notFoundTest_response.json
@@ -148,13 +222,20 @@
     file: valid_post_response.json
 ---
   request:
+    url: /2013-09-01/installations/non-update-value-id
+    method: PUT
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
     url: /2013-09-01/installations/7FrmPTBKSNtVjajm
     method: PUT
     body:
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.0.0"
+      sdkVersion: "2.3.2"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -167,7 +248,61 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.0.0"
+      sdkVersion: "2.3.2"
+      applicationName: "ncmb-core"
+      key: "value_update"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Etc/UTC"
+      sdkVersion: "2.3.2"
+      applicationName: "ncmb-core"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "UTC"
+      sdkVersion: "2.3.2"
+      applicationName: "ncmb-core"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "Etc/UTC"
+      sdkVersion: "2.3.2"
+      applicationName: "ncmb-core"
+      key: "value_update"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+      deviceType: "android"
+      appVersion: "1.0"
+      timeZone: "UTC"
+      sdkVersion: "2.3.2"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -193,10 +328,30 @@
     method: GET
     query:
       where: '{"deviceType":"android"}'
+  response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
       limit: 2
   response:
     status: 200
     file: valid_get_searchInstallation_response.json
+---
+  request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+      where: '{"deviceType":"android"}'
+      count: 1
+      limit: 1
+  response:
+    status: 200
+    file: valid_count_response.json
 ---
   request:
     url: /2013-09-01/installations/errorObjectId
@@ -259,6 +414,15 @@
     file: valid_get_searchPush_response.json
 ---
   request:
+    url: /2013-09-01/push
+    method: GET
+    query:
+      where: '{"target":["android"]}'
+  response:
+    status: 200
+    file: valid_get_searchPush_response.json
+---
+  request:
     url: /2013-09-01/push/7FrmPTBKSNtVjajm
     method: DELETE
   response:
@@ -281,6 +445,48 @@
   response:
     status: 200
     file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"key":"value"}'
+      count: 1
+      limit: 1
+  response:
+    status: 200
+    file: valid_count_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"key":"value"}'
+      limit: 50
+      skip: 3
+      include: 'pointerKey'
+      order: 'ascendingKey,-descendingKey'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
+  response:
+    status: 200
+    file: valid_search_response.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+      include: 'post.author'
+  response:
+    status: 200
+    file: valid_get_include_response.json
 ---
   request:
     url: /2013-09-01/users
@@ -312,6 +518,51 @@
     method: POST
     body:
       authData:
+        facebook:
+          id: invalidFacebookDummyId
+          access_token: invalidFacebookDummyAccessToken
+          expiration_date:
+            __type: Date
+            iso: "2016-06-07T01:02:03.004Z"
+  response:
+    status: 401
+    file: authentication_error_facebook.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        facebook:
+          id: facebookDummyId
+          access_token: facebookDummyAccessToken
+          expiration_date:
+            __type: Date
+            iso: "2016-06-07T01:02:03.004Z"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        facebook:
+          id: invalidFacebookDummyId
+          access_token: invalidFacebookDummyAccessToken
+          expiration_date:
+            __type: Date
+            iso: "2016-06-07T01:02:03.004Z"
+  response:
+    status: 401
+    file: authentication_error_facebook.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         twitter:
           id: twitterDummyId
           screen_name: twitterDummyScreenName
@@ -328,12 +579,106 @@
     method: POST
     body:
       authData:
+        twitter:
+          id: invalidTwitterDummyId
+          screen_name: invalidTwitterDummyScreenName
+          oauth_consumer_key: invalidTwitterDummyConsumerKey
+          consumer_secret: invalidTwitterDummyConsumerSecret
+          oauth_token: invalidTwitterDummyOauthToken
+          oauth_token_secret: invalidTwitterDummyOauthSecret
+  response:
+    status: 401
+    file: authentication_error_twitter.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        twitter:
+          id: twitterDummyId
+          screen_name: twitterDummyScreenName
+          oauth_consumer_key: twitterDummyConsumerKey
+          consumer_secret: twitterDummyConsumerSecret
+          oauth_token: twitterDummyOauthToken
+          oauth_token_secret: twitterDummyOauthSecret
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        twitter:
+          id: invalidTwitterDummyId
+          screen_name: invalidTwitterDummyScreenName
+          oauth_consumer_key: invalidTwitterDummyConsumerKey
+          consumer_secret: invalidTwitterDummyConsumerSecret
+          oauth_token: invalidTwitterDummyOauthToken
+          oauth_token_secret: invalidTwitterDummyOauthSecret
+  response:
+    status: 401
+    file: authentication_error_twitter.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         google:
           id: googleDummyId
           access_token: googleDummyAccessToken
   response:
     status: 200
     file: valid_post_registerUserGoogle_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        google:
+          id: invalidGoogleDummyId
+          access_token: invalidGoogleDummyAccessToken
+  response:
+    status: 401
+    file: authentication_error_google.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        google:
+          id: googleDummyId
+          access_token: googleDummyAccessToken
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        google:
+          id: invalidGoogleDummyId
+          access_token: invalidGoogleDummyAccessToken
+  response:
+    status: 401
+    file: authentication_error_google.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: PUT
+    body:
+      authData:
+        google: null
+  response:
+    status: 200
+    file: valid_put_response.json
 ---
   request:
     url: /2013-09-01/users
@@ -354,6 +699,40 @@
   response:
     status: 201
     file: valid_post_inviteByMail_response.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: "sample@example.com"
+  response:
+    status: 201
+    file: valid_post_requestPasswordReset_response.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: ""
+  response:
+    status: 400
+    file: valid_error_invalid_format.json
+---
+  request:
+    url: /2013-09-01/requestPasswordReset
+    method: POST
+    body:
+      mailAddress: null
+  response:
+    status: 400
+    file: valid_error_missing_value.json
+---
+  request:
+    url: /2013-09-01/requestMailAddressUserEntry
+    method: POST
+  response:
+    status: 400
+    file: valid_error_empty_mailAddress_response.json
 ---
   request:
     url: /2013-09-01/users/dummyUserId
@@ -399,6 +778,45 @@
   response:
     status: 200
     file: valid_get_login_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: dummyPassword
+    method: GET
+  response:
+    status: 200
+    file: valid_get_login_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: "incorrectPassword"
+    method: GET
+  response:
+    status: 401
+    file: valid_error_incorrect_password_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+    method: GET
+  response:
+    status: 400
+    file: valid_error_empty_password_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      mailAddress: "sample@example.com"
+      password: ""
+    method: GET
+  response:
+    status: 400
+    file: valid_error_empty_password_response.json
 ---
   request:
     url: /2013-09-01/logout
@@ -499,8 +917,42 @@
     url: /2013-09-01/roles/dummyRoleId
     method: PUT
     body:
+      belongUser:
+        __op: RemoveRelation
+        objects:
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId1
+          - __type: Pointer
+            className: user
+            objectId: dummyUserObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
       belongRole:
         __op: AddRelation
+        objects:
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId1
+          - __type: Pointer
+            className: role
+            objectId: dummyRoleObjectId2
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/roles/dummyRoleId
+    method: PUT
+    body:
+      belongRole:
+        __op: RemoveRelation
         objects:
           - __type: Pointer
             className: role
@@ -533,3 +985,143 @@
   response:
     status: 200
     file: valid_get_searchRole_response.json
+---
+  request:
+    url: /2013-09-01/roles
+    method: GET
+    query:
+      where: '{"roleName":"testRole"}'
+  response:
+    status: 200
+    file: valid_get_searchRole_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+  response:
+    status: 200
+    file: valid_search_file_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+      where: '{"fileName":"testFile"}'
+  response:
+    status: 200
+    file: valid_search_file_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+    header:
+      {"key":"value"}
+  response:
+    status: 200
+    file: valid_get_script_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: POST
+    body:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+  response:
+    status: 200
+    file: valid_get_script_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+    query:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/errorTestScript.js
+    method: GET
+  response:
+    status: 404
+    file: valid_error_script_notFound_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_POST.js
+    method: POST
+    body:
+      {"message":"hello,tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_PUT.js
+    method: PUT
+    body:
+      {"message":"hello,tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_GET.js
+    method: GET
+    query:
+      {"name":"tarou"}
+  response:
+    status: 200
+    file: valid_get_script_query_response.json
+---
+  request:
+    url: /2015-09-01/script/testScript_DELETE.js
+    method: DELETE
+  response:
+    status: 200
+    file: valid_get_script_response.json
+---
+  request:
+    url: /2013-09-01/classes/ResponseSignatureTest
+    method: POST
+    body:
+      {"key":"value"}
+  response:
+    status: 201
+    file: valid_response_signature.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        anonymous: id
+  response:
+    status: 200
+    file: valid_post_registerUserAnonymous_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      userName: "Nifty Tarou"
+      password: "niftytarou"
+      testField: "test"
+  response:
+    status: 201
+    file: valid_post_registerUser_response.json
+---
+  request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+      count: 1
+      limit: 1
+  response:
+    status: 200
+    file: valid_count_file_response.json

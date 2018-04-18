@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.content.pm.PackageManager;
@@ -8,7 +23,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
@@ -42,19 +56,12 @@ public class NCMBInstallationService extends NCMBService {
             super(service, callback);
         }
 
-        InstallationServiceCallback(NCMBInstallationService service, SearchInstallationCallback callback) {
+        InstallationServiceCallback(NCMBInstallationService service, FetchCallback callback) {
             super(service, callback);
         }
 
-        /**
-         * Check response in each casse, then throe exception when it's wrong
-         *
-         * @param response response object
-         * @throws NCMBException
-         */
-        @Override
-        public void handleResponse(NCMBResponse response) throws NCMBException {
-            // do nothing in default
+        InstallationServiceCallback(NCMBInstallationService service, SearchInstallationCallback callback) {
+            super(service, callback);
         }
     }
 
@@ -76,7 +83,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param registrationId registration id
      * @param params         installation parameters
      * @return JSONObject response of installation create
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject createInstallation(String registrationId, JSONObject params) throws NCMBException {
         //null check
@@ -84,8 +91,6 @@ public class NCMBInstallationService extends NCMBService {
 
         //set installation data
         try {
-            //readOnly check
-            checkKeyIsMutable(params);
             //set registrationId
             params.put("deviceToken", registrationId);
             //set basic data
@@ -93,14 +98,14 @@ public class NCMBInstallationService extends NCMBService {
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
         } catch (PackageManager.NameNotFoundException e) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+            throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
         }
 
         //connect
         RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_CREATED) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Created failed.");
         }
 
         //create currentInstallation
@@ -116,15 +121,13 @@ public class NCMBInstallationService extends NCMBService {
      * @param params         installation parameters
      * @param callback       JSONCallback
      */
-    public void createInstallationInBackground(String registrationId, JSONObject params, ExecuteServiceCallback callback) {
+    public void createInstallationInBackground(String registrationId, JSONObject params, final ExecuteServiceCallback callback) {
         try {
             //null check
             final JSONObject argumentParams = argumentNullCheckForPOST(registrationId, params);
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set registrationId
                 params.put("deviceToken", registrationId);
                 //set basic data
@@ -132,20 +135,21 @@ public class NCMBInstallationService extends NCMBService {
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
             RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_CREATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Created failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //create currentInstallation
-                    writeCurrentInstallation(argumentParams, response.responseData);
+                    try {
+                        writeCurrentInstallation(argumentParams, response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -176,7 +180,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param objectId objectId
      * @param params   installation parameters
      * @return result of update installation
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public JSONObject updateInstallation(String objectId, JSONObject params) throws NCMBException {
         try {
@@ -185,21 +189,19 @@ public class NCMBInstallationService extends NCMBService {
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set basic data
                 setInstallationBasicData(params);
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
             RequestParams request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             NCMBResponse response = sendRequest(request);
             if (response.statusCode != HTTP_STATUS_INSTALLATION_UPDATED) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "Updated failed.");
+                throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Updated failed.");
             }
 
             //update currentInstallation
@@ -220,34 +222,33 @@ public class NCMBInstallationService extends NCMBService {
      * @param params   installation parameters
      * @param callback JSONCallback
      */
-    public void updateInstallationInBackground(final String objectId, JSONObject params, ExecuteServiceCallback callback) {
+    public void updateInstallationInBackground(final String objectId, JSONObject params, final ExecuteServiceCallback callback) {
         try {
             //null check
             final JSONObject argumentParams = argumentNullCheckForPOST(objectId, params);
 
             //set installation data
             try {
-                //readOnly check
-                checkKeyIsMutable(params);
                 //set basic data
                 setInstallationBasicData(params);
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "Invalid json format.");
             } catch (PackageManager.NameNotFoundException e) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "PackageManager not found.");
+                throw new NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.");
             }
 
             //connect
             RequestParams request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_UPDATED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Update failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //update currentInstallation
-                    writeCurrentInstallation(argumentParams, response.responseData);
+                    try {
+                        writeCurrentInstallation(argumentParams, response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
@@ -278,7 +279,7 @@ public class NCMBInstallationService extends NCMBService {
      * Delete installation object
      *
      * @param objectId object id
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void deleteInstallation(String objectId) throws NCMBException {
         try {
@@ -291,7 +292,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             NCMBResponse response = sendRequest(request);
             if (response.statusCode != HTTP_STATUS_INSTALLATION_DELETED) {
-                throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
+                throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.");
             }
 
             //clear currentInstallation
@@ -321,10 +322,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_DELETED) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Deleted failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
                     //clear currentInstallation
                     clearCurrentInstallation();
@@ -358,9 +356,9 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param objectId object id
      * @return result of get installation
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
-    public JSONObject getInstallation(String objectId) throws NCMBException {
+    public NCMBInstallation fetchInstallation(String objectId) throws NCMBException {
         //null check
         if (objectId == null) {
             throw new NCMBException(new IllegalArgumentException("objectId is must not be null."));
@@ -370,10 +368,10 @@ public class NCMBInstallationService extends NCMBService {
         RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Getting failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Getting failed.");
         }
 
-        return response.responseData;
+        return new NCMBInstallation(response.responseData);
     }
 
     /**
@@ -382,7 +380,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param objectId objectId
      * @param callback callback is executed after get installation
      */
-    public void getInstallationInBackground(String objectId, ExecuteServiceCallback callback) {
+    public void fetchInstallationInBackground(String objectId, final FetchCallback callback) {
         try {
             //null check
             if (objectId == null) {
@@ -393,20 +391,16 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Getting failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
 
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
+                    FetchCallback<NCMBInstallation> callback = (FetchCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(new NCMBInstallation(response.responseData), null);
                     }
                 }
 
                 @Override
                 public void handleError(NCMBException e) {
-                    ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
                         callback.done(null, e);
                     }
@@ -424,14 +418,14 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param conditions search conditions
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public List searchInstallation(JSONObject conditions) throws NCMBException {
         //connect
         RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
+            throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Gotten failed.");
         }
 
         //return the value of the key 'results'
@@ -445,17 +439,19 @@ public class NCMBInstallationService extends NCMBService {
      * @param conditions search conditions
      * @param callback   JSONCallback
      */
-    public void searchInstallationInBackground(JSONObject conditions, SearchInstallationCallback callback) {
+    public void searchInstallationInBackground(JSONObject conditions, final SearchInstallationCallback callback) {
         try {
             final RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response) throws NCMBException {
-                    if (response.statusCode != HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw new NCMBException(NCMBException.GENERIC_ERROR, "Gotten failed.");
-                    }
+                public void handleResponse(NCMBResponse response){
                     //return the value of the key 'results'
-                    ArrayList<NCMBInstallation> array = createSearchResults(response.responseData);
+                    ArrayList<NCMBInstallation> array = null;
+                    try {
+                        array = createSearchResults(response.responseData);
+                    } catch (NCMBException e) {
+                        callback.done(null, e);
+                    }
 
                     SearchInstallationCallback callback = (SearchInstallationCallback) mCallback;
                     if (callback != null) {
@@ -483,25 +479,6 @@ public class NCMBInstallationService extends NCMBService {
     // region internal method
 
     /**
-     * readonlyFields check
-     *
-     * @param params installation parameters
-     * @throws IllegalArgumentException
-     */
-    void checkKeyIsMutable(JSONObject params) throws IllegalArgumentException {
-        List<String> readonlyFields = Arrays.asList(
-                "timeZone", "appVersion", "applicationName", "sdkVersion", "deviceType");
-
-        Iterator keys = params.keys();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            if (readonlyFields.contains(key)) {
-                throw new IllegalArgumentException("Can not change " + key + " property of an installation object.");
-            }
-        }
-    }
-
-    /**
      * @param params installation parameters
      * @throws JSONException
      * @throws PackageManager.NameNotFoundException
@@ -511,8 +488,8 @@ public class NCMBInstallationService extends NCMBService {
 
         //value get
         String timeZone = TimeZone.getDefault().getID();
-        String packageName = NCMB.sCurrentContext.context.getPackageName();
-        PackageManager pm = NCMB.sCurrentContext.context.getPackageManager();
+        String packageName = NCMB.getCurrentContext().context.getPackageName();
+        PackageManager pm = NCMB.getCurrentContext().context.getPackageManager();
         String applicationName = pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString();
         String appVersion = pm.getPackageInfo(packageName, 0).versionName;
 
@@ -669,7 +646,7 @@ public class NCMBInstallationService extends NCMBService {
                 base.put(key, compare.get(key));
             }
         } catch (JSONException error) {
-            throw new NCMBException(NCMBException.GENERIC_ERROR, error.getMessage());
+            throw new NCMBException(NCMBException.INVALID_JSON, error.getMessage());
         }
     }
 

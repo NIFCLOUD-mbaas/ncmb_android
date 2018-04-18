@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.content.Context;
@@ -13,8 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.BufferedReader;
@@ -23,17 +40,18 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Config(manifest = "src/main/AndroidManifest.xml", emulateSdk = 18)
-@RunWith(NCMBTestRunner.class)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE, shadows = {ShadowNCMBUser.class})
 public class NCMBUserServiceTest {
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         //setup mocServer
         mServer = new MockWebServer();
@@ -42,13 +60,18 @@ public class NCMBUserServiceTest {
         String mocServerUrl = mServer.getUrl("/").toString();
 
         //initialization
-        NCMB.initialize(Robolectric.application,
+        NCMB.initialize(RuntimeEnvironment.application,
                 "appKey",
                 "clientKKey",
                 mocServerUrl,
                 null);
 
         ShadowLog.stream = System.out;
+
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -57,7 +80,7 @@ public class NCMBUserServiceTest {
     }
 
     protected NCMBUserService getUserService() {
-        return (NCMBUserService)NCMB.factory(NCMB.ServiceType.USER);
+        return (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
     }
     /*** Test Case NCMBUserService ***/
 
@@ -92,8 +115,14 @@ public class NCMBUserServiceTest {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals(userName, user.getUserName());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -131,8 +160,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -176,8 +211,13 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -213,8 +253,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -248,8 +294,14 @@ public class NCMBUserServiceTest {
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -281,8 +333,126 @@ public class NCMBUserServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：引数にnullを指定した際にinviteByMail が失敗する事を確認する
+     * - 結果：エラー が発生すること
+     */
+    @Test
+    public void inviteByMail_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        try {
+            userService.inviteByMail(null);
+            Assert.fail("This test case to error test");
+        } catch (NCMBException e) {
+            Assert.assertEquals("E400003", e.getCode());
+            Assert.assertEquals("mailAddress is empty.", e.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：引数にnullを指定した際にinviteByMailInBackground が失敗する事を確認する
+     * - 結果：DoneCallback にエラーが返ること
+     */
+    @Test
+    public void inviteByMailInBackground_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.inviteByMailInBackground(null, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertEquals("mailAddress is empty.", e.getMessage());
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：指定したメールアドレスでパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackが実行されること
+     */
+    @Test
+    public void requestPasswordResetInBackground_with_callback() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("sample@example.com", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this should not be happen.");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスを指定せずにパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_no_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground(null, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.MISSING_VALUE);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：メールアドレスに空文字を指定してパスワードリセット用のメールを要求する
+     * - 結果：DoneCallbackにExceptionが返ること
+     */
+    @Test
+    public void requestPasswordResetInBackground_empty_mailaddress() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.requestPasswordResetInBackground("", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(e.getCode(), NCMBException.INVALID_FORMAT);
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -294,7 +464,7 @@ public class NCMBUserServiceTest {
         String userId = "dummyUserId";
 
         NCMBUserService userService = getUserService();
-        NCMBUser user = userService.getUser(userId);
+        NCMBUser user = userService.fetchUser(userId);
     }
 
     /**
@@ -306,13 +476,19 @@ public class NCMBUserServiceTest {
         String userId = "dummyUserId";
 
         NCMBUserService userService = getUserService();
-        userService.getUserInBackground(userId, new UserCallback() {
+        userService.fetchUserInBackground(userId, new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -357,8 +533,14 @@ public class NCMBUserServiceTest {
                 } catch (JSONException e1) {
                     Assert.fail(e.getMessage());
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -393,8 +575,180 @@ public class NCMBUserServiceTest {
                 Assert.assertEquals(e, null);
                 Assert.assertEquals("dummyObjectId", user.getObjectId());
                 Assert.assertEquals(userName, user.getUserName());
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：loginByMail が成功する事を確認する
+     * - 結果：NCMBUser オブジェクトが正しく生成されること
+     */
+    @Test
+    public void loginByMail() throws Exception {
+        String mailAddress = "sample@example.com";
+        String password = "dummyPassword";
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail(mailAddress, password);
+            Assert.assertEquals("dummyObjectId", user.getObjectId());
+            Date resultDate = NCMBDateFormat.getIso8601().parse("2013-08-28T07:46:09.801Z");
+            Assert.assertEquals(resultDate, user.getCreateDate());
+            resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
+            Assert.assertEquals(resultDate, user.getUpdateDate());
+        } catch (NCMBException error) {
+            Assert.fail(error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：loginByMailInBackground が成功する事を確認する
+     * - 結果：NCMBUser オブジェクトが正しく生成されること
+     */
+    @Test
+    public void loginByMailInBackground() throws Exception {
+        String mailAddress = "sample@example.com";
+        String password = "dummyPassword";
+
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground(mailAddress, password, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                try {
+                    Assert.assertNull(e);
+                    Assert.assertEquals("dummyObjectId", user.getObjectId());
+                    Date resultDate = NCMBDateFormat.getIso8601().parse("2013-08-28T07:46:09.801Z");
+                    Assert.assertEquals(resultDate, user.getCreateDate());
+                    resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
+                    Assert.assertEquals(resultDate, user.getUpdateDate());
+                } catch (ParseException error) {
+                    Assert.fail(error.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * - 内容：パスワードにnullを指定した際にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_paramsIsNull() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", null);
+            Assert.fail("This test case to error test");
+        } catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E400003", error.getCode());
+            Assert.assertNotNull("password is empty.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードにnullを指定した際にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_paramsIsNull() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", null, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertNotNull("password is empty.", e.getMessage());
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：パスワードが異なる際にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_passwordIsIncorrect() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", "incorrectPassword");
+            Assert.fail("This test case to error test");
+        } catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E401002", error.getCode());
+            Assert.assertNotNull("Authentication error with ID/PASS incorrect.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードが異なる際にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_passwordIsIncorrect() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", "incorrectPassword", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E401002", e.getCode());
+                Assert.assertNotNull("Authentication error with ID/PASS incorrect.", e.getMessage());
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
+    }
+
+    /**
+     * - 内容：パスワードが空文字の時にloginByMail が失敗する事を確認する
+     * - 結果：エラーが返ること
+     */
+    @Test
+    public void loginByMail_error_paramsIsEmpty() throws Exception {
+        try {
+            NCMBUserService userService = getUserService();
+            NCMBUser user = userService.loginByMail("sample@example.com", "");
+            Assert.fail("This test case to error test");
+        } catch (NCMBException error) {
+            Assert.assertNotNull(error);
+            Assert.assertEquals("E400003", error.getCode());
+            Assert.assertNotNull("password is empty.", error.getMessage());
+        }
+    }
+
+    /**
+     * - 内容：パスワードが空文字の時にloginByMailInBackground が失敗する事を確認する
+     * - 結果：LoginCallback にエラーが返ること
+     */
+    @Test
+    public void loginByMailInBackground_error_paramsIsEmpty() throws Exception {
+        NCMBUserService userService = getUserService();
+        userService.loginByMailInBackground("sample@example.com", "", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                Assert.assertNotNull(e);
+                Assert.assertEquals("E400003", e.getCode());
+                Assert.assertNotNull("password is empty.", e.getMessage());
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -433,11 +787,16 @@ public class NCMBUserServiceTest {
             @Override
             public void done(NCMBException e) {
                 Assert.assertEquals(e, null);
+                callbackFlag = true;
             }
         });
 
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
         Assert.assertNull(userService.mContext.sessionToken);
         Assert.assertNull(userService.mContext.userId);
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -480,8 +839,14 @@ public class NCMBUserServiceTest {
                 NCMBUser user2 = result.get(1);
                 Assert.assertEquals(user2.getObjectId(), "dummyObjectId02");
                 Assert.assertEquals(user2.getUserName(), "Nifty Jirou");
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -490,12 +855,12 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUser() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
 
-        ArrayList<NCMBUser> result = userService.searchUser(conditions);
+        ArrayList<NCMBUser> result = userService.searchUser(query.getConditions());
         Assert.assertEquals(result.size(), 1);
 
         NCMBUser user1 = result.get(0);
@@ -509,11 +874,11 @@ public class NCMBUserServiceTest {
      */
     @Test
     public void searchUserInBackground() throws Exception {
-        JSONObject conditions = new JSONObject();
-        conditions.put("userName", "Nifty Tarou");
+        NCMBQuery<NCMBUser> query = new NCMBQuery<>("user");
+        query.whereEqualTo("userName", "Nifty Tarou");
 
         NCMBUserService userService = getUserService();
-        userService.searchUserInBackground(conditions, new SearchUserCallback() {
+        userService.searchUserInBackground(query.getConditions(), new SearchUserCallback() {
             @Override
             public void done(ArrayList<NCMBUser> result, NCMBException e) {
                 Assert.assertEquals(e, null);
@@ -522,8 +887,14 @@ public class NCMBUserServiceTest {
                 NCMBUser user1 = result.get(0);
                 Assert.assertEquals(user1.getObjectId(), "dummyObjectId01");
                 Assert.assertEquals(user1.getUserName(), "Nifty Tarou");
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
 
@@ -542,8 +913,8 @@ public class NCMBUserServiceTest {
         Assert.assertEquals(resultDate, user.getCreateDate());
 
         //check new create localFile
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
-        if (!localFile.exists()){
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
+        if (!localFile.exists()) {
             Assert.fail("currentUserFile is not created.");
         }
 
@@ -560,7 +931,7 @@ public class NCMBUserServiceTest {
 
         Assert.assertEquals("dummyObjectId", localData.getString("objectId"));
         Assert.assertEquals("dummySessionToken", localData.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", localData.getString("userName"));
         //パスワードをローカルに持たない
         //Assert.assertEquals("dummyPassword", localData.getString("password"));
@@ -575,18 +946,18 @@ public class NCMBUserServiceTest {
     public void currentUser_v1_From_v2() throws Exception {
         //create currentUser data
         JSONObject localFileData = new JSONObject();
-        localFileData.put("sessionToken","dummySessionToken");
-        localFileData.put("phone","000-000-0000");
-        localFileData.put("objectId","dummyUserId");
-        localFileData.put("mailAddress","email@example.com");
-        localFileData.put("classname","user");
-        localFileData.put("userName","dummyUser");
-        localFileData.put("password","dummyPassword");
-        localFileData.put("createDate","2015-09-10T02:24:03.597Z");
-        localFileData.put("updateDate","2015-09-11T02:24:03.597Z");
+        localFileData.put("sessionToken", "dummySessionToken");
+        localFileData.put("phone", "000-000-0000");
+        localFileData.put("objectId", "dummyUserId");
+        localFileData.put("mailAddress", "email@example.com");
+        localFileData.put("classname", "user");
+        localFileData.put("userName", "dummyUser");
+        localFileData.put("password", "dummyPassword");
+        localFileData.put("createDate", "2015-09-10T02:24:03.597Z");
+        localFileData.put("updateDate", "2015-09-11T02:24:03.597Z");
 
         //create currentUser from v1 path
-        File localFile = new File(NCMB.sCurrentContext.context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
+        File localFile = new File(NCMB.getCurrentContext().context.getDir("NCMB", Context.MODE_PRIVATE), "currentUser");
         try {
             FileOutputStream out = new FileOutputStream(localFile);
             out.write(localFileData.toString().getBytes("UTF-8"));
@@ -598,7 +969,7 @@ public class NCMBUserServiceTest {
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("000-000-0000", currentUser.getString("phone"));
         Assert.assertEquals("dummyUserId", currentUser.getObjectId());
         Assert.assertEquals("email@example.com", currentUser.getMailAddress());
@@ -616,7 +987,7 @@ public class NCMBUserServiceTest {
         try {
             JSONObject update = new JSONObject("{key:value}");
             userService.updateUser(currentUser.getObjectId(), update);
-        }catch (NCMBException error){
+        } catch (NCMBException error) {
             Assert.fail(error.getMessage());
         }
     }
@@ -640,7 +1011,7 @@ public class NCMBUserServiceTest {
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("Nifty Tarou", currentUser.getUserName());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", currentUser.getUserName());
         //パスワードをローカルに持たない
         //Assert.assertEquals("dummyPassword", currentUser.getValue("password"));
@@ -701,13 +1072,13 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         currentUser = NCMBUser.getCurrentUser();
-        Assert.assertNull(NCMB.sCurrentContext.userId);
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(currentUser.getObjectId());
     }
 
     @Test
-    public void currentUser_DELETE_asynchronously () throws Exception {
+    public void currentUser_DELETE_asynchronously() throws Exception {
         //connect post
         NCMBUserService userService = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         NCMBUser user = userService.registerByName("Nifty Tarou", "niftytarou");
@@ -724,11 +1095,18 @@ public class NCMBUserServiceTest {
             @Override
             public void done(JSONObject json, NCMBException e) {
                 Assert.assertNull(e);
-                Assert.assertNull(NCMB.sCurrentContext.userId);
-                Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+                Assert.assertNull(NCMB.getCurrentContext().userId);
+                Assert.assertNull(NCMB.getCurrentContext().sessionToken);
                 Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -744,8 +1122,8 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", currentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("Nifty Tarou", user.getUserName());
     }
 
@@ -761,7 +1139,7 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(currentUser.getObjectId());
     }
 
@@ -780,7 +1158,7 @@ public class NCMBUserServiceTest {
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
 
         //connect auto logout
         NCMBException error = null;
@@ -797,8 +1175,8 @@ public class NCMBUserServiceTest {
         //check currentUser
         currentUser = NCMBUser.getCurrentUser();
         Assert.assertNull(currentUser.getObjectId());
-        Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-        Assert.assertNull(NCMB.sCurrentContext.userId);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
     }
 
     /**
@@ -815,7 +1193,7 @@ public class NCMBUserServiceTest {
         NCMBUser currentUser = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
         Assert.assertEquals("dummySessionToken", currentUser.getString("sessionToken"));
-        Assert.assertEquals("dummySessionToken", NCMB.sCurrentContext.sessionToken);
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
 
         JSONObject update = new JSONObject("{error:test}");
         userService.updateUserInBackground(user.getObjectId(), update, new ExecuteServiceCallback() {
@@ -826,11 +1204,17 @@ public class NCMBUserServiceTest {
                 } else {
                     Assert.assertEquals(NCMBException.INVALID_AUTH_HEADER, e.getCode());
                     Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
-                    Assert.assertNull(NCMB.sCurrentContext.sessionToken);
-                    Assert.assertNull(NCMB.sCurrentContext.userId);
+
+                    Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+                    Assert.assertNull(NCMB.getCurrentContext().userId);
                 }
+                callbackFlag = true;
             }
         });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -846,18 +1230,18 @@ public class NCMBUserServiceTest {
 
         //check currentUser
         NCMBUser currentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",currentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", currentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMBUser.getSessionToken());
 
         //clear currentUser
-        NCMB.sCurrentContext.sessionToken = null;
+        NCMB.getCurrentContext().sessionToken = null;
         NCMBUser.currentUser = null;
 
         //check newCurrentUser
         NCMBUser newCurrentUser = NCMBUser.getCurrentUser();
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.sCurrentContext.sessionToken);
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",newCurrentUser.getString("sessionToken"));
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc",NCMBUser.getSessionToken());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", newCurrentUser.getString("sessionToken"));
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMBUser.getSessionToken());
     }
 }

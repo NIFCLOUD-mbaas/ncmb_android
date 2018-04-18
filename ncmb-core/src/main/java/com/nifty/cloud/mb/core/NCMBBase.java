@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.location.Location;
@@ -102,7 +117,12 @@ public class NCMBBase {
 
     protected void setAclFromInternal (NCMBAcl acl) {
         try {
-            mFields.put("acl", acl.toJson());
+            if(acl == null){
+                mFields.put("acl", null);
+            }else {
+                mFields.put("acl", acl.toJson());
+            };
+
         } catch (JSONException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -176,7 +196,7 @@ public class NCMBBase {
         JSONObject json = new JSONObject();
         for (String key: mUpdateKeys) {
             if (mFields.isNull(key)){
-                json.put(key, null);
+                json.put(key, JSONObject.NULL);
             } else {
                 json.put(key, mFields.get(key));
             }
@@ -435,7 +455,7 @@ public class NCMBBase {
     /**
      * get string value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or null
      */
     public String getString(String key) {
         try {
@@ -448,7 +468,7 @@ public class NCMBBase {
     /**
      * get boolean value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key (defalut value is false)
      */
     public boolean getBoolean(String key) {
         try {
@@ -461,7 +481,7 @@ public class NCMBBase {
     /**
      * get int value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public int getInt(String key) {
         try {
@@ -474,7 +494,7 @@ public class NCMBBase {
     /**
      * get long value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public long getLong(String key) {
         try {
@@ -488,7 +508,7 @@ public class NCMBBase {
     /**
      * get double value from given key
      * @param key field name to get the value
-     * @return value of specified key
+     * @return value of specified key or 0
      */
     public double getDouble(String key) {
         try {
@@ -501,7 +521,7 @@ public class NCMBBase {
     /**
      * Get Date object from given key
      * @param key key name for getting object
-     * @return Date object from given key
+     * @return Date object from given key or null
      */
     public Date getDate(String key) {
         SimpleDateFormat sdf = NCMBDateFormat.getIso8601();
@@ -510,8 +530,10 @@ public class NCMBBase {
             // Date型変換
             if (mFields.has(key)){
                 JSONObject dateJson = this.getJSONObject(key);
-                if (dateJson.has("iso")){
-                    return sdf.parse(dateJson.getString("iso"));
+                if (dateJson != null) {
+                    if (dateJson.has("iso")) {
+                        return sdf.parse(dateJson.getString("iso"));
+                    }
                 }
             }
 
@@ -524,26 +546,31 @@ public class NCMBBase {
 
     /**
      * Get Location object from given key
+     *
      * @param key key name for getting object
-     * @return Location object from given key
+     * @return Location object from given key or null
      */
     public Location getGeolocation(String key) {
         try {
-            if (mFields.has(key)){
+            if (!mFields.isNull(key)) {
                 JSONObject geolocationJson = getJSONObject(key);
                 Location location = new Location("ncmb-core");
                 location.setLongitude(geolocationJson.getDouble("longitude"));
                 location.setLatitude(geolocationJson.getDouble("latitude"));
                 return location;
-            } else {
-                return null;
             }
+            return null;
         } catch (JSONException e) {
             return null;
         }
 
     }
 
+    /**
+     * Get JSONObject from given key
+     * @param key key name for getting object
+     * @return JSONObject from given key or null
+     */
     public JSONObject getJSONObject(String key) {
         try {
             return mFields.getJSONObject(key);
@@ -552,6 +579,11 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * Get JSONArray from given key
+     * @param key key name for getting object
+     * @return JSONArray from given key or null
+     */
     public JSONArray getJSONArray(String key) {
         try {
             return mFields.getJSONArray(key);
@@ -560,20 +592,81 @@ public class NCMBBase {
         }
     }
 
+    /**
+     * Get List object from given key
+     *
+     * @param key key name for getting object
+     * @return List object from given key or null
+     */
     public List getList(String key) {
-        if (mFields.has(key)){
+        if (!mFields.isNull(key)) {
             return new Gson().fromJson(getJSONArray(key).toString(), List.class);
         } else {
             return null;
         }
     }
 
+    /**
+     * Get Map object from given key
+     *
+     * @param key key name for getting object
+     * @return Map object from given key or null
+     */
     public Map getMap(String key) {
-        if (mFields.has(key)){
+        if (!mFields.isNull(key)) {
             return new Gson().fromJson(getJSONObject(key).toString(), Map.class);
         } else {
             return null;
         }
 
     }
+
+    /***
+     * Get NCMBObject if given key data include pointer object data
+     * @param key key name for getting include object
+     * @return instance of NCMBObject / NCMBUser / NCMBPush / NCMBInstallation / NCMBRole or null
+     */
+    public <T extends NCMBBase> T getIncludeObject(String key) {
+        if (mFields.has(key)) {
+            try {
+                JSONObject json = mFields.getJSONObject(key);
+                if (json.has("__type") && json.getString("__type").equals("Object")) {
+                    String className = json.getString("className");
+                    json.remove("__type");
+                    json.remove("className");
+                    switch (className) {
+                        case "user":
+                            return (T) new NCMBUser(json);
+                        case "installation":
+                            return (T) new NCMBInstallation(json);
+                        case "role":
+                            return (T) new NCMBRole(json);
+                        case "push":
+                            return (T) new NCMBPush(json);
+                        default:
+                            return (T) new NCMBObject(className, json);
+                    }
+                } else {
+                    return null;
+                }
+            } catch (JSONException e) {
+                return null;
+            } catch (NCMBException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *  Get list all keys of object
+     *  @return List all keys or null 
+     */
+    public List allKeys(){
+        JSONArray listdata = this.mFields.names();
+        if (listdata != null) return new Gson().fromJson(listdata.toString(), List.class);
+        return null;
+    }
+
 }

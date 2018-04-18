@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.content.Context;
@@ -18,7 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *  NCMBPush is used to retrieve and send the push notification
+ * NCMBPush is used to retrieve and send the push notification.<br>
+ * NCMBPush can not add any field.<br>
+ * Information about the field names that can be set , refer to the following reference .<br>
+ * @see <a target="_blank" href="http://mb.cloud.nifty.com/doc/current/rest/push/pushRegistration.html">NIF Cloud mobile backned API Reference(Japanese)</a>
  */
 public class NCMBPush extends NCMBBase {
 
@@ -92,7 +110,7 @@ public class NCMBPush extends NCMBBase {
      *
      * @return String push message
      */
-    public String getMessage(){
+    public String getMessage() {
         try {
             if (mFields.isNull("message")) {
                 return null;
@@ -402,7 +420,7 @@ public class NCMBPush extends NCMBBase {
         try {
             JSONObject whereConditions = query.getConditions();
             JSONObject value = new JSONObject();
-            if(whereConditions.has("where")){
+            if (whereConditions.has("where")) {
                 value = whereConditions.getJSONObject("where");
             }
             mFields.put("searchCondition", value);
@@ -597,11 +615,19 @@ public class NCMBPush extends NCMBBase {
 
     //endregion
 
+
+    /**
+     * Create query for push class
+     * @return NCMBQuery for push class
+     */
+    public static NCMBQuery<NCMBPush> getQuery() {
+        return new NCMBQuery<>("push");
+    }
+
     /**
      * Constructor
-     *
      */
-    public NCMBPush(){
+    public NCMBPush() {
         super("push");
         mIgnoreKeys = ignoreKeys;
     }
@@ -612,7 +638,7 @@ public class NCMBPush extends NCMBBase {
      * @param params input parameters
      * @throws NCMBException
      */
-    NCMBPush(JSONObject params) throws NCMBException {
+    NCMBPush(JSONObject params){
         super("push", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -622,7 +648,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Send push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void send() throws NCMBException {
         //connect
@@ -705,14 +731,14 @@ public class NCMBPush extends NCMBBase {
     /**
      * Get push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void fetch() throws NCMBException {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        JSONObject json = pushService.getPush(getObjectId());
+        NCMBPush push = pushService.fetchPush(getObjectId());
         //afterFetch
-        setLocalData(json);
+        setLocalData(push.mFields);
     }
 
     /**
@@ -728,22 +754,25 @@ public class NCMBPush extends NCMBBase {
      *
      * @param callback DoneCallback
      */
-    public void fetchInBackground(final DoneCallback callback) {
+    public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBPushService pushService = (NCMBPushService) NCMB.factory(NCMB.ServiceType.PUSH);
-        pushService.getPushInBackground(getObjectId(), new ExecuteServiceCallback() {
+        pushService.fetchPushInBackground(getObjectId(), new FetchCallback<NCMBPush>() {
             @Override
-            public void done(JSONObject responseData, NCMBException error) {
-                if (error == null) {
+            public void done(NCMBPush push, NCMBException e) {
+                NCMBException error = null;
+                if (e != null) {
+                    error = e;
+                } else {
                     //instance set data
                     try {
-                        setLocalData(responseData);
-                    } catch (NCMBException e) {
-                        error = e;
+                        setLocalData(push.mFields);
+                    } catch (NCMBException ncmbError) {
+                        error = ncmbError;
                     }
                 }
                 if (callback != null) {
-                    callback.done(error);
+                    callback.done(push, error);
                 }
             }
         });
@@ -756,7 +785,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Delete push object
      *
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public void delete() throws NCMBException {
         //connect
@@ -859,8 +888,8 @@ public class NCMBPush extends NCMBBase {
     void setLocalData(JSONObject data) throws NCMBException {
         try {
             //新規作成時
-            if(data.has("createDate")&&!data.has("updateDate")){
-                data.put("updateDate",data.getString("createDate"));
+            if (data.has("createDate") && !data.has("updateDate")) {
+                data.put("updateDate", data.getString("createDate"));
             }
             for (Iterator<String> keys = data.keys(); keys.hasNext(); ) {
                 String key = keys.next();
@@ -891,24 +920,24 @@ public class NCMBPush extends NCMBBase {
 
     /**
      * If it contains the dialog in the payload data, it will display the dialog
-     * @param context context
-     * @param bundle pushData
+     *
+     * @param context                 context
+     * @param bundle                  pushData
      * @param dialogPushConfiguration push settings
      */
-    public static void dialogPushHandler(Context context,Bundle bundle, NCMBDialogPushConfiguration dialogPushConfiguration)
-    {
-        if(!bundle.containsKey("com.nifty.Dialog")){
+    public static void dialogPushHandler(Context context, Bundle bundle, NCMBDialogPushConfiguration dialogPushConfiguration) {
+        if (!bundle.containsKey("com.nifty.Dialog")) {
             //dialogが有効になっていない場合
             return;
         }
 
-        if(dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE){
+        if (dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
             //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
             return;
         }
 
         ApplicationInfo appInfo;
-        String activityName ="";
+        String activityName = "";
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             activityName = appInfo.packageName + appInfo.metaData.getString(NCMBGcmListenerService.OPEN_PUSH_START_ACTIVITY_KEY);
@@ -917,16 +946,16 @@ public class NCMBPush extends NCMBBase {
         }
 
         //NCMBDialogActivityクラスを呼び出す
-        Intent intetnt = new Intent(Intent.ACTION_MAIN);
-        intetnt.setClass(context.getApplicationContext(), NCMBDialogActivity.class);
-        intetnt.putExtra("com.nifty.OriginalData", bundle);
-        intetnt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intetnt.putExtra(NCMBDialogActivity.INTENT_EXTRA_THEME, android.R.style.Theme_Wallpaper_NoTitleBar);
-        intetnt.putExtra(NCMBDialogActivity.INTENT_EXTRA_LAUNCH_CLASS, activityName);
-        intetnt.putExtra(NCMBDialogActivity.INTENT_EXTRA_SUBJECT, bundle.getString("title"));
-        intetnt.putExtra(NCMBDialogActivity.INTENT_EXTRA_MESSAGE, bundle.getString("message"));
-        intetnt.putExtra(NCMBDialogActivity.INTENT_EXTRA_DISPLAYTYPE, dialogPushConfiguration.getDisplayType());
-        context.getApplicationContext().startActivity(intetnt);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClass(context.getApplicationContext(), NCMBDialogActivity.class);
+        intent.putExtra("com.nifty.OriginalData", bundle);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_THEME, android.R.style.Theme_Wallpaper_NoTitleBar);
+        intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_LAUNCH_CLASS, activityName);
+        intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_SUBJECT, bundle.getString("title"));
+        intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_MESSAGE, bundle.getString("message"));
+        intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_DISPLAYTYPE, dialogPushConfiguration.getDisplayType());
+        context.getApplicationContext().startActivity(intent);
     }
 
     // endregion

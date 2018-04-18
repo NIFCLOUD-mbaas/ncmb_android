@@ -1,8 +1,24 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -358,29 +374,37 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get current installation object
      *
-     * @return Installation
+     * @return NCMBInstallation object that is created from data that is saved to local file.<br>
+     * If local file is not available, it returns empty NCMBInstallation object
      */
     public static NCMBInstallation getCurrentInstallation() {
+        //null check
+        NCMBLocalFile.checkNCMBContext();
         try {
-            //null check
-            NCMBLocalFile.checkNCMBContext();
-
             //create currentInstallation
             if (currentInstallation == null) {
+                currentInstallation = new NCMBInstallation();
                 //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                 File currentInstallationFile = NCMBLocalFile.create(INSTALLATION_FILENAME);
                 if (currentInstallationFile.exists()) {
                     //ローカルファイルから端末情報を取得
                     JSONObject localData = NCMBLocalFile.readFile(currentInstallationFile);
                     currentInstallation = new NCMBInstallation(localData);
-                } else {
-                    currentInstallation = new NCMBInstallation();
                 }
             }
         } catch (Exception error) {
-            throw new RuntimeException(error);
+            Log.e("Error", error.toString());
         }
         return currentInstallation;
+    }
+
+    /**
+     * Create query for installation class
+     *
+     * @return NCMBQuery for installation class
+     */
+    public static NCMBQuery<NCMBInstallation> getQuery() {
+        return new NCMBQuery<>("installation");
     }
 
     /**
@@ -397,7 +421,7 @@ public class NCMBInstallation extends NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    NCMBInstallation(JSONObject params) throws NCMBException {
+    NCMBInstallation(JSONObject params){
         super("installation", params);
         mIgnoreKeys = ignoreKeys;
     }
@@ -410,12 +434,23 @@ public class NCMBInstallation extends NCMBObject {
      */
     public void getRegistrationIdInBackground(String senderId, final DoneCallback callback) {
         //Nullチェック
-        if (senderId == null && NCMB.sCurrentContext.context == null) {
-            throw new RuntimeException("applicationContext or senderId is must not be null.");
+        if (senderId == null && NCMB.getCurrentContext().context == null) {
+            if (callback != null) {
+                callback.done(new NCMBException(NCMBException.REQUIRED, "applicationContext or senderId is must not be null."));
+                return;
+            }
         }
 
         //端末にAPKがインストールされていない場合は処理を終了
-        if (!checkPlayServices(NCMB.sCurrentContext.context)) return;
+        try {
+            if (!checkPlayServices(NCMB.getCurrentContext().context)) return;
+        }catch (Exception error){
+            if(callback!=null){
+                callback.done(new NCMBException(error));
+                return;
+            }
+        }
+
 
         //registrationIdを非同期で取得
         new AsyncTask<String, Void, Void>() {
@@ -438,27 +473,22 @@ public class NCMBInstallation extends NCMBObject {
      * @param senderId GCM用に設定したsenderId
      */
     protected String getDeviceTokenFromGCM(String senderId) throws IOException {
-        InstanceID instanceID = InstanceID.getInstance(NCMB.sCurrentContext.context);
+        InstanceID instanceID = InstanceID.getInstance(NCMB.getCurrentContext().context);
         String token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
         return token;
     }
 
     /**
      * 端末にGooglePlay開発者サービスがインストールされているか確認
-     * インストールされていな場合はPlayストアへのダイアログを表示
+     * インストールされていな場合はエラーを返す
      *
      * @param context
      * @return bool
      */
-    protected boolean checkPlayServices(Context context) {
+    protected boolean checkPlayServices(Context context) throws Exception{
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, (Activity) context, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
-            }
-            return false;
+            throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
         }
         return true;
     }
@@ -513,7 +543,11 @@ public class NCMBInstallation extends NCMBObject {
 
         // NCMB/channels/channelName 作成
         File writeFile = new File(channelDir, channelName);
-        NCMBLocalFile.writeFile(writeFile, localData);
+        try {
+            NCMBLocalFile.writeFile(writeFile, localData);
+        } catch (NCMBException e) {
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -569,7 +603,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Save installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void save() throws NCMBException {
         //connect
@@ -649,22 +683,14 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
+    @Override
     public void fetch() throws NCMBException {
         //connect
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        JSONObject json = installationService.getInstallation(getObjectId());
-        //afterFetch
-        setLocalData(json);
-    }
-
-    /**
-     * Get installation object inBackground
-     * none callback
-     */
-    public void fetchInBackground() {
-        fetchInBackground(null);
+        NCMBInstallation installation = installationService.fetchInstallation(getObjectId());
+        mFields = installation.mFields;
     }
 
     /**
@@ -672,22 +698,21 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @param callback DoneCallback
      */
-    public void fetchInBackground(final DoneCallback callback) {
+    @Override
+    public void fetchInBackground(final FetchCallback callback) {
         //connect
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
-        installationService.getInstallationInBackground(getObjectId(), new ExecuteServiceCallback() {
+        installationService.fetchInstallationInBackground(getObjectId(), new FetchCallback<NCMBInstallation>() {
             @Override
-            public void done(JSONObject responseData, NCMBException error) {
-                if (error == null) {
-                    //instance set data
-                    try {
-                        setLocalData(responseData);
-                    } catch (NCMBException e) {
-                        error = e;
-                    }
+            public void done(NCMBInstallation installation, NCMBException e) {
+                NCMBException error = null;
+                if (e != null) {
+                    error = e;
+                } else {
+                    mFields = installation.mFields;
                 }
                 if (callback != null) {
-                    callback.done(error);
+                    callback.done(installation, error);
                 }
             }
         });
@@ -700,7 +725,7 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Delete installation object
      *
-     * @throws NCMBException exception from NIFTY Cloud mobile backend
+     * @throws NCMBException exception from NIF Cloud mobile backend
      */
     public void delete() throws NCMBException {
         //connect

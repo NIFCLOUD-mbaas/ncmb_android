@@ -1,9 +1,41 @@
-## Android SDK for NiftyCloud mobile backend
+## Android SDK for NIF Cloud mobile backend
+
+[![Build Status](https://travis-ci.org/NIFCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCloud-mbaas/ncmb_android)
 
 ## ダウンロード
 
 Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
 
+## jarの作成
+
+リリースページからダウンロードせずにjarを作成する場合は、<br>
+以下のコマンドをプロジェクトのルートディレクトリで実行してください。
+
+```
+./gradlew clean makeJar
+```
+
+`ncmb-core/release`にNCMB.jarが作成されます。
+
+Android Studioから作成する場合は、<br>
+Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
+
+## 依存ライブラリ
+
+このSDKでは、以下のライブラリを使用しています。
+
+- Gson
+
+プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。<br>
+事前にSDK Managerでのインストールが必要です。
+
+- Android Support Library
+- Google Play Services SDK
+
+
+## 動作環境
+
+本SDKは、Android 4.x ～ 8.0 にて動作確認を行っております。
 
 ## インストール
 
@@ -14,6 +46,7 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
 
 ```
 dependencies {
+    compile 'com.google.code.gson:gson:2.3.1'
     compile files('libs/NCMB.jar')
 }
 ```
@@ -55,17 +88,6 @@ obj.saveInBackground(new DoneCallback() {
     }
 });
 ```
-## 依存ライブラリ（任意）
-
-プッシュ通知機能を利用する場合には以下のライブラリを設定する必要があります。
-
-| 機能名           | 必要なライブラリ |
-|:---:             | :---:            |
-| プッシュ通知機能 | Google Play Services SDK |
-
-## 動作環境
-
-本SDKは、Android 4.x / 5.xにて動作確認を行っております。
 
 ## ライセンス
 
@@ -73,6 +95,6 @@ obj.saveInBackground(new DoneCallback() {
 
 ## 参考URL集
 
-- [ニフティクラウド mobile backend](http://mb.cloud.nifty.com)
+- [ニフクラ mobile backend](http://mb.cloud.nifty.com)
 - [ドキュメント](http://mb.cloud.nifty.com/doc)
-- [ユーザーコミュニティ](https://github.com/NIFTYCloud-mbaas/UserCommunity)
+- [ユーザーコミュニティ](https://github.com/NIFCloud-mbaas/UserCommunity)

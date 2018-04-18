@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifty.cloud.mb.core;
 
 //import junit.framework.Assert;
@@ -15,36 +30,42 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * NCMBObjectTest
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = "app/src/main/AndroidManifest.xml", emulateSdk = 18)
+@RunWith(CustomRobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21, manifest = Config.NONE)
 public class NCMBObjectTest {
 
     private MockWebServer mServer;
+    private boolean callbackFlag;
 
     @Before
     public void setup() throws Exception {
-        Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
 
         mServer = new MockWebServer();
         mServer.setDispatcher(NCMBDispatcher.dispatcher);
         mServer.start();
 
-        NCMB.initialize(Robolectric.application.getApplicationContext(),
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),
                 "appKey",
                 "cliKey",
                 mServer.getUrl("/").toString(),
                 null);
+        Robolectric.getBackgroundThreadScheduler().pause();
+        Robolectric.getForegroundThreadScheduler().pause();
+
+        callbackFlag = false;
     }
 
     @After
@@ -82,7 +103,7 @@ public class NCMBObjectTest {
 
     @Test
     public void save_object_asynchronously_valid_class() throws Exception {
-
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("SaveObjectTest");
         obj.put("key", "value");
         obj.saveInBackground(new DoneCallback() {
@@ -91,10 +112,14 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("save Background is failed.");
                 }
+                callbackFlag = true;
             }
         });
 
-        Robolectric.runBackgroundTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNotNull(obj);
         Assert.assertEquals("7FrmPTBKSNtVjajm9", obj.getObjectId());
@@ -112,7 +137,8 @@ public class NCMBObjectTest {
         obj.put("key", "value");
         obj.saveInBackground(null);
 
-        Robolectric.runBackgroundTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         Assert.assertNotNull(obj);
         Assert.assertEquals("7FrmPTBKSNtVjajm9", obj.getObjectId());
@@ -183,7 +209,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void save_object_with_remove () {
+    public void save_object_with_remove() {
         try {
             NCMBObject obj = new NCMBObject("TestClass", new JSONObject("{\"key\":\"value\"}"));
             obj.setObjectId("testObjectId");
@@ -223,6 +249,7 @@ public class NCMBObjectTest {
 
     @Test
     public void update_object_in_background_with_update_value() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("updateTestObjectId");
         obj.put("updateKey", "updateValue");
@@ -232,10 +259,14 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("update object error");
                 }
+                callbackFlag = true;
             }
         });
 
-        Robolectric.runBackgroundTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-04T11:28:30.348Z")));
@@ -254,7 +285,8 @@ public class NCMBObjectTest {
             }
         });
 
-        Robolectric.runBackgroundTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-04T11:28:30.348Z")));
@@ -281,7 +313,7 @@ public class NCMBObjectTest {
     @Test
     public void update_object_with_acl_parameter_dont_update_acl() {
         try {
-            NCMBObject obj = new NCMBObject("TestClass",new JSONObject("{\"acl\":{\"*\":{\"read\":true, \"write\":true}}}"));
+            NCMBObject obj = new NCMBObject("TestClass", new JSONObject("{\"acl\":{\"*\":{\"read\":true, \"write\":true}}}"));
             obj.setObjectId("updateTestObjectId");
             obj.put("updateKey", "updateValue");
             obj.save();
@@ -316,7 +348,7 @@ public class NCMBObjectTest {
     public void fetch_object() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObject();
+        obj.fetch();
         Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
         Assert.assertEquals("value", obj.getString("key"));
 
@@ -328,41 +360,60 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void fetchObject_non_object_id () {
+    public void fetchObject_non_object_id() {
 
         NCMBObject obj = new NCMBObject("testClass");
         try {
-            obj.fetchObject();
-        } catch (NCMBException e){
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            obj.fetch();
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
     @Test
-    public void fetchObject_non_exist_object () {
+    public void fetchObject_non_exist_object() {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
         try {
-            obj.fetchObject();
-        } catch (NCMBException e){
+            obj.fetch();
+        } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
         }
     }
 
     @Test
     public void fetch_object_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("getTestObjectId");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
+                object.getString("key");
                 if (e != null) {
                     Assert.fail("get object raise exception:" + e.getMessage());
+                } else {
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", object.getObjectId());
+                    Assert.assertEquals("value", object.getString("key"));
+
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+                    try {
+                        Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                        Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
                 }
+                callbackFlag = true;
             }
         });
 
-        Robolectric.runBackgroundTasks();
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
         Assert.assertEquals("value", obj.getString("key"));
@@ -375,28 +426,28 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void fetch_object_non_object_id () throws Exception {
+    public void fetch_object_non_object_id() throws Exception {
 
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });
     }
 
     @Test
-    public void fetch_object_non_exist_object () throws Exception {
+    public void fetch_object_non_exist_object() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("NonExistObject");
-        obj.fetchObjectInBackground(new DoneCallback() {
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
             @Override
-            public void done(NCMBException e) {
+            public void done(NCMBObject object, NCMBException e) {
                 if (e == null) {
                     Assert.fail("get object method should raise exception:");
                 } else {
@@ -418,13 +469,13 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void delete_object_without_object_id () {
+    public void delete_object_without_object_id() {
 
         NCMBObject obj = new NCMBObject("TestClass");
         try {
             obj.deleteObject();
         } catch (NCMBException e) {
-            Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+            Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
         }
     }
 
@@ -441,6 +492,7 @@ public class NCMBObjectTest {
 
     @Test
     public void delete_object_in_background() throws Exception {
+        Assert.assertFalse(callbackFlag);
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("deleteTestObjectId");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -449,12 +501,18 @@ public class NCMBObjectTest {
                 if (e != null) {
                     Assert.fail("delete object method should not raise exception:");
                 }
+                callbackFlag = true;
             }
         });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertTrue(callbackFlag);
     }
 
     @Test
-    public void delete_object_in_background_without_object_id () {
+    public void delete_object_in_background_without_object_id() {
 
         NCMBObject obj = new NCMBObject("TestClass");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -463,14 +521,14 @@ public class NCMBObjectTest {
                 if (e == null) {
                     Assert.fail("delete object method should raise exception:");
                 } else {
-                    Assert.assertEquals(NCMBException.GENERIC_ERROR, e.getCode());
+                    Assert.assertEquals(NCMBException.REQUIRED, e.getCode());
                 }
             }
         });
     }
 
     @Test
-    public void delete_object_in_background_non_exist_object_id () {
+    public void delete_object_in_background_non_exist_object_id() {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("nonExistId");
         obj.deleteObjectInBackground(new DoneCallback() {
@@ -501,7 +559,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void add_operation() throws Exception{
+    public void add_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addToList("list", Arrays.asList("value1", "value2"));
@@ -512,7 +570,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void add_unique_operation() throws Exception{
+    public void add_unique_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addUniqueToList("list", Arrays.asList("value1", "value2"));
@@ -524,7 +582,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void remove_operation() throws Exception{
+    public void remove_operation() throws Exception {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.removeFromList("list", Arrays.asList("value1", "value2"));
@@ -536,7 +594,7 @@ public class NCMBObjectTest {
 
 
     @Test
-    public void add_relation_to_object () throws Exception {
+    public void add_relation_to_object() throws Exception {
         NCMBObject pointerObj = new NCMBObject("pointerClass");
         pointerObj.setObjectId("testObjectId");
 
@@ -551,7 +609,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void remove_relation_operation() throws Exception{
+    public void remove_relation_operation() throws Exception {
         NCMBObject pointerObj = new NCMBObject("pointerClass");
         pointerObj.setObjectId("testObjectId");
 
@@ -567,5 +625,24 @@ public class NCMBObjectTest {
         );
     }
 
+    @Test
+    public void get_Allkeys() throws Exception {
+        //user Classを登録する
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+
+        user.signUp();
+
+        List userKeyArray = user.allKeys();
+        //userKeyArrayの取得キー結果 => ["createDate","objectId","sessionToken","userName","authData"]
+
+        Assert.assertEquals("createDate", userKeyArray.get(0));
+        Assert.assertEquals("objectId", userKeyArray.get(1));
+        Assert.assertEquals("sessionToken", userKeyArray.get(2));
+        Assert.assertEquals("userName", userKeyArray.get(3));
+        Assert.assertEquals("authData", userKeyArray.get(4));
+
+    }
 
 }
