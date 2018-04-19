@@ -100,6 +100,11 @@ public class NCMB {
     private static boolean sResponseValidation;
 
     /**
+     * service pool
+     */
+    protected static NCMBServicePool sServicePool;
+
+    /**
      * Setup SDK internals
      *
      * @param context        Application context
@@ -144,6 +149,7 @@ public class NCMB {
 
         String apiBaseUrl = aDomainUrl + aApiVersion + "/";
         sCurrentContext = new NCMBContext(context, applicationKey, clientKey, apiBaseUrl);
+        sServicePool = new NCMBServicePool();
 
         // 永続化
         Context appState = NCMBApplicationController.getApplicationState();
@@ -159,6 +165,7 @@ public class NCMB {
             NCMBNotificationUtils utils = new NCMBNotificationUtils(context);
             utils.settingDefaultChannels();
         }
+
     }
 
     /**
@@ -168,34 +175,7 @@ public class NCMB {
      * @return Object of each service class
      */
     public static NCMBService factory(ServiceType serviceType) throws IllegalArgumentException {
-        NCMBService service;
-
-        switch (serviceType) {
-            case OBJECT:
-                service = (NCMBService) new NCMBObjectService(getCurrentContext());
-                break;
-            case USER:
-                service = (NCMBService) new NCMBUserService(getCurrentContext());
-                break;
-            case ROLE:
-                service = (NCMBService) new NCMBRoleService(getCurrentContext());
-                break;
-            case INSTALLATION:
-                service = (NCMBInstallationService) new NCMBInstallationService(getCurrentContext());
-                break;
-            case PUSH:
-                service = (NCMBPushService) new NCMBPushService(getCurrentContext());
-                break;
-            case FILE:
-                service = (NCMBFileService) new NCMBFileService(getCurrentContext());
-                break;
-            case SCRIPT:
-                service = (NCMBScriptService) new NCMBScriptService(getCurrentContext());
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid serviceType");
-        }
-        return service;
+        return sServicePool.get(serviceType, sCurrentContext);
     }
 
     /**
