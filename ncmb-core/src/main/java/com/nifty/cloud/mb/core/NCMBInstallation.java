@@ -453,18 +453,7 @@ public class NCMBInstallation extends NCMBObject {
 
 
         //registrationIdを非同期で取得
-        new AsyncTask<String, Void, Void>() {
-            @Override
-            protected Void doInBackground(String... params) {
-                try {
-                    mFields.put("deviceToken", getDeviceTokenFromGCM(params[0]));
-                    callback.done(null);
-                } catch (IOException | JSONException error) {
-                    callback.done(new NCMBException(error));
-                }
-                return null;
-            }
-        }.execute(senderId, null, null);
+        new StaticAsyncTask(this, callback).execute(senderId, null, null);
     }
 
     /**
@@ -829,5 +818,27 @@ public class NCMBInstallation extends NCMBObject {
             throw new IllegalArgumentException(error.getMessage());
         }
         return localData;
+    }
+
+    private static class StaticAsyncTask extends AsyncTask<String, Void, Void> {
+        DoneCallback callback;
+        NCMBInstallation installation;
+        public StaticAsyncTask(NCMBInstallation installation, DoneCallback callback) {
+            this.callback = callback;
+            this.installation = installation;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            if (installation != null) {
+                try {
+                    installation.mFields.put("deviceToken", installation.getDeviceTokenFromGCM(params[0]));
+                    callback.done(null);
+                } catch (IOException | JSONException error) {
+                    callback.done(new NCMBException(error));
+                }
+            }
+            return null;
+        }
     }
 }

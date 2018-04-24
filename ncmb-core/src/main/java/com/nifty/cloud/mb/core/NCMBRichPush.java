@@ -58,6 +58,7 @@ public class NCMBRichPush extends Dialog {
         this.requestUrl = requestUrl;
     }
 
+    @SuppressLint("RtlHardcoded")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.progressDialog = new ProgressDialog(getContext());

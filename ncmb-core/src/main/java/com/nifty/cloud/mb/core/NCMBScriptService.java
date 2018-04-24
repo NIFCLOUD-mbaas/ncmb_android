@@ -226,27 +226,7 @@ public class NCMBScriptService extends NCMBService {
      * @param callback   callback for after script execute
      */
     public void executeScriptInBackground(final String scriptName, final MethodType method, final Map<String, String> header, final JSONObject body, final JSONObject query, final String baseUrl, final ExecuteScriptCallback callback) {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-
-            byte[] res = null;
-            NCMBException error = null;
-
-            @Override
-            protected Void doInBackground(Void... param) {
-
-                try {
-                    res = executeScript(scriptName, method, header, body, query, baseUrl);
-                } catch (NCMBException e) {
-                    error = e;
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void o) {
-                callback.done(res, error);
-            }
-        }.execute();
+        new StaticAsyncTask(this, callback).execute(scriptName, method, header, body, query, baseUrl);
     }
 
     boolean isJSONString(String str){
@@ -256,6 +236,47 @@ public class NCMBScriptService extends NCMBService {
             return false;
         }
         return true;
+    }
+
+
+    private static class StaticAsyncTask extends AsyncTask<Object, Void, Void> {
+        byte[] res = null;
+        NCMBException error = null;
+
+        NCMBScriptService scriptService;
+        ExecuteScriptCallback callback;
+
+        public StaticAsyncTask(NCMBScriptService scriptService, ExecuteScriptCallback callback) {
+            this.scriptService = scriptService;
+            this.callback = callback;
+        }
+        
+        @Override
+        protected Void doInBackground(Object... params) {
+            if (scriptService != null) {
+                String scriptName = (String) params[0];
+                MethodType method = (MethodType) params[1];
+                Map<String, String> header = (Map<String, String>) params[2];
+                JSONObject body = (JSONObject) params[3];
+                JSONObject query = (JSONObject) params[4];
+                String baseUrl = (String) params[5];
+
+                try {
+                    res = scriptService.executeScript(scriptName, method, header, body, query, baseUrl);
+                } catch (NCMBException e) {
+                    error = e;
+                }
+            }
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void o) {
+            if (scriptService!= null && callback!= null) {
+                callback.done(res, error);
+            }
+        }
     }
 }
 

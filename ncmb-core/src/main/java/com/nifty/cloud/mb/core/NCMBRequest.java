@@ -15,6 +15,7 @@
  */
 package com.nifty.cloud.mb.core;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Base64;
 
@@ -344,6 +345,7 @@ public class NCMBRequest {
             // タイムスタンプ生成/設定
             if (this.timestamp == null) {
                 //timestamp引数なしコンストラクタの場合は現在時刻で生成する
+                @SuppressLint("SimpleDateFormat")
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
                 df.setTimeZone(new SimpleTimeZone(0, "GMT"));
                 Timestamp ts = new Timestamp(System.currentTimeMillis());
