@@ -32,22 +32,34 @@ import java.util.TimeZone;
  */
 public class NCMBInstallationService extends NCMBService {
 
-    /** service path for API category */
+    /**
+     * service path for API category
+     */
     public static final String SERVICE_PATH = "installations";
-    /** Status code of installation created */
+    /**
+     * Status code of installation created
+     */
     public static final int HTTP_STATUS_INSTALLATION_CREATED = 201;
-    /** Status code of installation updated */
+    /**
+     * Status code of installation updated
+     */
     public static final int HTTP_STATUS_INSTALLATION_UPDATED = 200;
-    /** Status code of installation deleted */
+    /**
+     * Status code of installation deleted
+     */
     public static final int HTTP_STATUS_INSTALLATION_DELETED = 200;
-    /** Status code of installation gotten */
+    /**
+     * Status code of installation gotten
+     */
     public static final int HTTP_STATUS_INSTALLATION_GOTTEN = 200;
 
     /**
      * Inner class for callback
      */
     abstract class InstallationServiceCallback extends ServiceCallback {
-        /** constructors */
+        /**
+         * constructors
+         */
         InstallationServiceCallback(NCMBInstallationService service, DoneCallback callback) {
             super(service, callback);
         }
@@ -142,18 +154,18 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
-
+                public void handleResponse(NCMBResponse response) {
+                    NCMBException error = null;
                     //create currentInstallation
                     try {
                         writeCurrentInstallation(argumentParams, response.responseData);
                     } catch (NCMBException e) {
-                        callback.done(null, e);
+                        error = e;
                     }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(response.responseData, error);
                     }
                 }
 
@@ -241,18 +253,18 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
-
+                public void handleResponse(NCMBResponse response) {
+                    NCMBException error = null;
                     //update currentInstallation
                     try {
                         writeCurrentInstallation(argumentParams, response.responseData);
                     } catch (NCMBException e) {
-                        callback.done(null, e);
+                        error = e;
                     }
 
                     ExecuteServiceCallback callback = (ExecuteServiceCallback) mCallback;
                     if (callback != null) {
-                        callback.done(response.responseData, null);
+                        callback.done(response.responseData, error);
                     }
                 }
 
@@ -322,7 +334,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_DELETE);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
+                public void handleResponse(NCMBResponse response) {
 
                     //clear currentInstallation
                     clearCurrentInstallation();
@@ -391,7 +403,7 @@ public class NCMBInstallationService extends NCMBService {
             RequestParams request = createRequestParams(objectId, null, null, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
+                public void handleResponse(NCMBResponse response) {
 
                     FetchCallback<NCMBInstallation> callback = (FetchCallback) mCallback;
                     if (callback != null) {
@@ -444,7 +456,7 @@ public class NCMBInstallationService extends NCMBService {
             final RequestParams request = createRequestParams(null, null, conditions, NCMBRequest.HTTP_METHOD_GET);
             sendRequestAsync(request, new InstallationServiceCallback(this, callback) {
                 @Override
-                public void handleResponse(NCMBResponse response){
+                public void handleResponse(NCMBResponse response) {
                     //return the value of the key 'results'
                     ArrayList<NCMBInstallation> array = null;
                     try {

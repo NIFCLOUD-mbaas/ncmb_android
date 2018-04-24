@@ -626,7 +626,7 @@ public class NCMBUserServiceTest {
                     Assert.assertEquals(resultDate, user.getCreateDate());
                     resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
                     Assert.assertEquals(resultDate, user.getUpdateDate());
-                } catch (ParseException error) {
+                } catch (ParseException | NCMBException error) {
                     Assert.fail(error.getMessage());
                 }
             }

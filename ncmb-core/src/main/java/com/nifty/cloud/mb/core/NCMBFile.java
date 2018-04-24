@@ -93,6 +93,7 @@ public class NCMBFile extends NCMBBase {
 
     /**
      * Create query for file class
+     *
      * @return NCMBQuery for file class
      */
     public static NCMBQuery<NCMBFile> getQuery() {
@@ -102,7 +103,7 @@ public class NCMBFile extends NCMBBase {
     /**
      * Constructor
      */
-    public NCMBFile() {
+    public NCMBFile() throws NCMBException {
         this(null, null, null);
     }
 
@@ -111,7 +112,7 @@ public class NCMBFile extends NCMBBase {
      *
      * @param fileName file name
      */
-    public NCMBFile(String fileName) {
+    public NCMBFile(String fileName) throws NCMBException {
         this(fileName, null, null);
     }
 
@@ -121,7 +122,7 @@ public class NCMBFile extends NCMBBase {
      * @param fileName file name
      * @param acl      file acl
      */
-    public NCMBFile(String fileName, NCMBAcl acl) {
+    public NCMBFile(String fileName, NCMBAcl acl) throws NCMBException {
         this(fileName, null, acl);
     }
 
@@ -132,7 +133,7 @@ public class NCMBFile extends NCMBBase {
      * @param fileData file data
      * @param acl      file acl
      */
-    public NCMBFile(String fileName, byte[] fileData, NCMBAcl acl) {
+    public NCMBFile(String fileName, byte[] fileData, NCMBAcl acl) throws NCMBException {
         super("files");
         setFileName(fileName);
         setFileData(fileData);
@@ -277,6 +278,7 @@ public class NCMBFile extends NCMBBase {
 
     /**
      * Get fileData from file store
+     *
      * @return byte data obtained from filestore
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
