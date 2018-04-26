@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,6 +126,9 @@ public class NCMBDialogActivity extends Activity {
             // 表示形式が不正
             throw new RuntimeException("Error displayType is invalid.");
         }
+
+        // ウェイクロックの解放
+        turnOffScreen();
     }
 
     @Override
@@ -159,6 +162,13 @@ public class NCMBDialogActivity extends Activity {
             }
         }
         return true;
+    }
+
+    protected void turnOffScreen() {
+        // Start a waiting timer for phone wakeup
+        timerTask = new MyTimerTask();
+        mTimer = new Timer(true);
+        mTimer.schedule(timerTask, 5000);
     }
 
     class MyTimerTask extends TimerTask {
@@ -464,11 +474,6 @@ public class NCMBDialogActivity extends Activity {
         lowerLayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         lowerLayout.setOrientation(LinearLayout.HORIZONTAL);
         lowerLayout.setPadding(convertDpToPixel(4), convertDpToPixel(4), convertDpToPixel(4), convertDpToPixel(4));
-
-        // Start a waiting timer for phone wakeup
-        timerTask = new MyTimerTask();
-        mTimer = new Timer(true);
-        mTimer.schedule(timerTask, 5000);
 
         // ボタンのレイアウト作成
         final GradientDrawable buttonDrawable = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#666666"), Color.parseColor("#333333")});

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -626,7 +626,7 @@ public class NCMBUserServiceTest {
                     Assert.assertEquals(resultDate, user.getCreateDate());
                     resultDate = NCMBDateFormat.getIso8601().parse("2013-08-30T05:32:03.868Z");
                     Assert.assertEquals(resultDate, user.getUpdateDate());
-                } catch (ParseException error) {
+                } catch (ParseException | NCMBException error) {
                     Assert.fail(error.getMessage());
                 }
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class NCMBResponse {
 
     //通信結果文字列
     public JSONObject responseData = null;
+    public String responseDataString = null;
     //通信結果byte(file取得)
     public byte[] responseByte = null;
     //通信結果ステータスコード
@@ -72,6 +73,7 @@ public class NCMBResponse {
 
                 if (sb.length() > 0) {
                     responseData = new JSONObject(new String(sb));
+                    responseDataString = new String(sb);
                 }
 
             } else {

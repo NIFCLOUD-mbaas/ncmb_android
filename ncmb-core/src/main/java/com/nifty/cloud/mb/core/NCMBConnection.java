@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,9 +187,9 @@ public class NCMBConnection {
                 // file data
                 String hexadecimal = asHex(res.responseByte);
                 hashData = req.getSignatureHashData() + "\n" + hexadecimal;
-            } else if(res.responseData != null){
+            } else if(res.responseDataString != null){
                 // json data
-                hashData = req.getSignatureHashData() + "\n" + res.responseData.toString().replace("\\","");
+                hashData = req.getSignatureHashData() + "\n" + res.responseData.toString();
             }else {
                 // delete,logout API
                 hashData = req.getSignatureHashData();

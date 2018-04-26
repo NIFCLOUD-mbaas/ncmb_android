@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -497,6 +497,39 @@ public class NCMBBaseTest {
     }
 
     @Test
+    public void get_createDate_parse_error() throws Exception {
+        NCMBException error = null;
+        NCMBBase obj = new NCMBBase("testClass");
+        obj.put("createDate", "2016-06-21T18:40:38:506Z");
+        try {
+            obj.getCreateDate();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        Assert.assertNotNull(error);
+        Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+        Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
+    }
+
+    @Test
+    public void get_updateDate_parse_error() throws Exception {
+        NCMBException error = null;
+        NCMBBase obj = new NCMBBase("testClass");
+        obj.put("updateDate", "2016-06-21T18:40:38:506Z");
+        try {
+            obj.getUpdateDate();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        Assert.assertNotNull(error);
+        Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+        Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
+    }
+
+
+    @Test
     public void remove() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"key\":\"value\"}"));
 
@@ -522,5 +555,21 @@ public class NCMBBaseTest {
         Assert.assertNull(obj.getDate("date"));
     }
 
+    @Test
+    public void get_geolocation_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"geo\":null}"));
+        Assert.assertNull(obj.getGeolocation("geo"));
+    }
 
+    @Test
+    public void get_map_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"map\":null}"));
+        Assert.assertNull(obj.getMap("map"));
+    }
+
+    @Test
+    public void get_list_null_object() throws Exception {
+        NCMBBase obj = new NCMBBase("testClass", new JSONObject("{\"list\":null}"));
+        Assert.assertNull(obj.getList("list"));
+    }
 }

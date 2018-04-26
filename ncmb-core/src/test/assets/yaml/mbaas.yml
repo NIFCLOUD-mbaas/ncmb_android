@@ -133,7 +133,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -147,7 +147,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "Etc/UTC"
       key: "value"
   response:
@@ -162,7 +162,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "UTC"
       key: "value"
   response:
@@ -178,7 +178,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "Asia/Tokyo"
   response:
     status: 201
@@ -193,7 +193,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "Etc/UTC"
   response:
     status: 201
@@ -208,7 +208,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       timeZone: "UTC"
   response:
     status: 201
@@ -235,7 +235,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -248,7 +248,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -262,7 +262,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -275,7 +275,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "UTC"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
   response:
     status: 200
@@ -288,7 +288,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -302,7 +302,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "UTC"
-      sdkVersion: "2.3.2"
+      sdkVersion: "2.4.0"
       applicationName: "ncmb-core"
       key: "value_update"
   response:
@@ -1104,6 +1104,17 @@
   response:
     status: 200
     file: valid_post_registerUserAnonymous_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      userName: "Nifty Tarou"
+      password: "niftytarou"
+      testField: "test"
+  response:
+    status: 201
+    file: valid_post_registerUser_response.json
 ---
   request:
     url: /2013-09-01/files

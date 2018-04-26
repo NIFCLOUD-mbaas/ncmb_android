@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -728,10 +728,15 @@ public class NCMBQuery<T extends NCMBBase> {
      * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
     public int count () throws NCMBException {
+        int iSetLimitNumber = limitNumber;
         countFlag = true;
         limitNumber = 1;
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
-        return objServ.countObject(mClassName, getConditions());
+
+        JSONObject countConditions = getConditions();
+        limitNumber = iSetLimitNumber;
+        countFlag = false;
+        return objServ.countObject(mClassName, countConditions);
     }
 
     /**
@@ -739,10 +744,15 @@ public class NCMBQuery<T extends NCMBBase> {
      * @param callback callback for after object search and count results
      */
     public void countInBackground(CountCallback callback) {
+        int iSetLimitNumber = limitNumber;
         countFlag = true;
         limitNumber = 1;
         NCMBObjectService objServ = (NCMBObjectService)NCMB.factory(NCMB.ServiceType.OBJECT);
-        objServ.countObjectInBackground(mClassName, getConditions(), callback);
+
+        JSONObject countConditions = getConditions();
+        limitNumber = iSetLimitNumber;
+        countFlag = false;
+        objServ.countObjectInBackground(mClassName, countConditions, callback);
     }
 
 }
