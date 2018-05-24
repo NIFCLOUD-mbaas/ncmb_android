@@ -222,27 +222,8 @@ public class NCMBConnection {
      */
     public void sendRequestAsynchronously(RequestApiCallback callback) {
         setCallbackListener(callback);
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-
-            NCMBResponse res = null;
-            NCMBException error = null;
-
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                try {
-                    res = sendRequest();
-                } catch (NCMBException e) {
-                    error = e;
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void o) {
-                mCallback.done(res, error);
-            }
-        }.execute();
+        StaticAsyncTask task = new StaticAsyncTask(this);
+        task.execute();
 
     }
 
@@ -257,5 +238,37 @@ public class NCMBConnection {
             mimeType = "application/octet-stream";
         }
         return mimeType;
+    }
+
+    private static class StaticAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private NCMBConnection connection = null;
+        NCMBResponse res = null;
+        NCMBException error = null;
+
+        StaticAsyncTask(NCMBConnection connection) {
+            this.connection = connection;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if(connection != null){
+                try {
+                    res = connection.sendRequest();
+                } catch (NCMBException e) {
+                    error = e;
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void o) {
+
+            if(connection != null && connection.mCallback != null){
+                connection.mCallback.done(res, error);
+            }
+        }
     }
 }
