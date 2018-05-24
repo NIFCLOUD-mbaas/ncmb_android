@@ -226,27 +226,7 @@ public class NCMBScriptService extends NCMBService {
      * @param callback   callback for after script execute
      */
     public void executeScriptInBackground(final String scriptName, final MethodType method, final Map<String, String> header, final JSONObject body, final JSONObject query, final String baseUrl, final ExecuteScriptCallback callback) {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-
-            byte[] res = null;
-            NCMBException error = null;
-
-            @Override
-            protected Void doInBackground(Void... param) {
-
-                try {
-                    res = executeScript(scriptName, method, header, body, query, baseUrl);
-                } catch (NCMBException e) {
-                    error = e;
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void o) {
-                callback.done(res, error);
-            }
-        }.execute();
+        new StaticAsyncTask(this,scriptName, method, header, body, query, baseUrl, callback).execute();
     }
 
     boolean isJSONString(String str){
@@ -256,6 +236,54 @@ public class NCMBScriptService extends NCMBService {
             return false;
         }
         return true;
+    }
+
+
+    private static class StaticAsyncTask extends AsyncTask<Void, Void, Void> {
+        byte[] res = null;
+        NCMBException error = null;
+
+        NCMBScriptService scriptService;
+        String scriptName;
+        MethodType method;
+        Map<String, String> header;
+        JSONObject body;
+        JSONObject query;
+        String baseUrl;
+        ExecuteScriptCallback callback;
+
+        public StaticAsyncTask(NCMBScriptService scriptService, String scriptName, MethodType method, Map<String, String> header, JSONObject body, JSONObject query, String baseUrl, ExecuteScriptCallback callback) {
+            this.scriptService = scriptService;
+            this.scriptName = scriptName;
+            this.method = method;
+            this.header = header;
+            this.body = body;
+            this.query = query;
+            this.baseUrl = baseUrl;
+            this.callback = callback;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (scriptService != null) {
+
+
+                try {
+                    res = scriptService.executeScript(scriptName, method, header, body, query, baseUrl);
+                } catch (NCMBException e) {
+                    error = e;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void o) {
+            if (scriptService!= null) {
+                callback.done(res, error);
+            }
+        }
     }
 }
 
