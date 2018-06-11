@@ -37,6 +37,8 @@ import java.util.Map;
 public class NCMBQuery<T extends NCMBBase> {
     private String mClassName;
 
+    private String test;
+
     private JSONObject mWhereConditions = new JSONObject();
     private int limitNumber = 0;
     private int skipNumber = 0;
