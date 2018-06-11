@@ -15,6 +15,7 @@
  */
 package com.nifty.cloud.mb.core;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import com.google.android.gms.gcm.GcmReceiver;
  * Custom GcmReceiver for Google Cloud Messaging
  */
 public class NCMBGcmReceiver extends GcmReceiver {
+    @SuppressLint("ApplySharedPref")
     @Override
     public void onReceive(Context context, Intent intent) {
 

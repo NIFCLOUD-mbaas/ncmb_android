@@ -1,0 +1,5 @@
+<lint>
+    <issue id="ClickableViewAccessibility">
+        <ignore path="**/NCMBDialogActivity.java"/>
+    </issue>
+</lint>
