@@ -4,9 +4,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven {
-            url 'https://maven.google.com'
-        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -53,7 +50,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.android.gms:play-services-gcm:11.0.0'
     implementation 'com.google.code.gson:gson:2.3.1'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.0.2'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.robolectric:robolectric:3.0'
     testImplementation 'org.robolectric:shadows-httpclient:3.0'
