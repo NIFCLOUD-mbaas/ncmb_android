@@ -88,10 +88,10 @@ public class NCMBRichPush extends Dialog {
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
         webView.setWebViewClient(new RichPushWebViewClient());
-        webView.setInitialScale(1);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
         String extension = "";
         if(this.requestUrl.contains(".")) {
             extension = this.requestUrl.substring(this.requestUrl.lastIndexOf("."));
