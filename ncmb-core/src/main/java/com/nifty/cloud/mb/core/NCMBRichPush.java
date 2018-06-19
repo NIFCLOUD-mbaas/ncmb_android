@@ -45,7 +45,7 @@ import java.util.Arrays;
 public class NCMBRichPush extends Dialog {
 
     private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    private static final String GOOGLE_DOCS_BASE_VIEWER_URL = "http://docs.google.com/gview?embedded=true&url=";
+    private static final String GOOGLE_DOCS_BASE_VIEWER_URL = "https://docs.google.com/gview?embedded=true&url=";
     public static final String[] arrOfficeFilenameExt = new String[] {".pdf", ".xls", ".xlsx", ".doc", ".docx", ".ppt", ".pptx"};
     private LinearLayout webBackView;
     private FrameLayout richPushHandlerContainer;
@@ -92,15 +92,7 @@ public class NCMBRichPush extends Dialog {
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-        String extension = "";
-        if(this.requestUrl.contains(".")) {
-            extension = this.requestUrl.substring(this.requestUrl.lastIndexOf("."));
-        }
-        if(Arrays.asList(arrOfficeFilenameExt).contains(extension)) {
-            webView.loadUrl(new StringBuilder(GOOGLE_DOCS_BASE_VIEWER_URL).append(this.requestUrl).toString());
-        } else {
-            webView.loadUrl(this.requestUrl);
-        }
+        webView.loadUrl(checkAndUpdateIfPdfUrl(this.requestUrl));
         webView.setLayoutParams(FILL);
 
         this.webBackView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -139,12 +131,26 @@ public class NCMBRichPush extends Dialog {
         this.closeImage.setVisibility(View.INVISIBLE);
     }
 
+    @SuppressLint("DefaultLocale")
+    private String checkAndUpdateIfPdfUrl(String url) {
+        String extension = "";
+        if(url.contains(".")) {
+            extension = url.substring(url.lastIndexOf("."));
+        }
+        if(!url.contains(GOOGLE_DOCS_BASE_VIEWER_URL)
+                && Arrays.asList(arrOfficeFilenameExt).contains(extension.toLowerCase())) {
+            url = new StringBuilder(GOOGLE_DOCS_BASE_VIEWER_URL).append(url).toString();
+        }
+        return url;
+    }
+
     private class RichPushWebViewClient extends WebViewClient {
         private RichPushWebViewClient() {
         }
 
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return false;
+            view.loadUrl(checkAndUpdateIfPdfUrl(url));
+            return true;
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
