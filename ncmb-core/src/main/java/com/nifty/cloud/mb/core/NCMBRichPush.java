@@ -91,6 +91,7 @@ public class NCMBRichPush extends Dialog {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
         webView.loadUrl(checkAndUpdateIfPdfUrl(this.requestUrl));
         webView.setLayoutParams(FILL);
 
