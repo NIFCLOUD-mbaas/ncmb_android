@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public class NCMBInstallationTest {
         ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
 
         NCMBInstallation installation = new NCMBInstallation();
-        installation.getRegistrationIdInBackground("dummySenderId", new DoneCallback() {
+        installation.getRegistrationIdInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
@@ -128,9 +128,9 @@ public class NCMBInstallationTest {
 
         NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
         NCMBInstallation mockInstallation = spy(current);
-        doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromGCM(anyString());
+        doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromFCM();
         doReturn(true).when(mockInstallation).checkPlayServices(any(Context.class));
-        mockInstallation.getRegistrationIdInBackground("test", new DoneCallback() {
+        mockInstallation.getRegistrationIdInBackground( new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 //本来であれば保存処理を書く

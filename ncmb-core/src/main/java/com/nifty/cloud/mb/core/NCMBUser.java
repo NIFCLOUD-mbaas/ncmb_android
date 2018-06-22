@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,8 +260,22 @@ public class NCMBUser extends NCMBObject {
      */
     public void signUp() throws NCMBException {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
-        NCMBUser user = service.registerByName(getUserName(), getPassword());
-        mFields = user.mFields;
+        JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
+        NCMBUser user ;
+        try {
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") params.put(key,mFields.get(key));
+            }
+            if (params.length() == 0) {
+                user = service.registerByName(getUserName(), getPassword());
+            } else {
+                user = service.registerByName(getUserName(), getPassword(), params);
+                NCMBUserService.mergeJSONObject(user.mFields,params);
+            }
+            mFields = user.mFields;
+        } catch (JSONException e) {}
         //copyFrom(user.mFields);
     }
 
@@ -272,24 +286,59 @@ public class NCMBUser extends NCMBObject {
      */
     public void signUpInBackground(final DoneCallback callback) {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        final JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
         try {
-            service.registerByNameInBackground(getUserName(), getPassword(), new LoginCallback() {
-                @Override
-                public void done(NCMBUser user, NCMBException e) {
-                    if (e != null) {
-                        if (callback != null) {
-                            callback.done(e);
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") {
+                    try {
+                        params.put(key, mFields.get(key));
+                    } catch (JSONException e){}
+                 }
+            }
+            if (params.length() == 0) {
+                service.registerByNameInBackground(getUserName(), getPassword(), new LoginCallback() {
+                    @Override
+                    public void done(NCMBUser user, NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            mFields = user.mFields;
+                            //copyFrom(user.mFields);
+                            if (callback != null) {
+                                callback.done(null);
+                            }
                         }
-                    } else {
-                        mFields = user.mFields;
-                        //copyFrom(user.mFields);
-                        if (callback != null) {
-                            callback.done(null);
-                        }
-                    }
 
-                }
-            });
+                    }
+                });
+            } else {
+                service.registerByNameInBackground(getUserName(), getPassword(), params, new LoginCallback() {
+                    @Override
+                    public void done(NCMBUser user, NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            try {
+                                NCMBUserService.mergeJSONObject(user.mFields,params);
+                                mFields = user.mFields;
+                            } catch (NCMBException ex) {
+
+                            }
+                            //copyFrom(user.mFields);
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+
+                    }
+                });
+            }
         } catch (NCMBException e) {
             if (callback != null) {
                 callback.done(e);

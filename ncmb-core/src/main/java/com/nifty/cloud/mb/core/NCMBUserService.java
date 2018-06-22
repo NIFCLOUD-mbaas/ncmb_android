@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,27 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Register new user by name
+     *
+     * @param userName user name
+     * @param password password
+     * @param otherFields other fields
+     * @return new NCMBUser object that registered
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public NCMBUser registerByName(String userName, String password,JSONObject otherFields) throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
+            return registerUser(params, false);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
      * Register new user by name in background
      *
      * @param userName user name
@@ -126,6 +147,28 @@ public class NCMBUserService extends NCMBService {
             JSONObject params = new JSONObject();
             params.put("userName", userName);
             params.put("password", password);
+            registerUserInBackground(params, false, callback);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Register new user by name in background
+     *
+     * @param userName user name
+     * @param password password
+     * @param otherFields other fields
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     */
+    public void registerByNameInBackground(String userName, String password, JSONObject otherFields, LoginCallback callback)
+            throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
             registerUserInBackground(params, false, callback);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");

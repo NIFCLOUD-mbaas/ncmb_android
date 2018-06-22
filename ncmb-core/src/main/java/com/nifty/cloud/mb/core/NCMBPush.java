@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -940,7 +940,7 @@ public class NCMBPush extends NCMBBase {
         String activityName = "";
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            activityName = appInfo.packageName + appInfo.metaData.getString(NCMBGcmListenerService.OPEN_PUSH_START_ACTIVITY_KEY);
+            activityName = appInfo.packageName + appInfo.metaData.getString(NCMBFirebaseMessagingService.OPEN_PUSH_START_ACTIVITY_KEY);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

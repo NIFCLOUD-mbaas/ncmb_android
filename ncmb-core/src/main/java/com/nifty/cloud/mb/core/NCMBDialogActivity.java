@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -417,7 +417,7 @@ public class NCMBDialogActivity extends Activity {
         }
 
         //SmallIconの設定があれば設定する
-        int userSmallIcon = appInfo.metaData.getInt(NCMBGcmListenerService.SMALL_ICON_KEY);
+        int userSmallIcon = appInfo.metaData.getInt(NCMBFirebaseMessagingService.SMALL_ICON_KEY);
         if(userSmallIcon != 0){
             icon= userSmallIcon;
         }

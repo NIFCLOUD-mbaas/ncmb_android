@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,22 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void sign_up_add_own_field() throws Exception {
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+        user.put("testField","test");
+
+        user.signUp();
+
+        Assert.assertEquals("test", user.mFields.getString("testField"));
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Nifty Tarou", user.getUserName());
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+    }
+
+
+    @Test
     public void sign_up_in_background() throws Exception {
         NCMBUser user = new NCMBUser();
         user.setUserName("Nifty Tarou");
@@ -103,6 +119,33 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
 
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Nifty Tarou", user.getUserName());
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
+    public void sign_up_add_own_field_in_background() throws Exception {
+        NCMBUser user = new NCMBUser();
+        user.setUserName("Nifty Tarou");
+        user.setPassword("niftytarou");
+        user.put("testField","test");
+
+        user.signUpInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("save Background is failed.");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        Assert.assertEquals("test", user.mFields.getString("testField"));
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Nifty Tarou", user.getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
