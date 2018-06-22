@@ -38,7 +38,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.Map;
 import java.util.Random;
-
+/**
+ * FCM push notification receive class
+ */
 public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 	//<meta-data>
 	static final String OPEN_PUSH_START_ACTIVITY_KEY = "openPushStartActivity";
@@ -48,10 +50,10 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 
 	@Override
 	public void onMessageReceived(RemoteMessage remoteMessage) {
-		SharedPreferences recentPushIdPref = this.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
-		String recentPushId = recentPushIdPref.getString("recentPushId", "");
 
 		if (remoteMessage != null && remoteMessage.getData() != null){
+			SharedPreferences recentPushIdPref = this.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
+			String recentPushId = recentPushIdPref.getString("recentPushId", "");
 			String currentPushId = remoteMessage.getData().get("com.nifty.PushId");
 
 			if(!recentPushId.equals(currentPushId)) {

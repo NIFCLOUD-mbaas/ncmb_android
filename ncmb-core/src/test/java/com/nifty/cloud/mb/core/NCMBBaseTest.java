@@ -497,6 +497,39 @@ public class NCMBBaseTest {
     }
 
     @Test
+    public void get_createDate_parse_error() throws Exception {
+        NCMBException error = null;
+        NCMBBase obj = new NCMBBase("testClass");
+        obj.put("createDate", "2016-06-21T18:40:38:506Z");
+        try {
+            obj.getCreateDate();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        Assert.assertNotNull(error);
+        Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+        Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
+    }
+
+    @Test
+    public void get_updateDate_parse_error() throws Exception {
+        NCMBException error = null;
+        NCMBBase obj = new NCMBBase("testClass");
+        obj.put("updateDate", "2016-06-21T18:40:38:506Z");
+        try {
+            obj.getUpdateDate();
+        } catch (NCMBException e) {
+            error = e;
+        }
+
+        Assert.assertNotNull(error);
+        Assert.assertEquals(error.getMessage(), "Unparseable date: \"2016-06-21T18:40:38:506Z\"");
+        Assert.assertEquals(error.getCode(), NCMBException.INVALID_FORMAT);
+    }
+
+
+    @Test
     public void remove() throws Exception {
         NCMBBase baseObj = new NCMBBase("testClass", new JSONObject("{\"key\":\"value\"}"));
 

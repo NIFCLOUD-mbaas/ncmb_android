@@ -373,8 +373,8 @@ public class NCMBObjectTest {
     @Test
     public void fetchObject_non_exist_object() {
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.setObjectId("NonExistObject");
         try {
+            obj.setObjectId("NonExistObject");
             obj.fetch();
         } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
@@ -402,8 +402,8 @@ public class NCMBObjectTest {
                     try {
                         Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
                         Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
+                    } catch (ParseException | NCMBException error) {
+                        Assert.fail(error.getMessage());
                     }
                 }
                 callbackFlag = true;
@@ -460,8 +460,8 @@ public class NCMBObjectTest {
     @Test
     public void delete_object() {
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.setObjectId("deleteTestObjectId");
         try {
+            obj.setObjectId("deleteTestObjectId");
             obj.deleteObject();
         } catch (NCMBException e) {
             Assert.fail("exception raised:" + e.getMessage());
@@ -482,8 +482,8 @@ public class NCMBObjectTest {
     @Test
     public void delete_object_non_exist_object() {
         NCMBObject obj = new NCMBObject("TestClass");
-        obj.setObjectId("nonExistId");
         try {
+            obj.setObjectId("nonExistId");
             obj.deleteObject();
         } catch (NCMBException e) {
             Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
@@ -528,7 +528,7 @@ public class NCMBObjectTest {
     }
 
     @Test
-    public void delete_object_in_background_non_exist_object_id() {
+    public void delete_object_in_background_non_exist_object_id() throws Exception {
         NCMBObject obj = new NCMBObject("TestClass");
         obj.setObjectId("nonExistId");
         obj.deleteObjectInBackground(new DoneCallback() {
