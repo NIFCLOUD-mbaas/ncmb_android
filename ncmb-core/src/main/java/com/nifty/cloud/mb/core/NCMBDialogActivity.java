@@ -389,7 +389,7 @@ public class NCMBDialogActivity extends Activity {
         }
 
         //SmallIconの設定があれば設定する
-        int userSmallIcon = appInfo.metaData.getInt(NCMBGcmListenerService.SMALL_ICON_KEY);
+        int userSmallIcon = appInfo.metaData.getInt(NCMBFirebaseMessagingService.SMALL_ICON_KEY);
         if(userSmallIcon != 0){
             icon= userSmallIcon;
         }

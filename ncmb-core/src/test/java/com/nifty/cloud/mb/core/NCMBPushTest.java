@@ -18,7 +18,9 @@ package com.nifty.cloud.mb.core;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
+import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import junit.framework.Assert;
@@ -712,10 +714,14 @@ public class NCMBPushTest {
 
         String testPushId = "testPushId";
 
-        NCMBGcmReceiver receiver = new NCMBGcmReceiver();
-        Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), NCMBGcmListenerService.class);
+        Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), NCMBFirebaseMessagingService.class);
         intent.putExtra("com.nifty.PushId", testPushId);
-        receiver.onReceive(ShadowApplication.getInstance().getApplicationContext(), intent);
+
+        NCMBFirebaseMessagingService fcmService = new NCMBFirebaseMessagingService();
+        Bundle data = new Bundle();
+        data.putString("com.nifty.PushId", testPushId);
+        RemoteMessage rm = new RemoteMessage(data);
+        fcmService.onMessageReceived(rm);
 
 
         SharedPreferences sp = RuntimeEnvironment.application.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);

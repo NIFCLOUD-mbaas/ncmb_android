@@ -107,7 +107,7 @@ public class NCMBInstallationTest {
         ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
 
         NCMBInstallation installation = new NCMBInstallation();
-        installation.getRegistrationIdInBackground("dummySenderId", new DoneCallback() {
+        installation.getRegistrationIdInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
@@ -128,9 +128,9 @@ public class NCMBInstallationTest {
 
         NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
         NCMBInstallation mockInstallation = spy(current);
-        doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromGCM(anyString());
+        doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromFCM();
         doReturn(true).when(mockInstallation).checkPlayServices(any(Context.class));
-        mockInstallation.getRegistrationIdInBackground("test", new DoneCallback() {
+        mockInstallation.getRegistrationIdInBackground( new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 //本来であれば保存処理を書く

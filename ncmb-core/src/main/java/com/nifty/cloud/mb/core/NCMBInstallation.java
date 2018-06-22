@@ -22,8 +22,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import static com.nifty.cloud.mb.core.NCMBException.GENERIC_ERROR;
 
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
@@ -403,15 +405,19 @@ public class NCMBInstallation extends NCMBObject {
      *
      * @param senderId sender Id
      * @param callback doneCallback
+     * @deprecated use {@link #getRegistrationIdInBackground(final DoneCallback callback)} instead.
      */
+    @Deprecated
     public void getRegistrationIdInBackground(String senderId, final DoneCallback callback) {
-        //Nullチェック
-        if (senderId == null && NCMB.getCurrentContext().context == null) {
-            if (callback != null) {
-                callback.done(new NCMBException(NCMBException.REQUIRED, "applicationContext or senderId is must not be null."));
-                return;
-            }
-        }
+        getRegistrationIdInBackground(callback);
+    }
+
+    /**
+     * Get registrationId inBackground
+     *
+     * @param callback doneCallback
+     */
+    public void getRegistrationIdInBackground(final DoneCallback callback) {
 
         //端末にAPKがインストールされていない場合は処理を終了
         try {
@@ -423,20 +429,33 @@ public class NCMBInstallation extends NCMBObject {
             }
         }
 
-
+        //FCM init
+        FirebaseApp.initializeApp(NCMB.getCurrentContext().context);
         //registrationIdを非同期で取得
-        new StaticAsyncTask(this, callback).execute(senderId, null, null);
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    mFields.put("deviceToken", getDeviceTokenFromFCM());
+                    callback.done(null);
+                } catch (IOException | JSONException error) {
+                    callback.done(new NCMBException(error));
+                }
+                return null;
+            }
+        }.execute(null, null, null);
     }
 
     /**
-     * GCMからregistrationIdを取得する
+     * FCMからregistrationIdを取得する
      *
-     * @param senderId GCM用に設定したsenderId
+     * @return string
      */
-    protected String getDeviceTokenFromGCM(String senderId) throws IOException {
-        InstanceID instanceID = InstanceID.getInstance(NCMB.getCurrentContext().context);
-        String token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-        return token;
+    protected String getDeviceTokenFromFCM() throws IOException {
+        if(!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()){
+            return null;
+        }
+        return FirebaseInstanceId.getInstance().getToken();
     }
 
     /**

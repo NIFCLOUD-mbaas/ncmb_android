@@ -940,7 +940,7 @@ public class NCMBPush extends NCMBBase {
         String activityName = "";
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            activityName = appInfo.packageName + appInfo.metaData.getString(NCMBGcmListenerService.OPEN_PUSH_START_ACTIVITY_KEY);
+            activityName = appInfo.packageName + appInfo.metaData.getString(NCMBFirebaseMessagingService.OPEN_PUSH_START_ACTIVITY_KEY);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
