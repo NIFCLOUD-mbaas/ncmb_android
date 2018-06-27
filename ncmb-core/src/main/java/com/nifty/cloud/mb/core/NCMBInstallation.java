@@ -439,7 +439,7 @@ public class NCMBInstallation extends NCMBObject {
      * @return string
      */
     protected String getDeviceTokenFromFCM() throws IOException {
-        if(!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()){
+        if(FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()){
             throw new IOException("Can not get device token, please check your google-service.json");
         }
         return FirebaseInstanceId.getInstance().getToken();
