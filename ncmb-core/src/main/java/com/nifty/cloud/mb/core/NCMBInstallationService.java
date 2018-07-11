@@ -511,6 +511,7 @@ public class NCMBInstallationService extends NCMBService {
         params.put("appVersion", appVersion);
         params.put("sdkVersion", NCMB.SDK_VERSION);
         params.put("timeZone", timeZone);
+        params.put("pushType", "fcm");
     }
 
     /**

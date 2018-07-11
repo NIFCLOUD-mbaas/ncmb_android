@@ -66,7 +66,7 @@ public class NCMBInstallation extends NCMBObject {
 
     static final List<String> ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
-            "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl"
+            "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
     );
 
     //region getter
