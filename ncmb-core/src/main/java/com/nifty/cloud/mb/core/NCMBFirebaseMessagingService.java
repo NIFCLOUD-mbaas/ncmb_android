@@ -71,8 +71,9 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 	protected Bundle getBundleFromRemoteMessage(RemoteMessage remoteMessage){
 		Bundle bundle = new Bundle();
 		Map<String, String> data = remoteMessage.getData();
-		for(String key: data.keySet()){
-			bundle.putString(key, data.get(key));
+
+		for (Map.Entry<String, String> entry : data.entrySet()) {
+			bundle.putString(entry.getKey(),entry.getValue());
 		}
 		return bundle;
 	}
