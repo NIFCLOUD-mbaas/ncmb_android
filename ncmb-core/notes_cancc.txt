@@ -1,0 +1,11 @@
+- Remove luon thu muc example
+
+- NCMBUserService.java: dòng 122, 163
+Chuyển "NIFTY Cloud mobile backend" thành "NIFCLOUD mobile backend"
+
+- NCMBRequestTest.java dòng 21, link không tồn tại
+Hãy sửa lại thành: https://mbaas.nifcloud.com/doc/current/rest/common/signature.html
+
+- Readme.md: dòng 99, Link không tồn tài
+Hãy sửa lại thành: https://mbaas.nifcloud.com/doc/current/
+
