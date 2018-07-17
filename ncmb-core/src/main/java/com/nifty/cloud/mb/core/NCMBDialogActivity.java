@@ -27,7 +27,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.text.TextUtils.TruncateAt;
 import android.text.method.ScrollingMovementMethod;
@@ -47,9 +46,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Default Activity for dialaog push notification
  */
@@ -62,6 +58,9 @@ public class NCMBDialogActivity extends Activity {
     static final String INTENT_EXTRA_SUBJECT = "SUBJECT";
     static final String INTENT_EXTRA_MESSAGE = "MESSAGE";
     static final String INTENT_EXTRA_DISPLAYTYPE = "DISPLAY_TYPE";
+    static final String CLOSE_BTN_TEXT = "閉じる";
+    static final String CLOSE_BTN_TEXT_1 = "閉じる1";
+    static final String CLOSE_BTN_TEXT_2 = "閉じる2";
 
     // ユーザ定義レイアウトファイル名NCMBDialogActivity
     final String USER_LAYOUT_FILE_NAME = "ncmb_notification_dialog";
@@ -75,9 +74,6 @@ public class NCMBDialogActivity extends Activity {
     final String USER_DEFINE_OPEN_BUTTON = "ncmb_button_open";
 
     PowerManager.WakeLock mWakelock;
-    MyTimerTask timerTask = null;
-    Timer mTimer = null;
-    Handler mHandler = new Handler();
     boolean charDialog = false;
     int displayType = 0;
     int backgroundImage = 0;
@@ -126,9 +122,6 @@ public class NCMBDialogActivity extends Activity {
             // 表示形式が不正
             throw new RuntimeException("Error displayType is invalid.");
         }
-
-        // ウェイクロックの解放
-        turnOffScreen();
     }
 
     @Override
@@ -147,7 +140,7 @@ public class NCMBDialogActivity extends Activity {
         mWakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP
                 | PowerManager.ON_AFTER_RELEASE, "NCMBDialogActivity");
-        mWakelock.acquire();
+        mWakelock.acquire(5000);
         waitForLight();
 
         getWindow().setFlags(LayoutParams.FLAG_TURN_SCREEN_ON, LayoutParams.FLAG_TURN_SCREEN_ON);
@@ -162,27 +155,6 @@ public class NCMBDialogActivity extends Activity {
             }
         }
         return true;
-    }
-
-    protected void turnOffScreen() {
-        // Start a waiting timer for phone wakeup
-        timerTask = new MyTimerTask();
-        mTimer = new Timer(true);
-        mTimer.schedule(timerTask, 5000);
-    }
-
-    class MyTimerTask extends TimerTask {
-        @Override
-        public void run() {
-            mHandler.post(new Runnable() {
-                public void run() {
-                    if (mWakelock.isHeld()) {
-                        mWakelock.release();
-                    }
-                    //timeOut
-                }
-            });
-        }
     }
 
     // 標準ダイアログ
@@ -488,17 +460,15 @@ public class NCMBDialogActivity extends Activity {
         closeButton.setHeight(convertDpToPixel(40));
         closeButton.setBackgroundDrawable(buttonDrawable);
         closeButton.setPadding(convertDpToPixel(2), convertDpToPixel(2), convertDpToPixel(2), convertDpToPixel(2));
-        closeButton.setText("閉じる");
+        closeButton.setText(CLOSE_BTN_TEXT);
 
         closeButton.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    String a = "1";
-                    closeButton.setText("閉じる" + a);
+                    closeButton.setText(CLOSE_BTN_TEXT_1);
                 } else {
-                    String b = "2";
-                    closeButton.setText("閉じる" + b);
+                    closeButton.setText(CLOSE_BTN_TEXT_2);
                 }
             }
         });

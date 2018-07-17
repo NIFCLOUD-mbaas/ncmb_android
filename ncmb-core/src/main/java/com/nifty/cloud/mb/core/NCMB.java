@@ -15,6 +15,7 @@
  */
 package com.nifty.cloud.mb.core;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -92,6 +93,7 @@ public class NCMB {
     /**
      * Runtime Context
      */
+    @SuppressLint("StaticFieldLeak")
     private static NCMBContext sCurrentContext;
 
     /**
