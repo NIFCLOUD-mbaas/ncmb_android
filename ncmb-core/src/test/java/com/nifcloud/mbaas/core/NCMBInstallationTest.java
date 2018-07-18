@@ -15,7 +15,6 @@
  */
 package com.nifcloud.mbaas.core;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 
@@ -39,11 +38,6 @@ import org.robolectric.shadows.gms.ShadowGooglePlayServicesUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Test for NCMBInstallationTest
@@ -106,49 +100,14 @@ public class NCMBInstallationTest {
         //isGooglePlayServicesAvailableメソッドの結果をSERVICE_VERSION_UPDATE_REQUIRED(開発者サービスが古い)に固定する
         ShadowGooglePlayServicesUtil.setIsGooglePlayServicesAvailable(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
 
-        NCMBInstallation installation = new NCMBInstallation();
-        installation.getRegistrationIdInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals("java.lang.IllegalArgumentException: This device is not supported google-play-services-APK.", e.getMessage());
-            }
-        });
-    }
 
-    /**
-     * getRegistrationInBackgroundを呼び出すとdeviceTokenがプロパティにセットされる事
-     *
-     * @throws Exception
-     */
-    @Test
-    public void getRegistrationID_with_valid_senderID() throws Exception {
+        try {
+            NCMBInstallationUtils.checkPlayServices(NCMB.getCurrentContext().context);
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+            Assert.assertEquals("This device is not supported google-play-services-APK.", e.getMessage());
+        }
 
-        callbackFlag = false;
-
-        NCMBInstallation current = NCMBInstallation.getCurrentInstallation();
-        NCMBInstallation mockInstallation = spy(current);
-        doReturn("testDeviceToken").when(mockInstallation).getDeviceTokenFromFCM();
-        doReturn(true).when(mockInstallation).checkPlayServices(any(Context.class));
-        mockInstallation.getRegistrationIdInBackground( new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                //本来であれば保存処理を書く
-                if (e != null) {
-                    e.printStackTrace();
-                }
-                callbackFlag = true;
-
-            }
-        });
-
-
-        Robolectric.flushBackgroundThreadScheduler();
-        ShadowLooper.runUiThreadTasks();
-
-        junit.framework.Assert.assertTrue(callbackFlag);
-
-        Assert.assertEquals("testDeviceToken", mockInstallation.getDeviceToken());
     }
 
     //region save test
@@ -172,7 +131,7 @@ public class NCMBInstallationTest {
         //check
         Assert.assertNull(error);
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
     }
@@ -197,7 +156,7 @@ public class NCMBInstallationTest {
         Assert.assertNull(error);
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
         Assert.assertEquals("value1", installation.getString("key"));
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
@@ -244,7 +203,7 @@ public class NCMBInstallationTest {
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
     }
@@ -265,7 +224,7 @@ public class NCMBInstallationTest {
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
         Assert.assertEquals("value1", installation.getString("key"));
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
@@ -311,7 +270,7 @@ public class NCMBInstallationTest {
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
         Assert.assertEquals("value1", installation.getString("key"));
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
@@ -360,7 +319,7 @@ public class NCMBInstallationTest {
         //check
         Assert.assertNull(error);
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
     }
@@ -390,7 +349,7 @@ public class NCMBInstallationTest {
 
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
@@ -414,7 +373,7 @@ public class NCMBInstallationTest {
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
         Assert.assertEquals("value", installation.getString("key"));
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getCreateDate());
         Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), installation.getUpdateDate());
@@ -434,7 +393,7 @@ public class NCMBInstallationTest {
                 //check
                 Assert.assertEquals("7FrmPTBKSNtVjajm", fetchedInstallation.getObjectId());
                 Assert.assertEquals("value", fetchedInstallation.getString("key"));
-                Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", fetchedInstallation.getDeviceToken());
+                Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", fetchedInstallation.getLocalDeviceToken());
                 Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("createDate"));
                 Assert.assertEquals("2014-06-03T11:28:30.348Z", fetchedInstallation.getString("updateDate"));
             }

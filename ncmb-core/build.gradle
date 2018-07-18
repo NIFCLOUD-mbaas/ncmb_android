@@ -45,8 +45,8 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
-    implementation 'com.google.firebase:firebase-messaging:15.0.0'
-    implementation 'com.google.android.gms:play-services-base:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.1.0'
+    implementation 'com.google.android.gms:play-services-base:15.0.1'
     implementation 'com.google.code.gson:gson:2.3.1'
     implementation 'com.android.support:appcompat-v7:26.1.0'
 

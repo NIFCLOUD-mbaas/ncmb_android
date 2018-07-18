@@ -687,7 +687,7 @@ public class NCMBQueryTest {
         query.whereEqualTo("deviceType", "android");
         List<NCMBInstallation> result = query.find();
 
-        Assert.assertEquals("dummyDeviceToken01", result.get(0).getDeviceToken());
+        Assert.assertEquals("dummyDeviceToken01", result.get(0).getLocalDeviceToken());
     }
 
     @Test
@@ -789,7 +789,7 @@ public class NCMBQueryTest {
                     Assert.fail("this callback should not raise exception");
                 } else {
 
-                    Assert.assertEquals("dummyDeviceToken01", results.get(0).getDeviceToken());
+                    Assert.assertEquals("dummyDeviceToken01", results.get(0).getLocalDeviceToken());
                 }
                 callbackFlag = true;
             }

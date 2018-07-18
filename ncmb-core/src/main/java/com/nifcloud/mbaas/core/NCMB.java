@@ -167,6 +167,8 @@ public class NCMB {
             NCMBNotificationUtils utils = new NCMBNotificationUtils(context);
             utils.settingDefaultChannels();
         }
+
+        NCMBInstallationUtils.saveToken();
     }
 
     /**
