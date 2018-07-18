@@ -16,14 +16,15 @@
 package com.nifcloud.mbaas.core;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -157,9 +158,58 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * Get device token
      *
+     * @deprecated replaced by {@link #getDeviceTokenInBackground}
      * @return device token
+     *
      */
     public String getDeviceToken() {
+        try {
+            if (mFields.isNull("deviceToken")) {
+                return null;
+            }
+            return mFields.getString("deviceToken");
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
+    /**
+     * Get device token
+     *
+     * @param callback TokenCallback
+     */
+    public void getDeviceTokenInBackground(final TokenCallback callback) {
+        if (!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()) {
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                @Override
+                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    if (task.isSuccessful()) {
+                        callback.done(task.getResult().getToken(), null);
+                    } else {
+                        callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
+                    }
+                }
+            });
+
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCanceledListener(new OnCanceledListener() {
+                @Override
+                public void onCanceled() {
+                    callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
+
+                }
+            });
+        } else {
+            callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
+        }
+    }
+
+    /**
+     * Get device token
+     *
+     * @return device token
+     *
+     */
+    protected String getLocalDeviceToken() {
         try {
             if (mFields.isNull("deviceToken")) {
                 return null;
@@ -398,68 +448,6 @@ public class NCMBInstallation extends NCMBObject {
         mIgnoreKeys = ignoreKeys;
     }
 
-    /**
-     * Get registrationId inBackground
-     *
-     * @param callback doneCallback
-     */
-    public void getRegistrationIdInBackground(final DoneCallback callback) {
-
-        //端末にAPKがインストールされていない場合は処理を終了
-        try {
-            if (!checkPlayServices(NCMB.getCurrentContext().context)) return;
-        } catch (Exception error) {
-            if (callback != null) {
-                callback.done(new NCMBException(error));
-                return;
-            }
-        }
-
-        //FCM init
-        FirebaseApp.initializeApp(NCMB.getCurrentContext().context);
-        //registrationIdを非同期で取得
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    mFields.put("deviceToken", getDeviceTokenFromFCM());
-                    callback.done(null);
-                } catch (IOException | JSONException error) {
-                    callback.done(new NCMBException(error));
-                }
-                return null;
-            }
-        }.execute(null, null, null);
-
-    }
-
-    /**
-     * FCMからregistrationIdを取得する
-     *
-     * @return string
-     */
-    protected String getDeviceTokenFromFCM() throws IOException {
-        if(FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()){
-            throw new IOException("Can not get device token, please check your google-service.json");
-        }
-        return FirebaseInstanceId.getInstance().getToken();
-    }
-
-    /**
-     * 端末にGooglePlay開発者サービスがインストールされているか確認
-     * インストールされていな場合はエラーを返す
-     *
-     * @param context
-     * @return bool
-     */
-    protected boolean checkPlayServices(Context context) throws Exception {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
-        }
-        return true;
-    }
-
     // region channel
 
     /**
@@ -578,7 +566,7 @@ public class NCMBInstallation extends NCMBObject {
         JSONObject responseData;
         if (getObjectId() == null) {
             //new create
-            responseData = installationService.createInstallation(getDeviceToken(), mFields);
+            responseData = installationService.createInstallation(getLocalDeviceToken(), mFields);
         } else {
             //update
             JSONObject updateJson = null;
@@ -630,7 +618,7 @@ public class NCMBInstallation extends NCMBObject {
         NCMBInstallationService installationService = (NCMBInstallationService) NCMB.factory(NCMB.ServiceType.INSTALLATION);
         if (getObjectId() == null) {
             //new create
-            installationService.createInstallationInBackground(getDeviceToken(), mFields, exeCallback);
+            installationService.createInstallationInBackground(getLocalDeviceToken(), mFields, exeCallback);
         } else {
             //update
             JSONObject updateJson = null;
@@ -771,8 +759,8 @@ public class NCMBInstallation extends NCMBObject {
             if (getDeviceType() != null) {
                 localData.put("deviceType", getDeviceType());
             }
-            if (getDeviceToken() != null) {
-                localData.put("deviceToken", getDeviceToken());
+            if (getLocalDeviceToken() != null) {
+                localData.put("deviceToken", getLocalDeviceToken());
             }
             if (getSDKVersion() != null) {
                 localData.put("sdkVersion", getSDKVersion());

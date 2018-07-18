@@ -414,7 +414,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId());
         Assert.assertEquals(APP_NAME, installation.getApplicationName());
         Assert.assertEquals(APP_VERSION, installation.getAppVersion());
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.getLocalDeviceToken());
         Assert.assertEquals("android", installation.getDeviceType());
         Assert.assertEquals(NCMB.SDK_VERSION, installation.getSDKVersion());
         Assert.assertEquals("Asia/Tokyo", installation.getTimeZone());
@@ -521,7 +521,7 @@ public class NCMBInstallationServiceTest {
         NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
         Assert.assertEquals("7FrmPTBKSNtVjajm", currentInstallation.getObjectId());
         Assert.assertEquals("value", currentInstallation.getValue("key"));
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getLocalDeviceToken());
         DateFormat format = NCMBDateFormat.getIso8601();
         Date resultDate = format.parse("2014-06-03T11:28:30.348Z");
         Assert.assertEquals(resultDate, currentInstallation.getCreateDate());
@@ -599,7 +599,7 @@ public class NCMBInstallationServiceTest {
 
         //check currentInstallation
         NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getLocalDeviceToken());
 
         //connect auto delete
         NCMBException error = null;
@@ -631,7 +631,7 @@ public class NCMBInstallationServiceTest {
 
         //check currentInstallation
         NCMBInstallation currentInstallation = NCMBInstallation.getCurrentInstallation();
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getDeviceToken());
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", currentInstallation.getLocalDeviceToken());
 
         //connect auto delete inBackground
         installationService.deleteInstallationInBackground("errorObjectId", new DoneCallback() {
@@ -720,7 +720,7 @@ public class NCMBInstallationServiceTest {
         Assert.assertEquals("1.5.0", currentInstallation.getSDKVersion());
         Assert.assertEquals("non-update-value-id", currentInstallation.getObjectId());
         Assert.assertEquals("value", currentInstallation.getString("key"));
-        Assert.assertEquals("dummyDeviceToken", currentInstallation.getDeviceToken());
+        Assert.assertEquals("dummyDeviceToken", currentInstallation.getLocalDeviceToken());
         Assert.assertEquals("1.0", currentInstallation.getAppVersion());
         Assert.assertEquals("AndroidSDK_v1", currentInstallation.getApplicationName());
         Assert.assertEquals(new JSONArray("[Ch2]"), currentInstallation.getChannels());

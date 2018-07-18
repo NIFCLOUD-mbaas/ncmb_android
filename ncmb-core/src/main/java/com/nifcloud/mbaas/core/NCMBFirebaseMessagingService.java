@@ -48,7 +48,17 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
     static final String SMALL_ICON_KEY = "smallIcon";
     static final String SMALL_ICON_COLOR_KEY = "smallIconColor";
     static final String NOTIFICATION_OVERLAP_KEY = "notificationOverlap";
-
+    
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
+     */
+    @Override
+    public void onNewToken(String token) {
+        NCMBInstallationUtils.saveToken();
+    }
+    
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
