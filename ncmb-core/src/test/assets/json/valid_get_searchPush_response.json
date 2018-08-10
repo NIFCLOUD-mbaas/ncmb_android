@@ -20,7 +20,7 @@
         "android"
       ],
       "dialog": true,
-      "action": "nifty.com.push.unity.RECEIVE_PUSH",
+      "action": "Ncmb.com.push.unity.RECEIVE_PUSH",
       "category": null,
       "contentAvailable": false,
       "badgeSetting": null,
@@ -51,7 +51,7 @@
       "error":null,
       "target":["android"],
       "dialog":true,
-      "action":"nifty.com.push.unity.RECEIVE_PUSH",
+      "action":"Ncmb.com.push.unity.RECEIVE_PUSH",
       "category":null,
       "contentAvailable":false,
       "badgeSetting":null,
