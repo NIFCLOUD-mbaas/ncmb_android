@@ -118,7 +118,7 @@ public class NCMBRequestTest {
 
     /**
      * - 内容：シグネチャが正しく生成されているかを確認する
-     * - 結果：ドキュメントのシグネチャと一致すること(https://mbaas.nifcloud.com/doc/rest/common/signature.html)
+     * - 結果：ドキュメントのシグネチャと一致すること(https://mbaas.nifcloud.com/doc/current/rest/common/signature.html)
      */
     @Test
     public void requestSignatureCheck() throws Exception {

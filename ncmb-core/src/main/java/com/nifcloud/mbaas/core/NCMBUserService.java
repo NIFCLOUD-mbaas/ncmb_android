@@ -119,7 +119,7 @@ public class NCMBUserService extends NCMBService {
      * @param password password
      * @param otherFields other fields
      * @return new NCMBUser object that registered
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser registerByName(String userName, String password,JSONObject otherFields) throws NCMBException {
         try {
@@ -160,7 +160,7 @@ public class NCMBUserService extends NCMBService {
      * @param password password
      * @param otherFields other fields
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIFTY Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void registerByNameInBackground(String userName, String password, JSONObject otherFields, LoginCallback callback)
             throws NCMBException {
