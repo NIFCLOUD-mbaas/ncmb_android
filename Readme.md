@@ -96,5 +96,5 @@ obj.saveInBackground(new DoneCallback() {
 ## 参考URL集
 
 - [ニフクラ mobile backend](https://mbaas.nifcloud.com)
-- [ドキュメント](https://mbaas.nifcloud.com/doc)
+- [ドキュメント](https://mbaas.nifcloud.com/doc/current)
 - [ユーザーコミュニティ](https://github.com/NIFCloud-mbaas/UserCommunity)
