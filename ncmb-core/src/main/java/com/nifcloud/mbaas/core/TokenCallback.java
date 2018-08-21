@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nifty.cloud.mb.core;
+package com.nifcloud.mbaas.core;
 
 public interface TokenCallback extends CallbackBase {
     void done(String token, NCMBException e);
