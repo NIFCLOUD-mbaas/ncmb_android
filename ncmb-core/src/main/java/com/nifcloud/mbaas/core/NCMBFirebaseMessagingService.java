@@ -65,7 +65,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage != null && remoteMessage.getData() != null) {
             SharedPreferences recentPushIdPref = this.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
             String recentPushId = recentPushIdPref.getString("recentPushId", "");
-            String currentPushId = remoteMessage.getData().get("com.nifty.PushId");
+            String currentPushId = remoteMessage.getData().get("com.nifcloud.mbaas.PushId");
             // Skip duplicated message
             if (!recentPushId.equals(currentPushId)) {
                 SharedPreferences.Editor editor = recentPushIdPref.edit();

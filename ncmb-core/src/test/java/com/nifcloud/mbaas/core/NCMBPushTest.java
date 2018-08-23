@@ -710,7 +710,7 @@ public class NCMBPushTest {
     //endregion
 
     @Test
-    public void NCMBGcmReceiverSavedRecentPushNotoficationId() {
+    public void NCMBFcmReceiverSavedRecentPushNotoficationId() {
 
         String testPushId = "testPushId";
 

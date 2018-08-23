@@ -40,8 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static com.nifty.cloud.mb.core.NCMBException.GENERIC_ERROR;
-
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
  */
@@ -786,27 +784,5 @@ public class NCMBInstallation extends NCMBObject {
             throw new IllegalArgumentException(error.getMessage());
         }
         return localData;
-    }
-
-    private static class StaticAsyncTask extends AsyncTask<String, Void, Void> {
-        DoneCallback callback;
-        NCMBInstallation installation;
-        public StaticAsyncTask(NCMBInstallation installation, DoneCallback callback) {
-            this.callback = callback;
-            this.installation = installation;
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            if (installation != null) {
-                try {
-                    installation.mFields.put("deviceToken", installation.getDeviceTokenFromGCM(params[0]));
-                    callback.done(null);
-                } catch (IOException | JSONException error) {
-                    callback.done(new NCMBException(error));
-                }
-            }
-            return null;
-        }
     }
 }
