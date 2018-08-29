@@ -144,7 +144,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
             プッシュデータにチャネルが指定されているかつ、チャネルファイルが登録されている場合は、
             通知タップ起動時のactivityNameをファイル内指定のactivityNameactivityNameに更新する
             */
-            String channel = pushData.getString("com.nifty.Channel");
+            String channel = pushData.getString("com.nifcloud.mbaas.Channel");
             if (channel != null) {
                 File channelDirectory = new File(this.getDir(NCMBLocalFile.FOLDER_NAME, Context.MODE_PRIVATE), NCMBInstallation.CHANNELS_FOLDER_NAME);
                 File channelFile = new File(channelDirectory, channel);
@@ -228,3 +228,4 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
         return notificationBuilder;
     }
 }
+
