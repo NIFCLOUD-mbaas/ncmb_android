@@ -135,6 +135,7 @@
       appVersion: "1.0"
       sdkVersion: "2.4.1"
       timeZone: "Asia/Tokyo"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_response.json
@@ -150,6 +151,7 @@
       sdkVersion: "2.4.1"
       timeZone: "Etc/UTC"
       key: "value"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_response.json
@@ -165,6 +167,7 @@
       sdkVersion: "2.4.1"
       timeZone: "UTC"
       key: "value"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_response.json
@@ -180,6 +183,7 @@
       appVersion: "1.0"
       sdkVersion: "2.4.1"
       timeZone: "Asia/Tokyo"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_notFoundTest_response.json
@@ -195,6 +199,7 @@
       appVersion: "1.0"
       sdkVersion: "2.4.1"
       timeZone: "Etc/UTC"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_notFoundTest_response.json
@@ -210,6 +215,7 @@
       appVersion: "1.0"
       sdkVersion: "2.4.1"
       timeZone: "UTC"
+      pushType: "fcm"
   response:
     status: 201
     file: valid_post_notFoundTest_response.json
@@ -237,6 +243,7 @@
       timeZone: "Asia/Tokyo"
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -251,6 +258,7 @@
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
       key: "value_update"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -264,6 +272,7 @@
       timeZone: "Etc/UTC"
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -277,6 +286,7 @@
       timeZone: "UTC"
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -291,6 +301,7 @@
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
       key: "value_update"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -305,6 +316,7 @@
       sdkVersion: "2.4.1"
       applicationName: "ncmb-core"
       key: "value_update"
+      pushType: "fcm"
   response:
     status: 200
     file: valid_put_response.json
@@ -492,8 +504,8 @@
     url: /2013-09-01/users
     method: POST
     body:
-      userName: "Nifty Tarou"
-      password: "niftytarou"
+      userName: "Ncmb Tarou"
+      password: "Ncmbtarou"
   response:
     status: 201
     file: valid_post_registerUser_response.json
@@ -772,7 +784,7 @@
   request:
     url: /2013-09-01/login
     query:
-      userName: "Nifty Tarou"
+      userName: "Ncmb Tarou"
       password: dummyPassword
     method: GET
   response:
@@ -836,7 +848,7 @@
     url: /2013-09-01/users
     method: GET
     query:
-      where: '{"userName":"Nifty Tarou"}'
+      where: '{"userName":"Ncmb Tarou"}'
   response:
     status: 200
     file: valid_get_searchUser_response.json
@@ -1109,8 +1121,8 @@
     url: /2013-09-01/users
     method: POST
     body:
-      userName: "Nifty Tarou"
-      password: "niftytarou"
+      userName: "Ncmb Tarou"
+      password: "Ncmbtarou"
       testField: "test"
   response:
     status: 201
