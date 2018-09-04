@@ -1,3 +1,0 @@
-include ':app'
-include ':ncmb-core'
-project(':ncmb-core').projectDir = new File(settingsDir, '../../ncmb-core')
