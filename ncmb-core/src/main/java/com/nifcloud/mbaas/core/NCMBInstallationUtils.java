@@ -22,20 +22,36 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 class NCMBInstallationUtils {
 
-    protected static void saveToken() {
+    private static final String THIS_DEVICE_NOT_SUPPORTED_MESSAGE = 
+        "This device is not supported google-play-services-APK.";
+
+    protected static void saveInstallation(Map<String,String> installationCustomFields) {
+        DeviceTokenCallbackQueue.getInstance().beginSaveInstallation();
+
         try {
             //端末にAPKがインストールされていない場合は処理を終了
             if (!checkPlayServices(NCMB.getCurrentContext().context)) {
+                DeviceTokenCallbackQueue.getInstance().execQueue(null,new NCMBException(new IllegalArgumentException(THIS_DEVICE_NOT_SUPPORTED_MESSAGE)));
                 return;
             }
 
             final NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
-            installation.getDeviceTokenInBackground(new TokenCallback() {
+            if(installationCustomFields != null){
+                for (Entry<String,String> entry : installationCustomFields.entrySet()) {
+                    if(entry.getKey() != null && entry.getValue() != null){
+                        installation.put(entry.getKey(),entry.getValue());
+                    }
+                }
+            }
+
+            installation.getDeviceTokenInternalProcess(new TokenCallback() {
                 @Override
-                public void done(String token, NCMBException e) {
+                public void done(final String token, NCMBException e) {
                     if (e == null) {
                         installation.setDeviceToken(token);
                         //端末情報をデータストアに登録
@@ -44,6 +60,7 @@ class NCMBInstallationUtils {
                             public void done(NCMBException saveErr) {
                                 if (saveErr == null) {
                                     //保存成功
+                                    DeviceTokenCallbackQueue.getInstance().execQueue(token,null);
                                 } else if (NCMBException.DUPLICATE_VALUE.equals(saveErr.getCode())) {
                                     //保存失敗 : registrationID重複
                                     updateInstallation(installation);
@@ -53,13 +70,17 @@ class NCMBInstallationUtils {
                                 }
                             }
                         });
+                    }else{
+                        DeviceTokenCallbackQueue.getInstance().execQueue(token,e);
                     }
                 }
             });
         } catch (NoClassDefFoundError e) {
             Log.i("INFO", "For Push Notification function, you must be install Google Play Services in SDK Manager and add the FCM dependency. More information: https://mbaas.nifcloud.com/doc/current/push/basic_usage_android.html");
+            DeviceTokenCallbackQueue.getInstance().execQueue(null,new NCMBException(new IllegalArgumentException(THIS_DEVICE_NOT_SUPPORTED_MESSAGE)));
         } catch (Exception e) {
             Log.e("Error", e.toString());
+            DeviceTokenCallbackQueue.getInstance().execQueue(null,new NCMBException(new IllegalArgumentException(THIS_DEVICE_NOT_SUPPORTED_MESSAGE)));
         }
     }
 
@@ -73,7 +94,7 @@ class NCMBInstallationUtils {
     protected static boolean checkPlayServices(Context context) throws Exception {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
-            throw new IllegalArgumentException("This device is not supported google-play-services-APK.");
+            throw new IllegalArgumentException(THIS_DEVICE_NOT_SUPPORTED_MESSAGE);
         }
         return true;
     }
@@ -99,7 +120,12 @@ class NCMBInstallationUtils {
                 }
 
                 //端末情報を更新する
-                installation.saveInBackground();
+                installation.saveInBackground(new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        DeviceTokenCallbackQueue.getInstance().execQueue(installation.getLocalDeviceToken(),null);
+                    }
+                });
             }
         });
     }
@@ -115,11 +141,7 @@ class NCMBInstallationUtils {
             installation.saveInBackground(new DoneCallback() {
                 @Override
                 public void done(NCMBException e) {
-                    if (e == null) {
-                        //登録成功
-                    } else {
-                        //登録失敗
-                    }
+                    DeviceTokenCallbackQueue.getInstance().execQueue(installation.getLocalDeviceToken(),null);
                 }
             });
         } catch (NCMBException e) {
