@@ -159,6 +159,17 @@ public abstract class NCMBService {
     }
 
     /**
+     * sendRequest shortcut for download file.
+     *
+     * @param url  URL
+     * @param type http method
+     * @return NCMBResponse object
+     */
+    protected NCMBResponse sendDownloadFileRequest(String url, String type) throws NCMBException {
+        return sendRequest(url, type, "DownloadFile", null);
+    }
+
+    /**
      * sendRequest shortcut
      *
      * @param url     URL

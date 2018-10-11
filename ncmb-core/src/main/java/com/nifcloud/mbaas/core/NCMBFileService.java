@@ -286,7 +286,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_GET;
-        NCMBResponse response = sendRequest(url, type);
+        NCMBResponse response = sendDownloadFileRequest(url, type);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
@@ -308,7 +308,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         try {
-            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, null, new FileServiceCallback(this, callback) {
+            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, "DownloadFile", null, new FileServiceCallback(this, callback) {
                 @Override
                 public void handleResponse(NCMBResponse response) {
 

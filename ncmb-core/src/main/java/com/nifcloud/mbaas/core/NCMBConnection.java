@@ -41,6 +41,7 @@ public class NCMBConnection {
 
     //time out millisecond from NIF Cloud mobile backend
     static int sConnectionTimeout = 10000;
+    int sFilestoreTimeout = 120000;
 
     //API request object
     private NCMBRequest ncmbRequest = null;
@@ -167,7 +168,11 @@ public class NCMBConnection {
 
             });
 
-            res = future.get(sConnectionTimeout, TimeUnit.MILLISECONDS);
+            if (ncmbRequest.getRequestProperty("Content-Type").equals(NCMBRequest.HEADER_CONTENT_TYPE_FILE) || ncmbRequest.getContent() == "DownloadFile") {
+                res = future.get(sFilestoreTimeout, TimeUnit.MILLISECONDS);
+            } else {
+                res = future.get(sConnectionTimeout, TimeUnit.MILLISECONDS);
+            }
             if (res.statusCode != HttpURLConnection.HTTP_CREATED &&
                     res.statusCode != HttpURLConnection.HTTP_OK) {
                 throw new NCMBException(res.mbStatus, res.mbErrorMessage);
