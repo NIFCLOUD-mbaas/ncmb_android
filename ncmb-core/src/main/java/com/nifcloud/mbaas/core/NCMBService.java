@@ -42,6 +42,8 @@ public abstract class NCMBService {
         public JSONObject query = null;
     }
 
+    protected static final int sFileStoreTimeout = 120000;
+
     abstract class ServiceCallback implements RequestApiCallback {
         /** service instance */
         public NCMBService mService = null;
@@ -154,19 +156,31 @@ public abstract class NCMBService {
      * @param type http method
      * @return NCMBResponse object
      */
-    protected NCMBResponse sendRequest(String url, String type) throws NCMBException {
-        return sendRequest(url, type, null, null);
+    protected NCMBResponse sendRequest(String url, String type, int timeout) throws NCMBException {
+        return sendRequest(url, type, null, null, timeout);
     }
 
     /**
-     * sendRequest shortcut for download file.
+     * sendRequest shortcut
      *
      * @param url  URL
      * @param type http method
      * @return NCMBResponse object
      */
-    protected NCMBResponse sendDownloadFileRequest(String url, String type) throws NCMBException {
-        return sendRequest(url, type, "DownloadFile", null);
+    protected NCMBResponse sendRequest(String url, String type) throws NCMBException {
+        return sendRequest(url, type, null, null);
+    }
+
+    /**
+     * sendRequest shortcut
+     *
+     * @param url     URL
+     * @param type    http method
+     * @param content content body
+     * @return NCMBResponse object
+     */
+    protected NCMBResponse sendRequest(String url, String type, String content, int timeout) throws NCMBException {
+        return sendRequest(url, type, content, null, timeout);
     }
 
     /**
@@ -179,6 +193,34 @@ public abstract class NCMBService {
      */
     protected NCMBResponse sendRequest(String url, String type, String content) throws NCMBException {
         return sendRequest(url, type, content, null);
+    }
+
+    /**
+     * send request
+     *
+     * @param url         URL
+     * @param type        http method
+     * @param content     content body
+     * @param queryString query string
+     * @return NCMBResponse response object
+     */
+    protected NCMBResponse sendRequest(String url, String type, String content, JSONObject queryString, int timeout)
+            throws NCMBException {
+
+        if (mContext.sessionToken == null) {
+            mContext.sessionToken = NCMBUser.getSessionToken();
+        }
+        String sessionToken = mContext.sessionToken;
+        String applicationKey = mContext.applicationKey;
+        String clientKey = mContext.clientKey;
+
+        NCMBRequest request = new NCMBRequest(url, type, content, queryString,
+                sessionToken, applicationKey, clientKey);
+
+        NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(timeout);
+        NCMBResponse response = connection.sendRequest();
+        return response;
     }
 
     /**
@@ -232,12 +274,71 @@ public abstract class NCMBService {
         NCMBRequest request = new NCMBRequest(url, method, fileName, fileData, aclJson, sessionToken, applicationKey, clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(sFileStoreTimeout);
         NCMBResponse response = connection.sendRequest();
         return response;
     }
 
     protected NCMBResponse sendRequest(RequestParams params) throws NCMBException {
         return this.sendRequest(params.url, params.type, params.content, params.query);
+    }
+
+    /**
+     * Send request in asynchronously
+     *
+     * @param url         URL
+     * @param method      http method
+     * @param content     contnt body
+     * @param queryString query string
+     * @param callback    callback on finished
+     * @throws NCMBException
+     */
+    protected void sendRequestAsync(String url, String method, String content, JSONObject queryString, int timeout,
+                                    final ServiceCallback callback) throws NCMBException {
+
+        if (mContext.sessionToken == null) {
+            mContext.sessionToken = NCMBUser.getSessionToken();
+        }
+        String sessionToken = mContext.sessionToken;
+        String applicationKey = mContext.applicationKey;
+        String clientKey = mContext.clientKey;
+
+        NCMBRequest request = new NCMBRequest(
+                url,
+                method,
+                content,
+                queryString,
+                sessionToken,
+                applicationKey,
+                clientKey);
+
+        NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(timeout);
+        connection.sendRequestAsynchronously(new RequestApiCallback() {
+            @Override
+            public void done(NCMBResponse res, NCMBException e) {
+                if (e != null) {
+                    callback.handleError(e);
+                } else {
+                    if (res.statusCode == NCMBResponse.HTTP_STATUS_CREATED ||
+                            res.statusCode == NCMBResponse.HTTP_STATUS_OK) {
+                        callback.handleResponse(res);
+                    } else {
+                        try {
+                            callback.handleError(
+                                    new NCMBException(
+                                            res.responseData.getString("code"),
+                                            res.responseData.getString("error")
+                                    )
+                            );
+                        } catch (JSONException error) {
+                            callback.handleError(new NCMBException(NCMBException.INVALID_JSON, error.getMessage()));
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     /**
@@ -328,6 +429,7 @@ public abstract class NCMBService {
         );
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(sFileStoreTimeout);
         connection.sendRequestAsynchronously(callback);
 
     }

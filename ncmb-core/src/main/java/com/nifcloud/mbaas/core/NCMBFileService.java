@@ -150,7 +150,7 @@ public class NCMBFileService extends NCMBService {
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
         }
-        NCMBResponse response = sendRequest(url, NCMBRequest.HTTP_METHOD_PUT, content.toString());
+        NCMBResponse response = sendRequest(url, NCMBRequest.HTTP_METHOD_PUT, content.toString(), NCMBService.sFileStoreTimeout);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
@@ -182,7 +182,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         try {
-            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_PUT, content.toString(), null, new FileServiceCallback(this, callback) {
+            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_PUT, content.toString(), null, NCMBService.sFileStoreTimeout, new FileServiceCallback(this, callback) {
 
                 @Override
                 public void handleResponse(NCMBResponse response) {
@@ -223,7 +223,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_DELETE;
-        NCMBResponse response = sendRequest(url, type);
+        NCMBResponse response = sendRequest(url, type, NCMBService.sFileStoreTimeout);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
@@ -245,7 +245,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         try {
-            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_DELETE, null, null, new FileServiceCallback(this, callback) {
+            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_DELETE, null, null, NCMBService.sFileStoreTimeout, new FileServiceCallback(this, callback) {
 
                 @Override
                 public void handleResponse(NCMBResponse response) {
@@ -286,7 +286,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         String type = NCMBRequest.HTTP_METHOD_GET;
-        NCMBResponse response = sendDownloadFileRequest(url, type);
+        NCMBResponse response = sendRequest(url, type, NCMBService.sFileStoreTimeout);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
@@ -308,7 +308,7 @@ public class NCMBFileService extends NCMBService {
 
         String url = createURL(fileName);
         try {
-            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, "DownloadFile", null, new FileServiceCallback(this, callback) {
+            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, null, NCMBService.sFileStoreTimeout, new FileServiceCallback(this, callback) {
                 @Override
                 public void handleResponse(NCMBResponse response) {
 
@@ -346,7 +346,7 @@ public class NCMBFileService extends NCMBService {
     public List searchFile(JSONObject conditions) throws NCMBException {
         String url = createURL(null);
         String type = NCMBRequest.HTTP_METHOD_GET;
-        NCMBResponse response = sendRequest(url, type, null, conditions);
+        NCMBResponse response = sendRequest(url, type, null, conditions, NCMBService.sFileStoreTimeout);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code");
         }
@@ -363,7 +363,7 @@ public class NCMBFileService extends NCMBService {
     public void searchFileInBackground(JSONObject conditions, SearchFileCallback callback) {
         String url = createURL(null);
         try {
-            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, conditions, new FileServiceCallback(this, callback) {
+            sendRequestAsync(url, NCMBRequest.HTTP_METHOD_GET, null, conditions, NCMBService.sFileStoreTimeout, new FileServiceCallback(this, callback) {
                 @Override
                 public void handleResponse(NCMBResponse response) {
 
