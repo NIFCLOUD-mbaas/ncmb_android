@@ -168,6 +168,7 @@ public class NCMBConnection {
                 }
 
             });
+
             res = future.get(getConnectionTimeout(), TimeUnit.MILLISECONDS);
             if (res.statusCode != HttpURLConnection.HTTP_CREATED &&
                     res.statusCode != HttpURLConnection.HTTP_OK) {

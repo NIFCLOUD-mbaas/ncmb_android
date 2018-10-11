@@ -170,7 +170,6 @@ public abstract class NCMBService {
         return sendRequest(url, type, content, null);
     }
 
-
     /**
      * send request
      *
@@ -231,7 +230,6 @@ public abstract class NCMBService {
     protected NCMBResponse sendRequest(RequestParams params) throws NCMBException {
         return this.sendRequest(params.url, params.type, params.content, params.query);
     }
-
 
     /**
      * Send request in asynchronously
