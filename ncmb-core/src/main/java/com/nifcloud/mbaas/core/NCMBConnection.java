@@ -169,7 +169,7 @@ public class NCMBConnection {
 
             });
 
-            res = future.get(getConnectionTimeout(), TimeUnit.MILLISECONDS);
+            res = future.get(this.mConnectionTimeout, TimeUnit.MILLISECONDS);
             if (res.statusCode != HttpURLConnection.HTTP_CREATED &&
                     res.statusCode != HttpURLConnection.HTTP_OK) {
                 throw new NCMBException(res.mbStatus, res.mbErrorMessage);
@@ -276,9 +276,5 @@ public class NCMBConnection {
 
     protected void setConnectionTimeout(int timeout){
         this.mConnectionTimeout = timeout;
-    }
-
-    protected int getConnectionTimeout(){
-        return this.mConnectionTimeout;
     }
 }
