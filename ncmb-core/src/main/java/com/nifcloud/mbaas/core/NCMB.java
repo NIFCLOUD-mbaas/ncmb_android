@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import java.util.Map;
 
 /**
  * The NCMB Class contains sdk initialize method and factory method for Service class
@@ -116,7 +117,22 @@ public class NCMB {
     public static void initialize(Context context,
                                   String applicationKey,
                                   String clientKey) {
-        initialize(context, applicationKey, clientKey, null, null);
+        initialize(context, applicationKey, clientKey, null, null, null);
+    }
+
+    /**
+     * Setup SDK internals
+     *
+     * @param context                  Application context
+     * @param applicationKey           application key
+     * @param clientKey                client key
+     * @param installationCustomFields installation custom fileds
+     */
+    public static void initialize(Context context,
+                                  String applicationKey,
+                                  String clientKey,
+                                  Map<String,String> installationCustomFields) {
+        initialize(context, applicationKey, clientKey, null, null, installationCustomFields);
     }
 
     /**
@@ -133,6 +149,24 @@ public class NCMB {
                                   String clientKey,
                                   String domainUrl,
                                   String apiVersion) {
+        initialize(context, applicationKey, clientKey, domainUrl, apiVersion, null);
+    }
+    /**
+     * Setup SDK internals with api server host name
+     *
+     * @param context                  Application context
+     * @param applicationKey           application key
+     * @param clientKey                client key
+     * @param domainUrl                host name for api request
+     * @param apiVersion               version for rest api
+     * @param installationCustomFields installation custom fileds
+     */
+    public static void initialize(Context context,
+                                  String applicationKey,
+                                  String clientKey,
+                                  String domainUrl,
+                                  String apiVersion,
+                                  Map<String,String> installationCustomFields) {
         String aDomainUrl = domainUrl;
         if (aDomainUrl == null) {
             aDomainUrl = getMetadata(context, METADATA_PREFIX + "DOMAIN_URL");
@@ -168,7 +202,7 @@ public class NCMB {
             utils.settingDefaultChannels();
         }
 
-        NCMBInstallationUtils.saveToken();
+        NCMBInstallationUtils.saveInstallation(installationCustomFields);
     }
 
     /**
