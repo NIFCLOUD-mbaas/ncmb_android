@@ -61,11 +61,10 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
                 SharedPreferences.Editor editor = recentPushIdPref.edit();
                 editor.putString("recentPushId", currentPushId);
                 editor.commit();
+                super.onMessageReceived(remoteMessage);
+                Bundle bundle = getBundleFromRemoteMessage(remoteMessage);
+                sendNotification(bundle);
             }
-            super.onMessageReceived(remoteMessage);
-
-            Bundle bundle = getBundleFromRemoteMessage(remoteMessage);
-            sendNotification(bundle);
         }
     }
 
