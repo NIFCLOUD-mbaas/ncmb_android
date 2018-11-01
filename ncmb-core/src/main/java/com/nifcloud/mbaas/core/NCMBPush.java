@@ -938,16 +938,16 @@ public class NCMBPush extends NCMBBase {
         String currentPushId = bundle.getString("com.nifcloud.mbaas.PushId");
         if (recentPushId.equals(currentPushId)) {
             return;
-        } else {
-            SharedPreferences.Editor editor = recentPushIdPref.edit();
-            editor.putString("recentPushId", currentPushId);
-            editor.commit();
         }
 
         if (dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
             //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
             return;
         }
+
+        SharedPreferences.Editor editor = recentPushIdPref.edit();
+        editor.putString("recentPushId", currentPushId);
+        editor.commit();
 
         ApplicationInfo appInfo;
         String activityName = "";
