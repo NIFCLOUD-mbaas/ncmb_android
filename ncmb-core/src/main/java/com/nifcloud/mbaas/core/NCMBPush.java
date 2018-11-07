@@ -17,6 +17,7 @@ package com.nifcloud.mbaas.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -930,6 +931,18 @@ public class NCMBPush extends NCMBBase {
             //dialogが有効になっていない場合
             return;
         }
+
+        //Check duplicate notification
+        SharedPreferences recentPushIdPref = context.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE);
+        String recentPushId = recentPushIdPref.getString("recentPushId", "");
+        String currentPushId = bundle.getString("com.nifcloud.mbaas.PushId");
+        if (recentPushId.equals(currentPushId)) {
+            return;
+        }
+        
+        SharedPreferences.Editor editor = recentPushIdPref.edit();
+        editor.putString("recentPushId", currentPushId);
+        editor.commit();
 
         if (dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
             //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
