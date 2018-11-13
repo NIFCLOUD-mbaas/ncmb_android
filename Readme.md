@@ -35,7 +35,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 
 ## 動作環境
 
-本SDKは、Android 4.x ～ 8.x にて動作確認を行っております。
+本SDKは、Android 4.x ～ 9.x にて動作確認を行っております。
 
 ## テクニカルサポート窓口対応バージョン
 
