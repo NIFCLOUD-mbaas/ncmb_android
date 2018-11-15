@@ -57,7 +57,13 @@ public class NCMBInstallation extends NCMBObject {
     /**
      * request code
      */
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    /**
+     * cannot get device token message
+     */
+    private static final String CANNOT_GET_DEVICE_TOKEN_MESSAGE = 
+        "Can not get device token, please check your google-service.json";
     /**
      * push device
      */
@@ -179,6 +185,28 @@ public class NCMBInstallation extends NCMBObject {
      * @param callback TokenCallback
      */
     public void getDeviceTokenInBackground(final TokenCallback callback) {
+        if (DeviceTokenCallbackQueue.getInstance().isDuringSaveInstallation()) {
+            DeviceTokenCallbackQueue.getInstance().addQueue(callback);
+            return;
+        }
+        if (FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()) {
+            callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
+            return;
+        }
+        String deviceToken = getLocalDeviceToken();
+        if (deviceToken != null) {
+            callback.done(getLocalDeviceToken(), null);
+            return;
+        }
+        getDeviceTokenInternalProcess(callback);
+    }
+
+    /**
+     * Get device token (Internal Process)
+     *
+     * @param callback TokenCallback
+     */
+    void getDeviceTokenInternalProcess(final TokenCallback callback) {
         if (!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()) {
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                 @Override
@@ -186,7 +214,7 @@ public class NCMBInstallation extends NCMBObject {
                     if (task.isSuccessful()) {
                         callback.done(task.getResult().getToken(), null);
                     } else {
-                        callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
+                        callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
                     }
                 }
             });
@@ -194,12 +222,11 @@ public class NCMBInstallation extends NCMBObject {
             FirebaseInstanceId.getInstance().getInstanceId().addOnCanceledListener(new OnCanceledListener() {
                 @Override
                 public void onCanceled() {
-                    callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
-
+                    callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
                 }
             });
         } else {
-            callback.done(null, new NCMBException(new IOException("Can not get device token, please check your google-service.json")));
+            callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
         }
     }
 
