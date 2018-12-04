@@ -148,4 +148,17 @@ class NCMBInstallationUtils {
             Log.e("Error", e.toString());
         }
     }
+
+    static void updateToken(String token){
+        NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
+        String localToken = installation.getLocalDeviceToken();
+        if(installation.getObjectId() != null && installation.getLocalDeviceToken() != token){
+            try {
+                installation.setDeviceToken(token);
+                installation.save();
+            } catch (Exception e) {
+                Log.e("Error", e.toString());
+            }
+        }
+    }
 }
