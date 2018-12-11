@@ -164,7 +164,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.2"
       timeZone: "UTC"
       key: "value"
       pushType: "fcm"
