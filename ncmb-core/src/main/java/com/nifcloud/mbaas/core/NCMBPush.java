@@ -52,7 +52,7 @@ public class NCMBPush extends NCMBBase {
             "action", "badgeIncrementFlag", "sound",
             "contentAvailable", "title", "dialog",
             "richUrl", "badgeSetting", "category",
-            "acl", "createDate", "updateDate");
+            "acl", "createDate", "updateDate", "androidCategory");
 
     // region getter
 
@@ -379,6 +379,21 @@ public class NCMBPush extends NCMBBase {
         }
     }
 
+    /**
+     * Get androidCategory
+     * @return String androidCategory
+     */
+    public String getAndroidCategory() {
+        try {
+            if (mFields.isNull("androidCategory")) {
+                return null;
+            }
+            return mFields.getString("androidCategory");
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
     // endregion
 
     // region setter
@@ -609,6 +624,19 @@ public class NCMBPush extends NCMBBase {
         try {
             mFields.put("category", value);
             mUpdateKeys.add("category");
+        } catch (JSONException error) {
+            throw new IllegalArgumentException(error.getMessage());
+        }
+    }
+
+    /**
+     * Set androidCategory
+     * @param value androidCategory
+     */
+    public void setAndroidCategory(String value) {
+        try {
+            mFields.put("androidCategory", value);
+            mUpdateKeys.add("androidCategory");
         } catch (JSONException error) {
             throw new IllegalArgumentException(error.getMessage());
         }

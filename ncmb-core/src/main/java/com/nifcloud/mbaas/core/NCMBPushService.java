@@ -96,6 +96,14 @@ public class NCMBPushService extends NCMBService {
             }
         }
 
+        if (!params.has("androidCategory")) {
+            try {
+                params.put("androidCategory", "");
+            } catch (JSONException e) {
+                throw new NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON.");
+            }
+        }
+
         RequestParams request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST);
         NCMBResponse response = sendRequest(request);
         if (response.statusCode != NCMBResponse.HTTP_STATUS_CREATED) {
@@ -124,6 +132,14 @@ public class NCMBPushService extends NCMBService {
                     params.put("immediateDeliveryFlag", true);
                 } catch (JSONException e) {
                     throw new NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON");
+                }
+            }
+
+            if (!params.has("androidCategory")) {
+                try {
+                    params.put("androidCategory", "");
+                } catch (JSONException e) {
+                    throw new NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON.");
                 }
             }
 

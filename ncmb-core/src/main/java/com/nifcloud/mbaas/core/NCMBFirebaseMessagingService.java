@@ -15,6 +15,7 @@
  */
 package com.nifcloud.mbaas.core;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -25,7 +26,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -36,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -56,7 +60,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(String token) {
-        if(NCMBApplicationController.getApplicationState() != null){
+        if (NCMBApplicationController.getApplicationState() != null) {
             NCMBInstallationUtils.updateToken(token);
         }
     }
@@ -217,7 +221,20 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 
         //Notification作成
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NCMBNotificationUtils.getDefaultChannel())
+
+        String notificationChannel = NCMBNotificationUtils.getDefaultChannel();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            String categoryId = pushData.getString("androidCategory");
+            NCMBNotificationUtils ncmbNotificationUtils = new NCMBNotificationUtils(getBaseContext());
+            List<NotificationChannel> notificationChannels = ncmbNotificationUtils.getManager().getNotificationChannels();
+            if (categoryId != null && notificationChannels.size() > 1) {
+                notificationChannel = getCategoryId(categoryId, notificationChannels);
+            } else if (notificationChannels.size() >= 1) {
+                notificationChannel = notificationChannels.get(0).getId();
+            }
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, notificationChannel)
                 .setSmallIcon(icon)//通知エリアのアイコン設定
                 .setColor(smallIconColor) //通知エリアのアイコンカラー設定
                 .setContentTitle(title)
@@ -227,6 +244,21 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);//通知をタップした際に起動するActivity
 
         return notificationBuilder;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getCategoryId(String categoryId, List<NotificationChannel> notificationChannels) {
+        String result = null;
+        for (NotificationChannel notificationChannel : notificationChannels) {
+            if (notificationChannel.getId() == categoryId) {
+                result = categoryId;
+                break;
+            }
+        }
+        if (result == null) {
+            result = notificationChannels.get(0).getId();
+        }
+        return result;
     }
 }
 
