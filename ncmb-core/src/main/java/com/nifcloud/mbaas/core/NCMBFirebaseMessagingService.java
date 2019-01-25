@@ -191,14 +191,14 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_CANCEL_CURRENT);
 
         //pushDataから情報を取得
-        String message = "";
-        String title = "";
+        String title;
         if (pushData.getString("title") != null) {
             title = pushData.getString("title");
         } else {
             //titleの設定が無い場合はアプリ名をセットする
             title = applicationName;
         }
+        String message = "";
         if (pushData.getString("message") != null) {
             message = pushData.getString("message");
         }
@@ -224,7 +224,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 
         String notificationChannel = NCMBNotificationUtils.getDefaultChannel();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            String categoryId = pushData.getString("androidCategory");
+            String categoryId = pushData.getString("notificationChannel");
             NCMBNotificationUtils ncmbNotificationUtils = new NCMBNotificationUtils(getBaseContext());
             List<NotificationChannel> notificationChannels = ncmbNotificationUtils.getManager().getNotificationChannels();
             if (categoryId != null && notificationChannels.size() > 1) {
@@ -234,7 +234,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, notificationChannel)
+        return new NotificationCompat.Builder(this, notificationChannel)
                 .setSmallIcon(icon)//通知エリアのアイコン設定
                 .setColor(smallIconColor) //通知エリアのアイコンカラー設定
                 .setContentTitle(title)
@@ -242,15 +242,13 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)//通知をタップしたら自動で削除する
                 .setSound(defaultSoundUri)//端末のデフォルトサウンド
                 .setContentIntent(pendingIntent);//通知をタップした際に起動するActivity
-
-        return notificationBuilder;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private String getCategoryId(String categoryId, List<NotificationChannel> notificationChannels) {
         String result = null;
         for (NotificationChannel notificationChannel : notificationChannels) {
-            if (notificationChannel.getId() == categoryId) {
+            if (notificationChannel.getId().equalsIgnoreCase(categoryId)) {
                 result = categoryId;
                 break;
             }

@@ -25,17 +25,6 @@ public class Category {
     public Category() {
     }
 
-    public Category(String id, String name, int importance, String description, boolean enableLights, boolean enableVibration, int lightColor, int lockscreenVisibility) {
-        this.id = id;
-        this.name = name;
-        this.importance = importance;
-        this.description = description;
-        this.enableLights = enableLights;
-        this.enableVibration = enableVibration;
-        this.lightColor = lightColor;
-        this.lockscreenVisibility = lockscreenVisibility;
-    }
-
     public String getId() {
         return id;
     }
@@ -68,7 +57,7 @@ public class Category {
 
     public String getDescription() {
         if (null == description) {
-            description = new String("");
+            description = "";
         }
         return description;
     }
@@ -128,14 +117,11 @@ public class Category {
 
     /**
      * Check importance is in range
-     * @param importance
+     * @param importance value of importance has get from object
      * @return boolean
      */
     private boolean isImportanceNum(int importance) {
-        if ((importance >= 0 && importance <= 5) || (importance == -1000)) {
-            return true;
-        }
-        return false;
+        return (importance >= 0 && importance <= 5) || (importance == -1000);
     }
 
 }

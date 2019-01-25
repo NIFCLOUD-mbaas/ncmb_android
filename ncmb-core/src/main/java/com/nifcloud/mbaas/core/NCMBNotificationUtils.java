@@ -16,7 +16,6 @@
 package com.nifcloud.mbaas.core;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -49,7 +48,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
     private static final String DEFAULT_CHANNEL_DES = "push notification channel";
     private static final boolean DEFAULT_ENABLE_LIGHTS = true;
     private static final boolean DEFAULT_ENABLE_VIBRATION = true;
-    private static final int DEFAULT_LIGHT_COLOR = -16711936;
+    private static final int DEFAULT_LIGHT_COLOR = Color.GREEN;
     private static final int DEFAULT_LOCK_SCREEN_VISIBILITY = 0;
 
     public NCMBNotificationUtils(Context base) {
@@ -78,7 +77,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * チャンネルを作成
-     * @param category
+     * @param category this category using to registration the notification channel.
      */
     @TargetApi(Build.VERSION_CODES.O)
     private void settingChannel(Category category) {
@@ -95,7 +94,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * Setting and register for a list category
-     * @param categories
+     * @param categories registration notifications channel by list categories.
      */
     private void settingChannel(List<Category> categories) {
         for (Category category : categories) {
@@ -116,8 +115,8 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * load Json file from assets to string
-     * @param fileName
-     * @param context
+     * @param fileName the name of file to read.
+     * @param context the context of app.
      * @return String
      */
     private String loadJSONFromAsset(String fileName, Context context) {
@@ -140,8 +139,8 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * Check file name exist in assets folder
-     * @param filename
-     * @param context
+     * @param filename the name of file to read.
+     * @param context the context of app.
      * @return boolean
      */
     private boolean isExistFileInAssets(String filename, Context context) {
@@ -158,7 +157,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * Validate NcmbSetting class
-     * @param ncmbSetting
+     * @param ncmbSetting The object after parse from json.
      * @return NcmbSetting Class
      */
     private NcmbSetting validateNcmbSetting(NcmbSetting ncmbSetting) {
@@ -193,8 +192,8 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * Parse Json object to NcmbSetting class
-     * @param fileName
-     * @param context
+     * @param fileName the name of file to read.
+     * @param context the context of app.
      * @return NcmbSetting
      */
     private NcmbSetting parseNcmbSettingFromAsset(String fileName, Context context) {
@@ -218,9 +217,9 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
     /**
      * Get NcmbSetting after validate value.
-     * @param fileName
-     * @param context
-     * @return
+     * @param fileName the name of file to read.
+     * @param context the context of app.
+     * @return NcmbSetting
      */
     private NcmbSetting getNcmbSetting(String fileName, Context context) {
         return validateNcmbSetting(parseNcmbSettingFromAsset(fileName, context));
