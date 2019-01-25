@@ -50,6 +50,8 @@ public class NCMBNotificationUtils extends ContextWrapper {
     private static final boolean DEFAULT_ENABLE_VIBRATION = true;
     private static final int DEFAULT_LIGHT_COLOR = Color.GREEN;
     private static final int DEFAULT_LOCK_SCREEN_VISIBILITY = 0;
+    // The name of file settings for android categories
+    private static final String NCMB_SETTING_FILE_NAME = "ncmbsettings.json";
 
     public NCMBNotificationUtils(Context base) {
         super(base);
@@ -58,7 +60,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
     @TargetApi(Build.VERSION_CODES.O)
     public void settingDefaultChannels() {
 
-        NcmbSetting ncmbSetting = getNcmbSetting("ncmbsettings.json", getBaseContext());
+        NcmbSetting ncmbSetting = getNcmbSetting(NCMB_SETTING_FILE_NAME, getBaseContext());
         if (ncmbSetting != null) {
             settingChannel(ncmbSetting.getNcmb().getNotification().getCategories());
         } else {
