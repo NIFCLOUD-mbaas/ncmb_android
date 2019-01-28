@@ -60,7 +60,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onNewToken(String token) {
-        if (NCMBApplicationController.getApplicationState() != null) {
+        if(NCMBApplicationController.getApplicationState() != null){
             NCMBInstallationUtils.updateToken(token);
         }
     }

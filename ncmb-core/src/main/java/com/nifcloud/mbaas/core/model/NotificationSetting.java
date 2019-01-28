@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Notification {
+public class NotificationSetting {
     @SerializedName("categories")
     private List<Category> categories;
 
@@ -16,10 +16,4 @@ public class Notification {
         this.categories = categories;
     }
 
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "categories=" + categories +
-                '}';
-    }
 }

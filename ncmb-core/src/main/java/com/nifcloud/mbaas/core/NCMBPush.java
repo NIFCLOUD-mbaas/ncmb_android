@@ -52,7 +52,7 @@ public class NCMBPush extends NCMBBase {
             "action", "badgeIncrementFlag", "sound",
             "contentAvailable", "title", "dialog",
             "richUrl", "badgeSetting", "category",
-            "acl", "createDate", "updateDate", "notificationChannel");
+            "acl", "createDate", "updateDate", "android_channel_id");
 
     // region getter
 
@@ -380,15 +380,15 @@ public class NCMBPush extends NCMBBase {
     }
 
     /**
-     * Get notificationChannel
-     * @return String notificationChannel
+     * Get android_channel_id
+     * @return String android_channel_id
      */
-    public String getNotificationChannel() {
+    public String getAndroidChannelId() {
         try {
-            if (mFields.isNull("notificationChannel")) {
+            if (mFields.isNull("android_channel_id")) {
                 return null;
             }
-            return mFields.getString("notificationChannel");
+            return mFields.getString("android_channel_id");
         } catch (JSONException error) {
             throw new IllegalArgumentException(error.getMessage());
         }
@@ -630,13 +630,13 @@ public class NCMBPush extends NCMBBase {
     }
 
     /**
-     * Set notificationChannel
-     * @param value notificationChannel
+     * Set android_channel_id
+     * @param value android_channel_id
      */
-    public void setNotificationChannel(String value) {
+    public void setAndroidChannelId(String value) {
         try {
-            mFields.put("notificationChannel", value);
-            mUpdateKeys.add("notificationChannel");
+            mFields.put("android_channel_id", value);
+            mUpdateKeys.add("android_channel_id");
         } catch (JSONException error) {
             throw new IllegalArgumentException(error.getMessage());
         }

@@ -4,20 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class NcmbSetting {
     @SerializedName("ncmb")
-    private Ncmb ncmb;
+    private NotificationChannel notificationChannel;
 
-    public Ncmb getNcmb() {
-        return ncmb;
+    public NotificationChannel getNotificationChannel() {
+        return notificationChannel;
     }
 
-    public void setNcmb(Ncmb ncmb) {
-        this.ncmb = ncmb;
+    public void setNotificationChannel(NotificationChannel notificationChannel) {
+        this.notificationChannel = notificationChannel;
     }
 
-    @Override
-    public String toString() {
-        return "NcmbSetting{" +
-                "ncmb=" + ncmb +
-                '}';
-    }
 }

@@ -1,7 +1,5 @@
 package com.nifcloud.mbaas.core.model;
 
-import android.graphics.Color;
-
 import com.google.gson.annotations.SerializedName;
 
 public class Category {
@@ -10,17 +8,17 @@ public class Category {
     @SerializedName("name")
     private String name;
     @SerializedName("importance")
-    private int importance = 3;
+    private int importance;
     @SerializedName("description")
     private String description;
     @SerializedName("enableLights")
-    private boolean enableLights = true;
+    private boolean enableLights;
     @SerializedName("enableVibration")
-    private boolean enableVibration = true;
+    private boolean enableVibration;
     @SerializedName("lightColor")
-    private int lightColor = Color.GREEN;
+    private int lightColor;
     @SerializedName("lockscreenVisibility")
-    private int lockscreenVisibility = 0;
+    private int lockscreenVisibility;
 
     public Category() {
     }
@@ -34,9 +32,6 @@ public class Category {
     }
 
     public String getName() {
-        if (null == name) {
-            name = getId();
-        }
         return name;
     }
 
@@ -45,9 +40,6 @@ public class Category {
     }
 
     public int getImportance() {
-        if (!isImportanceNum(importance)) {
-            importance = 3;
-        }
         return importance;
     }
 
@@ -91,37 +83,11 @@ public class Category {
     }
 
     public int getLockscreenVisibility() {
-        if (lockscreenVisibility < -1 || lockscreenVisibility > 1) {
-            lockscreenVisibility = 0;
-        }
         return lockscreenVisibility;
     }
 
     public void setLockscreenVisibility(int lockscreenVisibility) {
         this.lockscreenVisibility = lockscreenVisibility;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", importance=" + importance +
-                ", description='" + description + '\'' +
-                ", enableLights=" + enableLights +
-                ", enableVibration=" + enableVibration +
-                ", lightColor=" + lightColor +
-                ", lockscreenVisibility=" + lockscreenVisibility +
-                '}';
-    }
-
-    /**
-     * Check importance is in range
-     * @param importance value of importance has get from object
-     * @return boolean
-     */
-    private boolean isImportanceNum(int importance) {
-        return (importance >= 0 && importance <= 5) || (importance == -1000);
     }
 
 }

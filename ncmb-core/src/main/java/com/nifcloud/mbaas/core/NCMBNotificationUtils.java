@@ -16,6 +16,7 @@
 package com.nifcloud.mbaas.core;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -24,8 +25,10 @@ import android.graphics.Color;
 import android.os.Build;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.nifcloud.mbaas.core.model.Category;
+import com.nifcloud.mbaas.core.model.CategoryDeserializer;
 import com.nifcloud.mbaas.core.model.NcmbSetting;
 
 import java.io.IOException;
@@ -37,19 +40,16 @@ import java.util.List;
 /**
  * The NCMBNotificationUtils Class contains register channel and get channel method
  */
-public class NCMBNotificationUtils extends ContextWrapper {
+public class NCMBNotificationUtils extends ContextWrapper{
     private NotificationManager mManager;
     // デフォルトチャンネルID
     private static final String DEFAULT_CHANNEL_ID = "com.nifcloud.mbaas.push.channel";
     // デフォルトチャンネル名
     private static final String DEFAULT_CHANNEL_NAME = "Push Channel";
-    private static final int DEFAULT_IMPORTANCE = 3;
     // デフォルトチャンネル説明
     private static final String DEFAULT_CHANNEL_DES = "push notification channel";
     private static final boolean DEFAULT_ENABLE_LIGHTS = true;
     private static final boolean DEFAULT_ENABLE_VIBRATION = true;
-    private static final int DEFAULT_LIGHT_COLOR = Color.GREEN;
-    private static final int DEFAULT_LOCK_SCREEN_VISIBILITY = 0;
     // The name of file settings for android categories
     private static final String NCMB_SETTING_FILE_NAME = "ncmbsettings.json";
 
@@ -62,17 +62,17 @@ public class NCMBNotificationUtils extends ContextWrapper {
 
         NcmbSetting ncmbSetting = getNcmbSetting(NCMB_SETTING_FILE_NAME, getBaseContext());
         if (ncmbSetting != null) {
-            settingChannel(ncmbSetting.getNcmb().getNotification().getCategories());
+            settingChannel(ncmbSetting.getNotificationChannel().getNotificationSetting().getCategories());
         } else {
             Category category = new Category();
             category.setId(DEFAULT_CHANNEL_ID);
             category.setName(DEFAULT_CHANNEL_NAME);
-            category.setImportance(DEFAULT_IMPORTANCE);
+            category.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             category.setDescription(DEFAULT_CHANNEL_DES);
             category.setEnableLights(DEFAULT_ENABLE_LIGHTS);
             category.setEnableVibration(DEFAULT_ENABLE_VIBRATION);
-            category.setLightColor(DEFAULT_LIGHT_COLOR);
-            category.setLockscreenVisibility(DEFAULT_LOCK_SCREEN_VISIBILITY);
+            category.setLightColor(Color.GREEN);
+            category.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             settingChannel(category);
         }
     }
@@ -111,7 +111,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
         return mManager;
     }
 
-    public static String getDefaultChannel() {
+    public static String getDefaultChannel(){
         return DEFAULT_CHANNEL_ID;
     }
 
@@ -164,11 +164,11 @@ public class NCMBNotificationUtils extends ContextWrapper {
      */
     private NcmbSetting validateNcmbSetting(NcmbSetting ncmbSetting) {
         if (ncmbSetting != null
-                && ncmbSetting.getNcmb() != null
-                && ncmbSetting.getNcmb().getNotification() != null
-                && ncmbSetting.getNcmb().getNotification().getCategories() != null) {
+                && ncmbSetting.getNotificationChannel() != null
+                && ncmbSetting.getNotificationChannel().getNotificationSetting() != null
+                && ncmbSetting.getNotificationChannel().getNotificationSetting().getCategories() != null) {
 
-            List<Category> categories = ncmbSetting.getNcmb().getNotification().getCategories();
+            List<Category> categories = ncmbSetting.getNotificationChannel().getNotificationSetting().getCategories();
             List<Category> categoryList = new ArrayList<>();
             List<String> ids = new ArrayList<>();
 
@@ -185,7 +185,7 @@ public class NCMBNotificationUtils extends ContextWrapper {
                 }
             }
             if (result != null) {
-                result.getNcmb().getNotification().setCategories(categoryList);
+                result.getNotificationChannel().getNotificationSetting().setCategories(categoryList);
             }
             return result;
         }
@@ -202,7 +202,9 @@ public class NCMBNotificationUtils extends ContextWrapper {
         NcmbSetting ncmbSetting = null;
         if (isExistFileInAssets(fileName, context)) {
 
-            Gson gson = new Gson();
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(Category.class, new CategoryDeserializer());
+            Gson gson = builder.create();
 
             String json = loadJSONFromAsset(fileName, context);
             if (json != null) {
