@@ -20,7 +20,13 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         JsonObject jsonObject = json.getAsJsonObject();
         Category category = new Category();
 
-        category.setId(jsonObject.get("id").getAsString());
+        //Set default id
+        category.setId(null);
+        JsonElement id = jsonObject.get("id");
+        if (id != null) {
+            category.setId(id.getAsString());
+        }
+
         //Set default name
         category.setName("");
         JsonElement name = jsonObject.get("name");
