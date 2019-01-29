@@ -179,13 +179,12 @@ public class NCMBNotificationUtils extends ContextWrapper{
                         ids.add(category.getId());
                         categoryList.add(category);
                     }
-                } else {
-                    result = null;
-                    break;
                 }
             }
-            if (result != null) {
+            if (categoryList.size() >= 1) {
                 result.getNotificationChannel().getNotificationSetting().setCategories(categoryList);
+            } else {
+                result = null;
             }
             return result;
         }
