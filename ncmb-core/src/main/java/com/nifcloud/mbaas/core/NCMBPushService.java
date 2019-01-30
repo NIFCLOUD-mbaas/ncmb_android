@@ -96,9 +96,9 @@ public class NCMBPushService extends NCMBService {
             }
         }
 
-        if (!params.has("android_channel_id")) {
+        if (!params.has("notificationChannel")) {
             try {
-                params.put("android_channel_id", "");
+                params.put("notificationChannel", "");
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON.");
             }
@@ -135,9 +135,9 @@ public class NCMBPushService extends NCMBService {
                 }
             }
 
-            if (!params.has("android_channel_id")) {
+            if (!params.has("notificationChannel")) {
                 try {
-                    params.put("android_channel_id", "");
+                    params.put("notificationChannel", "");
                 } catch (JSONException e) {
                     throw new NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON.");
                 }
