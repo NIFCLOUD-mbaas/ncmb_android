@@ -42,28 +42,30 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         category.setId(null);
         JsonElement id = jsonObject.get("id");
         if (id != null) {
-            category.setId(id.getAsString());
+            if (!id.getAsString().trim().equals("")) {
+                category.setId(id.getAsString().trim());
+            }
         }
 
         //Set default name
         category.setName("");
         JsonElement name = jsonObject.get("name");
         if (name != null) {
-            category.setName(name.getAsString());
+            category.setName(name.getAsString().trim());
         }
 
         //Set default description
         category.setDescription("");
         JsonElement description = jsonObject.get("description");
         if (description != null) {
-            category.setDescription(description.getAsString());
+            category.setDescription(description.getAsString().trim());
         }
 
         //Set default importance
         category.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
         JsonElement importance = jsonObject.get("importance");
         if (importance != null) {
-            String code = importance.getAsString();
+            String code = importance.getAsString().trim();
 
             if (getInterger(code) != null && isImportanceNum(getInterger(code))) {
                 category.setImportance(getInterger(code));
@@ -74,7 +76,7 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         category.setEnableLights(true);
         JsonElement enableLights = jsonObject.get("enableLights");
         if (enableLights != null) {
-            String code = enableLights.getAsString();
+            String code = enableLights.getAsString().trim();
 
             if (code.equalsIgnoreCase("false")) {
                 category.setEnableLights(false);
@@ -85,7 +87,7 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         category.setEnableVibration(true);
         JsonElement enableVibration = jsonObject.get("enableVibration");
         if (enableVibration != null) {
-            String code = enableVibration.getAsString();
+            String code = enableVibration.getAsString().trim();
             if (code.equalsIgnoreCase("false")) {
                 category.setEnableVibration(false);
             }
@@ -95,7 +97,7 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         category.setLightColor(Color.GREEN);
         JsonElement lightColor = jsonObject.get("lightColor");
         if (lightColor != null) {
-            String code = lightColor.getAsString();
+            String code = lightColor.getAsString().trim();
 
             if (getInterger(code) != null) {
                 category.setLightColor(getInterger(code));
@@ -106,7 +108,7 @@ public class CategoryDeserializer implements JsonDeserializer<Category> {
         category.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         JsonElement lockscreenVisibility = jsonObject.get("lockscreenVisibility");
         if (lockscreenVisibility != null) {
-            String code = lockscreenVisibility.getAsString();
+            String code = lockscreenVisibility.getAsString().trim();
             if (getInterger(code) != null && isLockScreenVisibility(getInterger(code))) {
                 category.setLockscreenVisibility(getInterger(code));
             }
