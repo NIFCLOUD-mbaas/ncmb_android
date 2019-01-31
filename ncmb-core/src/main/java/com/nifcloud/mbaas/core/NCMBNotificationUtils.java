@@ -146,15 +146,11 @@ public class NCMBNotificationUtils extends ContextWrapper{
      * @return boolean
      */
     private boolean isExistFileInAssets(String filename, Context context) {
-        boolean result = false;
-        if (!filename.isEmpty()) {
-            try {
-                result = Arrays.asList(context.getAssets().list("")).contains(filename);
-            } catch (IOException e) {
-                return false;
-            }
+        try {
+            return Arrays.asList(context.getAssets().list("")).contains(filename);
+        } catch (Exception e) {
+            return false;
         }
-        return result;
     }
 
     /**
@@ -181,7 +177,7 @@ public class NCMBNotificationUtils extends ContextWrapper{
                     }
                 }
             }
-            if (categoryList.size() >= 1) {
+            if (categoryList.size() > 0) {
                 result.getNotificationChannel().getNotificationSetting().setCategories(categoryList);
             } else {
                 result = null;
