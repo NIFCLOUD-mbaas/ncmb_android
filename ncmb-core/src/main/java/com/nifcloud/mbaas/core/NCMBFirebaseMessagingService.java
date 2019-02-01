@@ -227,7 +227,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
             String categoryId = pushData.getString("android_channel_id");
             NCMBNotificationUtils ncmbNotificationUtils = new NCMBNotificationUtils(getBaseContext());
             List<NotificationChannel> notificationChannels = ncmbNotificationUtils.getManager().getNotificationChannels();
-            if (categoryId != null && notificationChannels.size() > 0) {
+            if (notificationChannels.size() > 0) {
                 notificationChannel = getCategoryId(categoryId, notificationChannels);
             }
         }
