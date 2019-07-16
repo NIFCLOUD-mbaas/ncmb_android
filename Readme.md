@@ -55,8 +55,8 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
 
 ```
 dependencies {
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile files('libs/NCMB.jar')
+    implementation 'com.google.code.gson:gson:2.3.1'
+    api files('libs/NCMB.jar')
 }
 ```
 
