@@ -44,7 +44,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](http://info.biz.nifty.com/mb/)にてお知らせいたします。予めご了承ください。
 
-- v2.2.5 ～ (※2018年8月時点)
+- v2.4.0 ～ (※2019年7月時点)
 
 ## インストール
 
