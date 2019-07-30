@@ -645,4 +645,16 @@ public class NCMBObjectTest {
 
     }
 
+    @Test
+    public void put_null_json_object_to_field() {
+        try {
+            NCMBObject obj = new NCMBObject("TestClass");
+            obj.put("key", (JSONObject)null);
+            Assert.assertTrue(obj.mFields.has("key"));
+            Assert.assertEquals(obj.mFields.get("key"), JSONObject.NULL);
+        } catch (NCMBException | JSONException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
 }

@@ -390,7 +390,7 @@ public class NCMBBase {
             throw new NCMBException(NCMBException.INVALID_SETTING_NAME, "Can't put data to same name with property key.");
         } else {
             try {
-                mFields.put(key, value);
+                mFields.put(key, value != null ? value : JSONObject.NULL);
                 mUpdateKeys.add(key);
             } catch (JSONException e) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, e.getMessage());
