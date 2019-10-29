@@ -1,0 +1,18 @@
+{
+  "objectId":"dummyUserLoginId",
+  "userName":"NcmbToTestAfterLogin",
+  "password":"dummyPassword",
+  "authData":null,
+  "mailAddress":null,
+  "mailAddressConfirm":false,
+  "createDate":"2015-01-01T00:00:00.000Z",
+  "updateDate":"2015-06-07T01:02:03.004Z",
+  "sessionToken":"dummySessionTokenUserLogin",
+  "acl": {
+    "*":{
+      "read":true,
+      "write":true
+    }
+  }
+}
+
