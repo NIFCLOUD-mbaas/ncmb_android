@@ -1225,3 +1225,12 @@
   response:
     status: 409
     file: valid_post_register_duplicate_user_response.json
+---
+request:
+  url: /2013-09-01/users/dummyUserLoginId
+  method: PUT
+  body:
+    key: "value"
+response:
+  status: 200
+  file: valid_put_response.json

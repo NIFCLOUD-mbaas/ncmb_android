@@ -1442,7 +1442,10 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
     }
 
     @Test
@@ -1454,7 +1457,6 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         user = NCMBUser.getCurrentUser();
-        user.setObjectId("dummyUserId");
         user.put("key", "value");
         user.saveInBackground(new DoneCallback() {
             @Override
@@ -1471,7 +1473,10 @@ public class NCMBUserTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("value", user.mFields.get("key"));
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1502,6 +1507,8 @@ public class NCMBUserTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1553,6 +1560,8 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
@@ -1583,6 +1592,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1615,6 +1626,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1652,7 +1665,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1687,7 +1701,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(callbackFlag);
-
+        user = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
@@ -1719,9 +1733,9 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        user = NCMBUser.getCurrentUser();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserId", user.getObjectId());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -1751,7 +1765,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
+        user = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummyObjectId", userAdd.getObjectId());
@@ -1802,6 +1816,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
     }
 
@@ -1831,7 +1847,6 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         user = NCMBUser.getCurrentUser();
-        user.setObjectId("dummyUserId");
         user.put("key", "value");
         user.saveInBackground(new DoneCallback() {
             @Override
@@ -1848,7 +1863,10 @@ public class NCMBUserTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("value", user.mFields.get("key"));
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1896,6 +1914,8 @@ public class NCMBUserTest {
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1995,6 +2015,8 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
@@ -2042,6 +2064,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -2091,6 +2115,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -2145,7 +2171,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -2197,7 +2224,7 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(callbackFlag);
-
+        user = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
@@ -2244,11 +2271,10 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
+        user = NCMBUser.getCurrentUser();
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserId", user.getObjectId());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -2295,6 +2321,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        user = NCMBUser.getCurrentUser();
 
         Assert.assertEquals("dummyUserLoginId", user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
@@ -2305,7 +2332,7 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void delete_not_current_user_again() throws Exception {
+    public void delete_not_current_user_login_again() throws Exception {
         // Login first time
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
