@@ -1490,6 +1490,7 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         user = NCMBUser.getCurrentUser();
+        user.setObjectId(null);
         user.setPassword("dummyPassword");
         user.setAcl(null);
 
@@ -1508,7 +1509,7 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
         user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
+        Assert.assertNull(user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
@@ -1897,6 +1898,7 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         user = NCMBUser.getCurrentUser();
+        user.setObjectId(null);
         user.setPassword("dummyPassword");
         user.setAcl(null);
 
@@ -1915,7 +1917,7 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
         user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
+        Assert.assertNull(user.getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);

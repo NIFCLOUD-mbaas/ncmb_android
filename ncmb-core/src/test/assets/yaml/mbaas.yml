@@ -1213,7 +1213,6 @@
     url: /2013-09-01/users
     method: POST
     body:
-      objectId: "dummyUserLoginId"
       userName: "NcmbToTestAfterLogin"
       password: "dummyPassword"
       authData: null
