@@ -1743,39 +1743,6 @@ public class NCMBUserTest {
     }
 
     @Test
-    public void add_allow_user_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
-
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
-
-        NCMBUser userAdd = new NCMBUser();
-        userAdd.setUserName("Ncmb Tarou");
-        userAdd.setPassword("Ncmbtarou");
-
-        userAdd.signUpInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                if (e != null) {
-                    Assert.fail("save Background is failed.");
-                }
-                callbackFlag = true;
-            }
-        });
-
-        Robolectric.flushBackgroundThreadScheduler();
-        ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("dummyObjectId", userAdd.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", userAdd.getUserName());
-        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
-    }
-
-    @Test
     public void fetch_currentUser_after_login_again() throws Exception {
 
         // Login first time
@@ -2280,57 +2247,6 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
-    }
-
-    @Test
-    public void add_allow_user_after_login_again() throws Exception {
-        // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
-
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
-
-        // Logout
-        NCMBUser.logout();
-
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
-        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
-
-        // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
-
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
-
-        NCMBUser userAdd = new NCMBUser();
-        userAdd.setUserName("Ncmb Tarou");
-        userAdd.setPassword("Ncmbtarou");
-
-        userAdd.signUpInBackground(new DoneCallback() {
-            @Override
-            public void done(NCMBException e) {
-                if (e != null) {
-                    Assert.fail("save Background is failed.");
-                }
-                callbackFlag = true;
-            }
-        });
-
-        Robolectric.flushBackgroundThreadScheduler();
-        ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("dummyObjectId", userAdd.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", userAdd.getUserName());
-        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
