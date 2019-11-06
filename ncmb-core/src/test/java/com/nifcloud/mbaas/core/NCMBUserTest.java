@@ -1261,4 +1261,172 @@ public class NCMBUserTest {
         Assert.assertTrue(user.mUpdateKeys.contains("mailAddress"));
     }
 
+    @Test
+    public void add_allow_user_after_login_background() throws Exception {
+
+        NCMBUser.loginInBackground("Ncmb Tarou", "dummyPassword", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("dummyObjectId", user.getObjectId());
+                    Assert.assertEquals("Ncmb Tarou", user.getUserName());
+                    Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+                    NCMBUser userAdd = new NCMBUser();
+                    userAdd.setUserName("signUpAfterLogin");
+                    userAdd.setPassword("signUpAfterLogin");
+
+                    userAdd.signUpInBackground(new DoneCallback() {
+                        @Override
+                        public void done(NCMBException e) {
+                            if (e != null) {
+                                Assert.fail("save Background is failed.");
+                            }
+                            callbackFlag = true;
+                        }
+                    });
+                    Robolectric.flushBackgroundThreadScheduler();
+                    ShadowLooper.runUiThreadTasks();
+
+                    NCMBUser currentUser = NCMBUser.getCurrentUser();
+
+                    Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
+                    Assert.assertEquals("Ncmb Tarou", currentUser.getUserName());
+                    Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+                    Assert.assertTrue(callbackFlag);
+                }
+                callbackFlag = true;
+
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+
+        Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", currentUser.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
+    public void add_allow_user_after_login_background_again() throws Exception {
+        // Login first time
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        user = NCMBUser.getCurrentUser();
+
+        Assert.assertNull(user.getObjectId());
+        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser.loginInBackground("Ncmb Tarou", "dummyPassword", new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("dummyObjectId", user.getObjectId());
+                    Assert.assertEquals("Ncmb Tarou", user.getUserName());
+                    Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+                    NCMBUser userAdd = new NCMBUser();
+                    userAdd.setUserName("signUpAfterLogin");
+                    userAdd.setPassword("signUpAfterLogin");
+
+                    userAdd.signUpInBackground(new DoneCallback() {
+                        @Override
+                        public void done(NCMBException e) {
+                            if (e != null) {
+                                Assert.fail("save Background is failed.");
+                            }
+                            callbackFlag = true;
+                        }
+                    });
+                    Robolectric.flushBackgroundThreadScheduler();
+                    ShadowLooper.runUiThreadTasks();
+
+                    NCMBUser currentUser = NCMBUser.getCurrentUser();
+
+                    Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
+                    Assert.assertEquals("Ncmb Tarou", currentUser.getUserName());
+                    Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+                    Assert.assertTrue(callbackFlag);
+                }
+                callbackFlag = true;
+
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+
+        Assert.assertEquals("dummyObjectId", currentUser.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", currentUser.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
+    public void add_allow_user_after_login() throws Exception {
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userSigup = new NCMBUser();
+        userSigup.setUserName("signUpAfterLogin");
+        userSigup.setPassword("signUpAfterLogin");
+        userSigup.signUp();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+    }
+
+    @Test
+    public void add_allow_user_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        user = NCMBUser.getCurrentUser();
+
+        Assert.assertNull(user.getObjectId());
+        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userSigup = new NCMBUser();
+        userSigup.setUserName("signUpAfterLogin");
+        userSigup.setPassword("signUpAfterLogin");
+        userSigup.signUp();
+        user = NCMBUser.getCurrentUser();
+        Assert.assertEquals("dummyObjectId", user.getObjectId());
+        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+    }
 }

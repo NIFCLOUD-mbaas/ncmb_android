@@ -886,17 +886,22 @@ public class NCMBUserService extends NCMBService {
      */
     protected NCMBUser postLoginProcess(NCMBResponse response) throws NCMBException {
         try {
-            JSONObject result = response.responseData;
-            String userId = result.getString("objectId");
-            String newSessionToken = result.getString("sessionToken");
+            if (NCMBUser.getCurrentUser() == null || NCMBUser.getSessionToken() == null) {
+                JSONObject result = response.responseData;
+                String userId = result.getString("objectId");
+                String newSessionToken = result.getString("sessionToken");
 
-            // register with login, sessionToken updated
-            mContext.sessionToken = newSessionToken;
-            mContext.userId = userId;
-            // create currentUser. empty JSONObject for POST
-            writeCurrentUser(new JSONObject(), result);
+                // register with login, sessionToken updated
+                mContext.sessionToken = newSessionToken;
+                mContext.userId = userId;
+                // create currentUser. empty JSONObject for POST
+                writeCurrentUser(new JSONObject(), result);
 
-            return new NCMBUser(result);
+                return new NCMBUser(result);
+            } else {
+                return NCMBUser.getCurrentUser();
+            }
+
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Invalid user info");
         }

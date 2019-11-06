@@ -1137,3 +1137,13 @@
   response:
     status: 200
     file: valid_count_file_response.json
+---
+request:
+  url: /2013-09-01/users
+  method: POST
+  body:
+    userName: "signUpAfterLogin"
+    password: "signUpAfterLogin"
+response:
+  status: 201
+  file: valid_post_registerUser_afterlogin_response.json
