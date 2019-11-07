@@ -886,7 +886,7 @@ public class NCMBUserService extends NCMBService {
      */
     protected NCMBUser postLoginProcess(NCMBResponse response) throws NCMBException {
         try {
-            if (NCMBUser.getCurrentUser() == null || NCMBUser.getSessionToken() == null) {
+            if (NCMBUser.getSessionToken() == null) {
                 JSONObject result = response.responseData;
                 String userId = result.getString("objectId");
                 String newSessionToken = result.getString("sessionToken");
