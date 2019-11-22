@@ -47,6 +47,8 @@ public class NCMBUserService extends NCMBService {
      */
     public static final int HTTP_STATUS_REQUEST_ACCEPTED = 201;
 
+    private boolean isSave = false; // Default isSave value is false
+
     /**
      * Inner class for callback
      */
@@ -886,17 +888,25 @@ public class NCMBUserService extends NCMBService {
      */
     protected NCMBUser postLoginProcess(NCMBResponse response) throws NCMBException {
         try {
-            JSONObject result = response.responseData;
-            String userId = result.getString("objectId");
-            String newSessionToken = result.getString("sessionToken");
+            if (!isSave()) {
+                JSONObject result = response.responseData;
+                String userId = result.getString("objectId");
+                String newSessionToken = result.getString("sessionToken");
 
-            // register with login, sessionToken updated
-            mContext.sessionToken = newSessionToken;
-            mContext.userId = userId;
-            // create currentUser. empty JSONObject for POST
-            writeCurrentUser(new JSONObject(), result);
+                // register with login, sessionToken updated
+                mContext.sessionToken = newSessionToken;
+                mContext.userId = userId;
+                // create currentUser. empty JSONObject for POST
+                writeCurrentUser(new JSONObject(), result);
 
-            return new NCMBUser(result);
+                return new NCMBUser(result);
+            } else {
+                // reset isSave variable
+                setSave(false);
+
+                return NCMBUser.getCurrentUser();
+            }
+
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Invalid user info");
         }
@@ -1211,5 +1221,23 @@ public class NCMBUserService extends NCMBService {
         } catch (JSONException error) {
             throw new NCMBException(NCMBException.NOT_EFFICIENT_VALUE, error.getMessage());
         }
+    }
+
+    /**
+     * get flag using for user method save and save in the background
+     *
+     * @return boolean
+     */
+    protected boolean isSave() {
+        return isSave;
+    }
+
+    /**
+     * set flag using for user method save and save in the background
+     *
+     * @param save boolean
+     */
+    protected void setSave(boolean save) {
+        isSave = save;
     }
 }
