@@ -43,8 +43,6 @@ public class NCMBUser extends NCMBObject {
      */
     static final String USER_FILENAME = "currentUser";
 
-    private boolean isSave = false; // Default isSave value is false
-
     static final List<String> ignoreKeys = Arrays.asList(
             "objectId", "userName", "password",
             "mailAddress", "mailAddressConfirm",
@@ -256,6 +254,88 @@ public class NCMBUser extends NCMBObject {
     // action methods
 
     /**
+     * saveWithoutLogin to NIF Cloud mobile backend
+     *
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     */
+    private void saveWithoutLogin() throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
+        NCMBUser user ;
+        try {
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") params.put(key,mFields.get(key));
+            }
+            if (params.length() == 0) {
+                user = service.saveByName(getUserName(), getPassword());
+            } else {
+                user = service.saveByName(getUserName(), getPassword(), params);
+                NCMBUserService.mergeJSONObject(user.mFields,params);
+            }
+            mFields = user.mFields;
+        } catch (JSONException e) {}
+    }
+
+    /**
+     * saveInBackgroundWithoutLogin to NIF Cloud mobile backend
+     *
+     * @param callback callback for after saveInBackgroundWithoutLogin
+     */
+    private void saveInBackgroundWithoutLogin(final DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        final JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
+        try {
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") {
+                    try {
+                        params.put(key, mFields.get(key));
+                    } catch (JSONException e){}
+                }
+            }
+            if (params.length() == 0) {
+                service.saveByNameInBackground(getUserName(), getPassword(), new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+                    }
+                });
+            } else {
+                service.saveByNameInBackground(getUserName(), getPassword(), params, new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            //copyFrom(user.mFields);
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+    /**
      * sign up to NIF Cloud mobile backend
      *
      * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
@@ -269,9 +349,6 @@ public class NCMBUser extends NCMBObject {
             while (iter.hasNext()) {
                 String key = iter.next();
                 if (key != "userName" && key != "password") params.put(key,mFields.get(key));
-            }
-            if (isSave()) {
-                service.setSave(true);
             }
             if (params.length() == 0) {
                 user = service.registerByName(getUserName(), getPassword());
@@ -301,9 +378,6 @@ public class NCMBUser extends NCMBObject {
                         params.put(key, mFields.get(key));
                     } catch (JSONException e){}
                  }
-            }
-            if (isSave()) {
-                service.setSave(true);
             }
             if (params.length() == 0) {
                 service.registerByNameInBackground(getUserName(), getPassword(), new LoginCallback() {
@@ -787,8 +861,7 @@ public class NCMBUser extends NCMBObject {
     @Override
     public void save() throws NCMBException {
         if (getObjectId() == null) {
-            setSave(true);
-            signUp();
+            saveWithoutLogin();
         } else {
             NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             try {
@@ -806,8 +879,7 @@ public class NCMBUser extends NCMBObject {
     @Override
     public void saveInBackground(final DoneCallback callback) {
         if (getObjectId() == null) {
-            setSave(true);
-            signUpInBackground(callback);
+            saveInBackgroundWithoutLogin(callback);
         } else {
 
             NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
@@ -967,23 +1039,5 @@ public class NCMBUser extends NCMBObject {
 
     static String createUUID() {
         return UUID.randomUUID().toString();
-    }
-
-    /**
-     * Get save flag
-     *
-     * @return boolean
-     */
-    private boolean isSave() {
-        return isSave;
-    }
-
-    /**
-     * Set save flag
-     *
-     * @param save boolean
-     */
-    private void setSave(boolean save) {
-        isSave = save;
     }
 }

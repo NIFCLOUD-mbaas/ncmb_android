@@ -102,6 +102,11 @@ public abstract class NCMBService {
             mOptions = options;
         }
 
+        ServiceCallback(NCMBService service, DoneCallback callback, JSONObject options) {
+            this(service, (CallbackBase) callback);
+            mOptions = options;
+        }
+
         ServiceCallback(NCMBService service, SearchUserCallback callback) {
             this(service, (CallbackBase) callback);
         }
