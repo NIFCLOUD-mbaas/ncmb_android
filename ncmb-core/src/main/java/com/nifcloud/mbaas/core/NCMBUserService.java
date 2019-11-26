@@ -74,10 +74,6 @@ public class NCMBUserService extends NCMBService {
             super((NCMBService) service, callback, options);
         }
 
-        UserServiceCallback(NCMBUserService service, DoneCallback callback, JSONObject options) {
-            super((NCMBService) service, callback, options);
-        }
-
         UserServiceCallback(NCMBUserService service, SearchUserCallback callback) {
             super((NCMBService) service, callback);
         }
@@ -233,7 +229,7 @@ public class NCMBUserService extends NCMBService {
             JSONObject params = new JSONObject();
             params.put("userName", userName);
             params.put("password", password);
-            saveUserInBackground(params, false, callback);
+            saveUserInBackground(params, callback);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -255,7 +251,7 @@ public class NCMBUserService extends NCMBService {
             params.put("userName", userName);
             params.put("password", password);
             mergeJSONObject(params,otherFields);
-            saveUserInBackground(params, false, callback);
+            saveUserInBackground(params, callback);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -649,32 +645,24 @@ public class NCMBUserService extends NCMBService {
      * Internal method to save user in background
      *
      * @param params    parameters
-     * @param oauth     use oauth or not
      * @param callback  callback when process finished
      * @throws NCMBException
      */
-    protected void saveUserInBackground(JSONObject params, boolean oauth, final DoneCallback callback)
+    protected void saveUserInBackground(JSONObject params, final DoneCallback callback)
             throws NCMBException {
-        try {
-            RequestParams reqParams = registerUserParams(params);
+        RequestParams reqParams = registerUserParams(params);
 
-            JSONObject options = new JSONObject();
-            options.put("oauth", oauth);
+        sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+                callback.done(null);
+            }
 
-            sendRequestAsync(reqParams, new UserServiceCallback(this, callback, options) {
-                @Override
-                public void handleResponse(NCMBResponse response) {
-                    callback.done(null);
-                }
-
-                @Override
-                public void handleError(NCMBException e) {
-                    callback.done(e);
-                }
-            });
-        } catch (JSONException e) {
-            throw new NCMBException(NCMBException.INVALID_JSON, "Bad oauth option");
-        }
+            @Override
+            public void handleError(NCMBException e) {
+                callback.done(e);
+            }
+        });
     }
 
     /**
