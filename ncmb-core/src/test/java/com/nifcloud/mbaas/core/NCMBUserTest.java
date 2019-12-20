@@ -1264,6 +1264,10 @@ public class NCMBUserTest {
         Assert.assertTrue(user.mUpdateKeys.contains("mailAddress"));
     }
 
+    /**
+     * - 内容：トークンがエラー場合、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_currentUser_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
@@ -1287,6 +1291,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：トークンがエラー場合、DataStoreのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_dataStore_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
@@ -1314,6 +1322,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：トークンがエラー場合、UserのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_user_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
@@ -1339,6 +1351,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、存在しないCurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_current_user_non_exist_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbCurrentUser", "dummyPassword");
@@ -1365,6 +1381,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、存在しないオブジェクトのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_object_non_exist_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
@@ -1391,6 +1411,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、存在しないユーザーのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
     @Test
     public void fetch_user_non_exist_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
@@ -1418,6 +1442,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
     @Test
     public void fetch_currentUser_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1448,6 +1476,10 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：ログイン後、CurrentUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_currentUser_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1481,6 +1513,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、CurrentUserのPOST通信を確認する。
+     * - 結果：ステータスコード409及び「Error Json」が返却されること
+     */
     @Test
     public void add_currentUser_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1515,6 +1551,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：ログイン後、DatastoreのGET通信を確認する。
+     * - 結果：ステータスコード200及び「Object data Json」が返却されること
+     */
     @Test
     public void fetch_data_store_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1569,6 +1609,10 @@ public class NCMBUserTest {
         JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
     }
 
+    /**
+     * - 内容：ログイン後、DatastoreのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_data_store_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1604,6 +1648,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：ログイン後、DatastoreのPOST通信を確認する。
+     * - 結果：ステータスコード201及び「Object data Json」が返却されること
+     */
     @Test
     public void add_data_store_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1643,6 +1691,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：ログイン後、DatastoreのDELETE通信を確認する。
+     * - 結果：ステータスコード200及び「」が返却されること
+     */
     @Test
     public void delete_data_store_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1674,6 +1726,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：ログイン後、AllowUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
     @Test
     public void fetch_allow_user_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1709,6 +1765,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：ログイン後、AllowUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_allow_user_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
@@ -1742,6 +1802,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
     @Test
     public void fetch_currentUser_after_login_again() throws Exception {
 
@@ -1789,6 +1853,10 @@ public class NCMBUserTest {
         Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
     }
 
+    /**
+     * - 内容：再ログイン後、CurrentUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_currentUser_after_login_again() throws Exception {
         // Login first time
@@ -1839,6 +1907,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：再ログイン後、CurrentUserのPOST通信を確認する。
+     * - 結果：ステータスコード409及び「Error Json」が返却されること
+     */
     @Test
     public void add_currentUser_after_login_again() throws Exception {
         // Login first time
@@ -1890,6 +1962,10 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：再ログイン後、CurrentUserのDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
     @Test
     public void delete_current_user_again() throws Exception {
         // Login first time
@@ -1921,6 +1997,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、DataStoreのGET通信を確認する。
+     * - 結果：ステータスコード200及び「Object data Json」が返却されること
+     */
     @Test
     public void fetch_data_store_after_login_again() throws Exception {
         // Login first time
@@ -1992,6 +2072,10 @@ public class NCMBUserTest {
         JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
     }
 
+    /**
+     * - 内容：再ログイン後、DataStoreのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_data_store_after_login_again() throws Exception {
         // Login first time
@@ -2044,6 +2128,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、DataStoreのPOST通信を確認する。
+     * - 結果：ステータスコード201及び「Object data Json」が返却されること
+     */
     @Test
     public void add_data_store_after_login_again() throws Exception {
         // Login first time
@@ -2100,6 +2188,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、DataStoreのDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
     @Test
     public void delete_data_store_after_login_again() throws Exception {
         // Login first time
@@ -2148,6 +2240,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、AllowUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
     @Test
     public void fetch_allow_user_after_login_again() throws Exception {
         // Login first time
@@ -2200,6 +2296,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、AllowUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
     @Test
     public void update_allow_user_after_login_again() throws Exception {
         // Login first time
@@ -2249,6 +2349,10 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：再ログイン後、CurrentUserではないもののDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
     @Test
     public void delete_not_current_user_login_again() throws Exception {
         // Login first time
