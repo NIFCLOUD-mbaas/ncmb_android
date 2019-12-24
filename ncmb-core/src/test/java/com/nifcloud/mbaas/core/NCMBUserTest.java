@@ -92,7 +92,7 @@ public class NCMBUserTest {
         NCMBUser user = new NCMBUser();
         user.setUserName("Ncmb Tarou");
         user.setPassword("Ncmbtarou");
-        user.put("testField","test");
+        user.put("testField", "test");
 
         user.signUp();
 
@@ -133,7 +133,7 @@ public class NCMBUserTest {
         NCMBUser user = new NCMBUser();
         user.setUserName("Ncmb Tarou");
         user.setPassword("Ncmbtarou");
-        user.put("testField","test");
+        user.put("testField", "test");
 
         user.signUpInBackground(new DoneCallback() {
             @Override
@@ -1272,16 +1272,16 @@ public class NCMBUserTest {
     public void fetch_currentUser_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
-        Assert.assertEquals("dummyObjectId", user.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         NCMB.getCurrentContext().sessionToken = null;
-        user = NCMBUser.getCurrentUser();
-        user.fetchInBackground(new FetchCallback<NCMBUser>() {
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("E401003", e.getCode());
-                Assert.assertNotNull("Invalid session token.", e.getMessage());
+                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
                 callbackFlag = true;
             }
         });
@@ -1289,6 +1289,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1299,8 +1301,8 @@ public class NCMBUserTest {
     public void fetch_dataStore_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
-        Assert.assertEquals("dummyObjectId", user.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         NCMB.getCurrentContext().sessionToken = null;
 
         Assert.assertFalse(callbackFlag);
@@ -1311,8 +1313,8 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBObject object, NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("E401003", e.getCode());
-                Assert.assertNotNull("Invalid session token.", e.getMessage());
+                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
                 callbackFlag = true;
             }
         });
@@ -1320,6 +1322,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1330,8 +1334,8 @@ public class NCMBUserTest {
     public void fetch_user_when_token_error() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
-        Assert.assertEquals("dummyObjectId", user.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         NCMB.getCurrentContext().sessionToken = null;
 
         NCMBUser userFetch = new NCMBUser();
@@ -1340,8 +1344,8 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("E401003", e.getCode());
-                Assert.assertNotNull("Invalid session token.", e.getMessage());
+                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
                 callbackFlag = true;
             }
         });
@@ -1349,6 +1353,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1359,8 +1365,8 @@ public class NCMBUserTest {
     public void fetch_current_user_non_exist_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("NcmbCurrentUser", "dummyPassword");
 
-        Assert.assertEquals("dummyCurrentUserId", user.getObjectId());
-        Assert.assertEquals("NcmbCurrentUser", user.getUserName());
+        Assert.assertEquals("dummyCurrentUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbCurrentUser", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
 
         NCMBUser userFetch = NCMBUser.getCurrentUser();
@@ -1371,6 +1377,7 @@ public class NCMBUserTest {
                     Assert.fail("get user method should raise exception:");
                 } else {
                     Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -1379,6 +1386,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyCurrentUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbCurrentUser", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1389,8 +1398,8 @@ public class NCMBUserTest {
     public void fetch_object_non_exist_after_login() throws Exception {
         NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
-        Assert.assertEquals("dummyObjectId", user.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
 
         NCMBObject obj = new NCMBObject("TestClass");
@@ -1402,6 +1411,7 @@ public class NCMBUserTest {
                     Assert.fail("get object method should raise exception:");
                 } else {
                     Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -1409,6 +1419,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1417,10 +1429,10 @@ public class NCMBUserTest {
      */
     @Test
     public void fetch_user_non_exist_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
-        Assert.assertEquals("dummyObjectId", user.getObjectId());
-        Assert.assertEquals("Ncmb Tarou", user.getUserName());
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
 
         NCMBUser userFetch = new NCMBUser();
@@ -1432,6 +1444,7 @@ public class NCMBUserTest {
                     Assert.fail("get user method should raise exception:");
                 } else {
                     Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -1440,6 +1453,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1448,14 +1463,14 @@ public class NCMBUserTest {
      */
     @Test
     public void fetch_currentUser_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.fetchInBackground(new FetchCallback<NCMBUser>() {
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 if (e != null) {
@@ -1470,9 +1485,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
     }
 
@@ -1482,15 +1496,15 @@ public class NCMBUserTest {
      */
     @Test
     public void update_currentUser_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.put("key", "value");
-        user.saveInBackground(new DoneCallback() {
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.put("key", "value");
+        currentUser.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
@@ -1504,11 +1518,10 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("value", user.mFields.get("key"));
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), currentUser.getUpdateDate());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("value", NCMBUser.getCurrentUser().mFields.get("key"));
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1519,22 +1532,22 @@ public class NCMBUserTest {
      */
     @Test
     public void add_currentUser_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.setObjectId(null);
-        user.setPassword("dummyPassword");
-        user.setAcl(null);
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.setObjectId(null);
+        currentUser.setPassword("dummyPassword");
+        currentUser.setAcl(null);
 
-        user.signUpInBackground(new DoneCallback() {
+        currentUser.signUpInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("E409001", e.getCode());
+                Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
                 Assert.assertNotNull("NcmbToTestAfterLogin is duplication.", e.getMessage());
                 callbackFlag = true;
             }
@@ -1543,10 +1556,9 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
-        user = NCMBUser.getCurrentUser();
-        Assert.assertNull(user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), NCMBUser.getCurrentUser().getUpdateDate());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1557,10 +1569,10 @@ public class NCMBUserTest {
      */
     @Test
     public void fetch_data_store_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -1601,11 +1613,9 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
-
         JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
     }
 
@@ -1615,10 +1625,10 @@ public class NCMBUserTest {
      */
     @Test
     public void update_data_store_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -1637,9 +1647,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -1654,10 +1663,10 @@ public class NCMBUserTest {
      */
     @Test
     public void add_data_store_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -1675,9 +1684,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -1697,10 +1705,10 @@ public class NCMBUserTest {
      */
     @Test
     public void delete_data_store_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -1718,9 +1726,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -1732,10 +1739,10 @@ public class NCMBUserTest {
      */
     @Test
     public void fetch_allow_user_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -1758,9 +1765,8 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(callbackFlag);
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
     }
@@ -1771,10 +1777,10 @@ public class NCMBUserTest {
      */
     @Test
     public void update_allow_user_after_login() throws Exception {
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         NCMBUser userUpdate = new NCMBUser();
@@ -1794,9 +1800,8 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        user = NCMBUser.getCurrentUser();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
-        Assert.assertEquals("dummyUserId", user.getObjectId());
+        Assert.assertEquals("dummyUserId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -1810,30 +1815,28 @@ public class NCMBUserTest {
     public void fetch_currentUser_after_login_again() throws Exception {
 
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.fetchInBackground(new FetchCallback<NCMBUser>() {
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
                 if (e != null) {
@@ -1848,9 +1851,8 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
     }
 
     /**
@@ -1860,31 +1862,29 @@ public class NCMBUserTest {
     @Test
     public void update_currentUser_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.put("key", "value");
-        user.saveInBackground(new DoneCallback() {
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.put("key", "value");
+        currentUser.saveInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
@@ -1898,11 +1898,10 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
-        Assert.assertEquals("value", user.mFields.get("key"));
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), currentUser.getUpdateDate());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("value", NCMBUser.getCurrentUser().mFields.get("key"));
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1914,38 +1913,36 @@ public class NCMBUserTest {
     @Test
     public void add_currentUser_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
-        user = NCMBUser.getCurrentUser();
-        user.setObjectId(null);
-        user.setPassword("dummyPassword");
-        user.setAcl(null);
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.setObjectId(null);
+        currentUser.setPassword("dummyPassword");
+        currentUser.setAcl(null);
 
-        user.signUpInBackground(new DoneCallback() {
+        currentUser.signUpInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
                 Assert.assertNotNull(e);
-                Assert.assertEquals("E409001", e.getCode());
+                Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
                 Assert.assertNotNull("NcmbToTestAfterLogin is duplication.", e.getMessage());
                 callbackFlag = true;
             }
@@ -1954,10 +1951,9 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), user.getUpdateDate());
-        user = NCMBUser.getCurrentUser();
-        Assert.assertNull(user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), currentUser.getUpdateDate());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
     }
@@ -1969,29 +1965,26 @@ public class NCMBUserTest {
     @Test
     public void delete_current_user_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
-
+        NCMBUser loginUser1 = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
 
-        user = NCMBUser.getCurrentUser();
-        user.deleteObject();
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.deleteObject();
 
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(NCMB.getCurrentContext().userId);
 
@@ -2004,26 +1997,24 @@ public class NCMBUserTest {
     @Test
     public void fetch_data_store_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -2064,9 +2055,8 @@ public class NCMBUserTest {
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
         Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
@@ -2079,26 +2069,24 @@ public class NCMBUserTest {
     @Test
     public void update_data_store_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -2117,9 +2105,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -2135,26 +2122,24 @@ public class NCMBUserTest {
     @Test
     public void add_data_store_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -2172,9 +2157,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -2195,26 +2179,24 @@ public class NCMBUserTest {
     @Test
     public void delete_data_store_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -2232,9 +2214,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -2247,26 +2228,24 @@ public class NCMBUserTest {
     @Test
     public void fetch_allow_user_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         Assert.assertFalse(callbackFlag);
@@ -2289,9 +2268,8 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         Assert.assertTrue(callbackFlag);
-        user = NCMBUser.getCurrentUser();
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
     }
@@ -2303,26 +2281,24 @@ public class NCMBUserTest {
     @Test
     public void update_allow_user_after_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
 
-        Assert.assertEquals("dummyUserLoginId", user.getObjectId());
-        Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
 
         NCMBUser userUpdate = new NCMBUser();
@@ -2340,10 +2316,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-        user = NCMBUser.getCurrentUser();
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
-        Assert.assertEquals("dummyUserId", user.getObjectId());
+        Assert.assertEquals("dummyUserId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
         Assert.assertTrue(callbackFlag);
 
@@ -2356,25 +2331,23 @@ public class NCMBUserTest {
     @Test
     public void delete_not_current_user_login_again() throws Exception {
         // Login first time
-        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
 
         // Logout
         NCMBUser.logout();
 
-        user = NCMBUser.getCurrentUser();
-
-        Assert.assertNull(user.getObjectId());
-        Assert.assertNull(user.getUserName());
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
 
         // Login second time
-        user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+        NCMBUser loginUser1 = NCMBUser.login("Ncmb Tarou", "dummyPassword");
 
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
 
-        user = new NCMBUser();
+        NCMBUser user = new NCMBUser();
         user.setObjectId("notCurrentUserId");
         user.deleteObject();
 
