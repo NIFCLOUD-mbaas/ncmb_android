@@ -1,4 +1,4 @@
-## Android SDK for NIF Cloud mobile backend
+## Android SDK for NIFCLOUD mobile backend
 
 [![Build Status](https://travis-ci.org/NIFCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCloud-mbaas/ncmb_android)
 
@@ -35,14 +35,15 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 
 ## 動作環境
 
-本SDKは、Android 4.x ～ 9.x にて動作確認を行っております。
+本SDKは、Android 7.x ～ 9.x にて動作確認を行っております。
+(※2019年12月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
 テクニカルサポート窓口では、1年半以内にリリースされたSDKに対してのみサポート対応させていただきます。<br>
 定期的なバージョンのアップデートにご協力ください。<br>
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
-その際は[informationブログ](http://info.biz.nifty.com/mb/)にてお知らせいたします。予めご了承ください。
+その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
 - v2.4.0 ～ (※2019年7月時点)
 
@@ -106,4 +107,4 @@ obj.saveInBackground(new DoneCallback() {
 
 - [ニフクラ mobile backend](https://mbaas.nifcloud.com)
 - [ドキュメント](https://mbaas.nifcloud.com/doc/current)
-- [ユーザーコミュニティ](https://github.com/NIFCloud-mbaas/UserCommunity)
+- [ユーザーコミュニティ](https://github.com/NIFCLOUD-mbaas/UserCommunity)
