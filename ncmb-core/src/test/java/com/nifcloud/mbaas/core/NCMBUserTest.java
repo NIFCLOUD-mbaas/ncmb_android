@@ -1279,9 +1279,12 @@ public class NCMBUserTest {
         currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
-                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
                 callbackFlag = true;
             }
         });
@@ -1312,9 +1315,12 @@ public class NCMBUserTest {
 
             @Override
             public void done(NCMBObject object, NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
-                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
                 callbackFlag = true;
             }
         });
@@ -1343,9 +1349,12 @@ public class NCMBUserTest {
         userFetch.fetchInBackground(new FetchCallback<NCMBUser>() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
-                Assert.assertNotNull("OAuth authentication error.", e.getMessage());
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
                 callbackFlag = true;
             }
         });
