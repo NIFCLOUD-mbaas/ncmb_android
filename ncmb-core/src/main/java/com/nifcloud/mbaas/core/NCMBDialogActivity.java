@@ -139,7 +139,7 @@ public class NCMBDialogActivity extends Activity {
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         mWakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP
-                | PowerManager.ON_AFTER_RELEASE, "NCMBDialogActivity");
+                | PowerManager.ON_AFTER_RELEASE, "ncmb:NCMBDialogActivity");
         mWakelock.acquire(5000);
         waitForLight();
 
