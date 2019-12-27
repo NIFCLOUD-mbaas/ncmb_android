@@ -1485,6 +1485,7 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail(e.getMessage());
                 } else {
+                    Assert.assertEquals("dummyUserLoginId", user.getObjectId());
                     Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
                 }
                 callbackFlag = true;
@@ -1525,9 +1526,8 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
-        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), currentUser.getUpdateDate());
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), NCMBUser.getCurrentUser().getUpdateDate());
         Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("value", NCMBUser.getCurrentUser().mFields.get("key"));
@@ -1555,9 +1555,12 @@ public class NCMBUserTest {
         currentUser.signUpInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
-                Assert.assertNotNull("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
+                    Assert.assertEquals("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                }
                 callbackFlag = true;
             }
         });
@@ -1685,7 +1688,7 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
-                    Assert.fail("save Background is failed.");
+                    Assert.fail(e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -1727,7 +1730,7 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
-                    Assert.fail("delete object method should not raise exception:");
+                    Assert.fail(e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -1761,7 +1764,7 @@ public class NCMBUserTest {
             @Override
             public void done(List<NCMBUser> results, NCMBException e) {
                 if (e != null) {
-                    Assert.fail("this callback should not raise exception");
+                    Assert.fail(e.getMessage());
                 } else {
 
                     Assert.assertEquals("Ncmb Tarou", results.get(0).getUserName());
@@ -1950,9 +1953,12 @@ public class NCMBUserTest {
         currentUser.signUpInBackground(new DoneCallback() {
             @Override
             public void done(NCMBException e) {
-                Assert.assertNotNull(e);
-                Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
-                Assert.assertNotNull("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
+                    Assert.assertEquals("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                }
                 callbackFlag = true;
             }
         });
@@ -2035,7 +2041,7 @@ public class NCMBUserTest {
             public void done(NCMBObject object, NCMBException e) {
                 object.getString("key");
                 if (e != null) {
-                    Assert.fail("get object raise exception:" + e.getMessage());
+                    Assert.fail(e.getMessage());
                 } else {
                     Assert.assertEquals("7FrmPTBKSNtVjajm", object.getObjectId());
                     Assert.assertEquals("value", object.getString("key"));
@@ -2106,7 +2112,7 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
-                    Assert.fail("update object error");
+                    Assert.fail(e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -2158,7 +2164,7 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
-                    Assert.fail("save Background is failed.");
+                    Assert.fail(e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -2215,7 +2221,7 @@ public class NCMBUserTest {
             @Override
             public void done(NCMBException e) {
                 if (e != null) {
-                    Assert.fail("delete object method should not raise exception:");
+                    Assert.fail(e.getMessage());
                 }
                 callbackFlag = true;
             }
@@ -2266,7 +2272,6 @@ public class NCMBUserTest {
                 if (e != null) {
                     Assert.fail("this callback should not raise exception");
                 } else {
-
                     Assert.assertEquals("Ncmb Tarou", results.get(0).getUserName());
                 }
                 callbackFlag = true;
