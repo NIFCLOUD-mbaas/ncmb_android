@@ -1261,6 +1261,12 @@ public class NCMBUserTest {
         Assert.assertTrue(user.mUpdateKeys.contains("mailAddress"));
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、Saveを行ってからセッショントークンの変更がないこと。
+     *
+     * - 結果：セッショントークンが変更されない
+     */
     @Test
     public void login_and_save() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1279,6 +1285,12 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionTokenSave", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、SaveInBackgroundを行ってからセッショントークンの変更がないこと。
+     *
+     * - 結果：セッショントークンが変更されない
+     */
     @Test
     public void login_and_save_inbackground() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1308,6 +1320,12 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、SignUpを行ってからセッショントークンの変更がないこと。
+     *
+     * - 結果：セッショントークンが変更されない
+     */
     @Test
     public void login_and_signup() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1326,6 +1344,12 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、SignUpInBackgroundを行ってからセッショントークンの変更がないこと。
+     *
+     * - 結果：セッショントークンが変更されない
+     */
     @Test
     public void login_and_signupInbackground() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1354,6 +1378,12 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、ログインしてSignUpしてSaveを行ってからのセッショントークン。
+     *
+     * - 結果：セッショントークンが存在して、SignUpと適応する。
+     */
     @Test
     public void login_signup_after_save() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1379,6 +1409,12 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、ログインしてSaveしてSignUpを行ってからのセッショントークン。
+     *
+     * - 結果：セッショントークンが存在して、SignUpと適応する。
+     */
     @Test
     public void login_save_after_sigup() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1404,6 +1440,12 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、ログインしてSaveしてSignUpInBackgroundを行ってからのセッショントークン。
+     *
+     * - 結果：セッショントークンが存在して、SignUpInBackgroundと適応する。
+     */
     @Test
     public void login_signup_in_background_after_save() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1440,6 +1482,12 @@ public class NCMBUserTest {
 
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、ログインしてSignUpInBackgroundしてSaveを行ってからのセッショントークン。
+     *
+     * - 結果：セッショントークンが存在して、SignUpInBackgroundと適応する。
+     */
     @Test
     public void login_save_after_signup_in_background() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
@@ -1476,6 +1524,12 @@ public class NCMBUserTest {
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * - 内容：CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、ログインしてSaveInBackgroundしてSignUpを行ってからのセッショントークン。
+     * 
+     * - 結果：セッショントークンが存在して、SignUpと適応する。
+     */
     @Test
     public void login_signup_after_save_in_background() throws Exception {
         NCMBUser.login("saveAfterLogin", "saveAfterLogin");
