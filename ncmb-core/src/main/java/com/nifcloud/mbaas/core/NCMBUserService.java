@@ -141,12 +141,12 @@ public class NCMBUserService extends NCMBService {
      * @return new NCMBUser object that save
      * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
      */
-    public NCMBUser saveByName(String userName, String password) throws NCMBException {
+    public void saveByName(String userName, String password) throws NCMBException {
         try {
             JSONObject params = new JSONObject();
             params.put("userName", userName);
             params.put("password", password);
-            return saveUser(params, false);
+            saveUser(params, false);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -161,13 +161,13 @@ public class NCMBUserService extends NCMBService {
      * @return new NCMBUser object that save
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
-    public NCMBUser saveByName(String userName, String password,JSONObject otherFields) throws NCMBException {
+    public void saveByName(String userName, String password,JSONObject otherFields) throws NCMBException {
         try {
             JSONObject params = new JSONObject();
             params.put("userName", userName);
             params.put("password", password);
             mergeJSONObject(params,otherFields);
-            return saveUser(params, false);
+            saveUser(params, false);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -583,13 +583,11 @@ public class NCMBUserService extends NCMBService {
      * @return NCMBUser
      * @throws NCMBException
      */
-    protected NCMBUser saveUser(JSONObject params, boolean oauth) throws NCMBException {
+    protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
         RequestParams reqParams = registerUserParams(params);
 
         NCMBResponse response = sendRequest(reqParams);
         registerUserCheckResponse(response, oauth);
-
-        return NCMBUser.getCurrentUser();
     }
 
     /**

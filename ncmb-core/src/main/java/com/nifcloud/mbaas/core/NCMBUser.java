@@ -262,19 +262,16 @@ public class NCMBUser extends NCMBObject {
         NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
         JSONObject params = new JSONObject();
         Iterator<String> iter = mFields.keys();
-        NCMBUser user ;
         try {
             while (iter.hasNext()) {
                 String key = iter.next();
                 if (key != "userName" && key != "password") params.put(key,mFields.get(key));
             }
             if (params.length() == 0) {
-                user = service.saveByName(getUserName(), getPassword());
+                service.saveByName(getUserName(), getPassword());
             } else {
-                user = service.saveByName(getUserName(), getPassword(), params);
-                NCMBUserService.mergeJSONObject(user.mFields,params);
+                service.saveByName(getUserName(), getPassword(), params);
             }
-            mFields = user.mFields;
         } catch (JSONException e) {}
     }
 
