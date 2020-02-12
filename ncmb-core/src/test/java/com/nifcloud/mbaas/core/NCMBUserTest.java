@@ -29,8 +29,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
+import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * NCMBUserTest class
@@ -89,7 +92,7 @@ public class NCMBUserTest {
         NCMBUser user = new NCMBUser();
         user.setUserName("Ncmb Tarou");
         user.setPassword("Ncmbtarou");
-        user.put("testField","test");
+        user.put("testField", "test");
 
         user.signUp();
 
@@ -130,7 +133,7 @@ public class NCMBUserTest {
         NCMBUser user = new NCMBUser();
         user.setUserName("Ncmb Tarou");
         user.setPassword("Ncmbtarou");
-        user.put("testField","test");
+        user.put("testField", "test");
 
         user.signUpInBackground(new DoneCallback() {
             @Override
@@ -1259,6 +1262,1108 @@ public class NCMBUserTest {
         Assert.assertTrue(user.mUpdateKeys.contains("userName"));
         Assert.assertTrue(user.mUpdateKeys.contains("password"));
         Assert.assertTrue(user.mUpdateKeys.contains("mailAddress"));
+    }
+
+    /**
+     * - 内容：トークンがエラー場合、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_currentUser_when_token_error() throws Exception {
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+        NCMB.getCurrentContext().sessionToken = null;
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：トークンがエラー場合、DataStoreのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_dataStore_when_token_error() throws Exception {
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+        NCMB.getCurrentContext().sessionToken = null;
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("getObjectExpiredToken");
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+
+            @Override
+            public void done(NCMBObject object, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：トークンがエラー場合、UserのGET通信を確認する。
+     * - 結果：ステータスコード401及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_user_when_token_error() throws Exception {
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+        NCMB.getCurrentContext().sessionToken = null;
+
+        NCMBUser userFetch = new NCMBUser();
+        userFetch.setObjectId("dummyAllowUserId");
+        userFetch.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                    Assert.assertEquals("OAuth authentication error.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：ログイン後、存在しないCurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_current_user_non_exist_after_login() throws Exception {
+        NCMBUser user = NCMBUser.login("NcmbCurrentUser", "dummyPassword");
+
+        Assert.assertEquals("dummyCurrentUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbCurrentUser", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userFetch = NCMBUser.getCurrentUser();
+        userFetch.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyCurrentUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbCurrentUser", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：ログイン後、存在しないオブジェクトのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_object_non_exist_after_login() throws Exception {
+        NCMBUser user = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("NonExistObject");
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+            @Override
+            public void done(NCMBObject object, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get object method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：ログイン後、存在しないユーザーのGET通信を確認する。
+     * - 結果：ステータスコード404及び「Error Json」が返却されること
+     */
+    @Test
+    public void fetch_user_non_exist_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userFetch = new NCMBUser();
+        userFetch.setObjectId("dummyNotfoundUserId");
+        userFetch.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                    Assert.assertEquals("No data available.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
+    }
+
+    /**
+     * - 内容：ログイン後、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
+    @Test
+    public void fetch_currentUser_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("dummyUserLoginId", user.getObjectId());
+                    Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：ログイン後、CurrentUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_currentUser_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.put("key", "value");
+        currentUser.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("value", NCMBUser.getCurrentUser().mFields.get("key"));
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), NCMBUser.getCurrentUser().getUpdateDate());
+    }
+
+    /**
+     * - 内容：ログイン後、CurrentUserのPOST通信を確認する。
+     * - 結果：ステータスコード409及び「Error Json」が返却されること
+     */
+    @Test
+    public void add_currentUser_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.setObjectId(null);
+        currentUser.setPassword("dummyPassword");
+        currentUser.setAcl(null);
+
+        currentUser.signUpInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
+                    Assert.assertEquals("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), NCMBUser.getCurrentUser().getUpdateDate());
+
+    }
+
+    /**
+     * - 内容：ログイン後、DatastoreのGET通信を確認する。
+     * - 結果：ステータスコード200及び「Object data Json」が返却されること
+     */
+    @Test
+    public void fetch_data_store_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("getTestObjectId");
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+
+            @Override
+            public void done(NCMBObject object, NCMBException e) {
+                object.getString("key");
+                if (e != null) {
+                    Assert.fail("get object raise exception:" + e.getMessage());
+                } else {
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", object.getObjectId());
+                    Assert.assertEquals("value", object.getString("key"));
+                    try {
+                        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+                        Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                        Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                    } catch (Exception error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
+        Assert.assertEquals("value", obj.getString("key"));
+        Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
+    }
+
+    /**
+     * - 内容：ログイン後、DatastoreのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_data_store_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("updateTestObjectId");
+        obj.put("updateKey", "updateValue");
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail("update object error");
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-04T11:28:30.348Z")));
+    }
+
+    /**
+     * - 内容：ログイン後、DatastoreのPOST通信を確認する。
+     * - 結果：ステータスコード201及び「Object data Json」が返却されること
+     */
+    @Test
+    public void add_data_store_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("SaveObjectTest");
+        obj.put("key", "value");
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        Assert.assertNotNull(obj);
+        Assert.assertEquals("7FrmPTBKSNtVjajm9", obj.getObjectId());
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertEquals(0, obj.mUpdateKeys.size());
+
+    }
+
+    /**
+     * - 内容：ログイン後、DatastoreのDELETE通信を確認する。
+     * - 結果：ステータスコード200及び「」が返却されること
+     */
+    @Test
+    public void delete_data_store_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("deleteTestObjectId");
+        obj.deleteObjectInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：ログイン後、AllowUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
+    @Test
+    public void fetch_allow_user_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
+        query.whereEqualTo("userName", "Ncmb Tarou");
+        query.findInBackground(new FindCallback<NCMBUser>() {
+            @Override
+            public void done(List<NCMBUser> results, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("Ncmb Tarou", results.get(0).getUserName());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+    }
+
+    /**
+     * - 内容：ログイン後、AllowUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_allow_user_after_login() throws Exception {
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userUpdate = new NCMBUser();
+        userUpdate.setObjectId("dummyUserId");
+        userUpdate.put("key", "value");
+        userUpdate.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
+    }
+
+    /**
+     * - 内容：再ログイン後、CurrentUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
+    @Test
+    public void fetch_currentUser_after_login_again() throws Exception {
+
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.fetchInBackground(new FetchCallback<NCMBUser>() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("NcmbToTestAfterLogin", user.getUserName());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：再ログイン後、CurrentUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_currentUser_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.put("key", "value");
+        currentUser.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), currentUser.getUpdateDate());
+        Assert.assertEquals("value", NCMBUser.getCurrentUser().mFields.get("key"));
+    }
+
+    /**
+     * - 内容：再ログイン後、CurrentUserのPOST通信を確認する。
+     * - 結果：ステータスコード409及び「Error Json」が返却されること
+     */
+    @Test
+    public void add_currentUser_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.setObjectId(null);
+        currentUser.setPassword("dummyPassword");
+        currentUser.setAcl(null);
+
+        currentUser.signUpInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("get user method should raise exception:");
+                } else {
+                    Assert.assertEquals(NCMBException.DUPLICATE_VALUE, e.getCode());
+                    Assert.assertEquals("NcmbToTestAfterLogin is duplication.", e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2015-06-07T01:02:03.004Z"), currentUser.getUpdateDate());
+    }
+
+    /**
+     * - 内容：再ログイン後、CurrentUserのDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
+    @Test
+    public void delete_current_user_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
+        NCMBUser currentUser = NCMBUser.getCurrentUser();
+        currentUser.deleteObject();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+        Assert.assertNull(NCMB.getCurrentContext().userId);
+
+    }
+
+    /**
+     * - 内容：再ログイン後、DataStoreのGET通信を確認する。
+     * - 結果：ステータスコード200及び「Object data Json」が返却されること
+     */
+    @Test
+    public void fetch_data_store_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("getTestObjectId");
+        obj.fetchInBackground(new FetchCallback<NCMBObject>() {
+
+            @Override
+            public void done(NCMBObject object, NCMBException e) {
+                object.getString("key");
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                } else {
+                    Assert.assertEquals("7FrmPTBKSNtVjajm", object.getObjectId());
+                    Assert.assertEquals("value", object.getString("key"));
+
+                    SimpleDateFormat df = NCMBDateFormat.getIso8601();
+
+                    try {
+                        Assert.assertTrue(object.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                        Assert.assertTrue(object.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+                    } catch (ParseException | NCMBException error) {
+                        Assert.fail(error.getMessage());
+                    }
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("7FrmPTBKSNtVjajm", obj.getObjectId());
+        Assert.assertEquals("value", obj.getString("key"));
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        JSONAssert.assertEquals("{}", obj.getAcl().toJson().toString(), false);
+    }
+
+    /**
+     * - 内容：再ログイン後、DataStoreのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_data_store_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("updateTestObjectId");
+        obj.put("updateKey", "updateValue");
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-04T11:28:30.348Z")));
+    }
+
+    /**
+     * - 内容：再ログイン後、DataStoreのPOST通信を確認する。
+     * - 結果：ステータスコード201及び「Object data Json」が返却されること
+     */
+    @Test
+    public void add_data_store_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("SaveObjectTest");
+        obj.put("key", "value");
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+        Assert.assertNotNull(obj);
+        Assert.assertEquals("7FrmPTBKSNtVjajm9", obj.getObjectId());
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertTrue(obj.getCreateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertTrue(obj.getUpdateDate().equals(df.parse("2014-06-03T11:28:30.348Z")));
+        Assert.assertEquals(0, obj.mUpdateKeys.size());
+    }
+
+    /**
+     * - 内容：再ログイン後、DataStoreのDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
+    @Test
+    public void delete_data_store_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBObject obj = new NCMBObject("TestClass");
+        obj.setObjectId("deleteTestObjectId");
+        obj.deleteObjectInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：再ログイン後、AllowUserのGET通信を確認する。
+     * - 結果：ステータスコード200及び「User data Json」が返却されること
+     */
+    @Test
+    public void fetch_allow_user_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertFalse(callbackFlag);
+        NCMBQuery<NCMBUser> query = NCMBUser.getQuery();
+        query.whereEqualTo("userName", "Ncmb Tarou");
+        query.findInBackground(new FindCallback<NCMBUser>() {
+            @Override
+            public void done(List<NCMBUser> results, NCMBException e) {
+                if (e != null) {
+                    Assert.fail("this callback should not raise exception");
+                } else {
+                    Assert.assertEquals("Ncmb Tarou", results.get(0).getUserName());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：再ログイン後、AllowUserのPUT通信を確認する。
+     * - 結果：ステータスコード200及び「updateDate data Json」が返却されること
+     */
+    @Test
+    public void update_allow_user_after_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("NcmbToTestAfterLogin", "dummyPassword");
+
+        Assert.assertEquals("dummyUserLoginId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("NcmbToTestAfterLogin", NCMBUser.getCurrentUser().getUserName());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+
+        NCMBUser userUpdate = new NCMBUser();
+        userUpdate.setObjectId("dummyUserId");
+        userUpdate.put("key", "value");
+        userUpdate.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        SimpleDateFormat df = NCMBDateFormat.getIso8601();
+        Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), userUpdate.getUpdateDate());
+        Assert.assertEquals("dummyUserId", NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertEquals("dummySessionTokenUserLogin", NCMB.getCurrentContext().sessionToken);
+    }
+
+    /**
+     * - 内容：再ログイン後、CurrentUserではないもののDELETE通信を確認する。
+     * - 結果：ステータスコード200が返却されること
+     */
+    @Test
+    public void delete_not_current_user_login_again() throws Exception {
+        // Login first time
+        NCMBUser loginUser = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
+        // Logout
+        NCMBUser.logout();
+
+        Assert.assertNull(NCMBUser.getCurrentUser().getObjectId());
+        Assert.assertNull(NCMBUser.getCurrentUser().getUserName());
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        // Login second time
+        NCMBUser loginUser1 = NCMBUser.login("Ncmb Tarou", "dummyPassword");
+
+        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("notCurrentUserId");
+        user.deleteObject();
+
+        Assert.assertNull(user.getUserName());
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
+        Assert.assertEquals("dummyObjectId", NCMB.getCurrentContext().userId);
     }
 
     /**
