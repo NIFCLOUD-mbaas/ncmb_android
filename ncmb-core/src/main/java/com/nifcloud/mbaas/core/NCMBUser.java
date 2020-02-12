@@ -254,6 +254,85 @@ public class NCMBUser extends NCMBObject {
     // action methods
 
     /**
+     * saveWithoutLogin to NIF Cloud mobile backend
+     *
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     */
+    private void saveWithoutLogin() throws NCMBException {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
+        try {
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") params.put(key,mFields.get(key));
+            }
+            if (params.length() == 0) {
+                service.saveByName(getUserName(), getPassword());
+            } else {
+                service.saveByName(getUserName(), getPassword(), params);
+            }
+        } catch (JSONException e) {}
+    }
+
+    /**
+     * saveInBackgroundWithoutLogin to NIF Cloud mobile backend
+     *
+     * @param callback callback for after saveInBackgroundWithoutLogin
+     */
+    private void saveInBackgroundWithoutLogin(final DoneCallback callback) {
+        NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
+        final JSONObject params = new JSONObject();
+        Iterator<String> iter = mFields.keys();
+        try {
+            while (iter.hasNext()) {
+                String key = iter.next();
+                if (key != "userName" && key != "password") {
+                    try {
+                        params.put(key, mFields.get(key));
+                    } catch (JSONException e){}
+                }
+            }
+            if (params.length() == 0) {
+                service.saveByNameInBackground(getUserName(), getPassword(), new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+                    }
+                });
+            } else {
+                service.saveByNameInBackground(getUserName(), getPassword(), params, new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        if (e != null) {
+                            if (callback != null) {
+                                callback.done(e);
+                            }
+                        } else {
+                            //copyFrom(user.mFields);
+                            if (callback != null) {
+                                callback.done(null);
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (NCMBException e) {
+            if (callback != null) {
+                callback.done(e);
+            }
+        }
+    }
+
+    /**
      * sign up to NIF Cloud mobile backend
      *
      * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
@@ -779,7 +858,7 @@ public class NCMBUser extends NCMBObject {
     @Override
     public void save() throws NCMBException {
         if (getObjectId() == null) {
-            signUp();
+            saveWithoutLogin();
         } else {
             NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);
             try {
@@ -797,7 +876,7 @@ public class NCMBUser extends NCMBObject {
     @Override
     public void saveInBackground(final DoneCallback callback) {
         if (getObjectId() == null) {
-            signUpInBackground(callback);
+            saveInBackgroundWithoutLogin(callback);
         } else {
 
             NCMBUserService service = (NCMBUserService) NCMB.factory(NCMB.ServiceType.USER);

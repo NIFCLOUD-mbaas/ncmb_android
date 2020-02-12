@@ -134,6 +134,46 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Save new user by name
+     *
+     * @param userName user name
+     * @param password password
+     * @return new NCMBUser object that save
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     */
+    public void saveByName(String userName, String password) throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            saveUser(params, false);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Save new user by name
+     *
+     * @param userName user name
+     * @param password password
+     * @param otherFields other fields
+     * @return new NCMBUser object that save
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    public void saveByName(String userName, String password,JSONObject otherFields) throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
+            saveUser(params, false);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
      * Register new user by name in background
      *
      * @param userName user name
@@ -170,6 +210,48 @@ public class NCMBUserService extends NCMBService {
             params.put("password", password);
             mergeJSONObject(params,otherFields);
             registerUserInBackground(params, false, callback);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Internal Save new user by name in background
+     *
+     * @param userName user name
+     * @param password password
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     */
+    protected void saveByNameInBackground(String userName, String password, DoneCallback callback)
+            throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            saveUserInBackground(params, callback);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Internal Save new user by name in background
+     *
+     * @param userName userName
+     * @param password password
+     * @param otherFields other fields
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    protected void saveByNameInBackground(String userName, String password, JSONObject otherFields, DoneCallback callback)
+            throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
+            saveUserInBackground(params, callback);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -494,6 +576,21 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Internal method to save user
+     *
+     * @param params parameters
+     * @param oauth use oauth or not
+     * @return NCMBUser
+     * @throws NCMBException
+     */
+    protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
+        RequestParams reqParams = registerUserParams(params);
+
+        NCMBResponse response = sendRequest(reqParams);
+        registerUserCheckResponse(response, oauth);
+    }
+
+    /**
      * Internal method to register user in background
      *
      * @param params   parameters
@@ -540,6 +637,30 @@ public class NCMBUserService extends NCMBService {
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.INVALID_JSON, "Bad oauth option");
         }
+    }
+
+    /**
+     * Internal method to save user in background
+     *
+     * @param params    parameters
+     * @param callback  callback when process finished
+     * @throws NCMBException
+     */
+    protected void saveUserInBackground(JSONObject params, final DoneCallback callback)
+            throws NCMBException {
+        RequestParams reqParams = registerUserParams(params);
+
+        sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+                callback.done(null);
+            }
+
+            @Override
+            public void handleError(NCMBException e) {
+                callback.done(e);
+            }
+        });
     }
 
     /**

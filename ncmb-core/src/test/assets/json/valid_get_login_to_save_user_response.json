@@ -1,0 +1,9 @@
+{
+  "objectId":"dummyObjectIdSave",
+  "userName":"saveAfterLogin",
+  "mailAddress":null,
+  "mailAddressConfirm":null,
+  "sessionToken":"dummySessionTokenSave",
+  "createDate":"2013-08-28T07:46:09.801Z",
+  "updateDate":"2013-08-30T05:32:03.868Z"
+}

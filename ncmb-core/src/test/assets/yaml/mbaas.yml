@@ -1233,3 +1233,13 @@ request:
 response:
   status: 200
   file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      userName: "saveAfterLogin"
+      password: saveAfterLogin
+    method: GET
+  response:
+    status: 200
+    file: valid_get_login_to_save_user_response.json
