@@ -1,6 +1,6 @@
 ## Android SDK for NIFCLOUD mobile backend
 
-[![Build Status](https://travis-ci.org/NIFCloud-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCloud-mbaas/ncmb_android)
+[![Build Status](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android)
 
 ## ダウンロード
 
@@ -45,7 +45,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v2.4.0 ～ (※2019年7月時点)
+- v3.0.0 ～ (※2020年2月時点)
 
 ## インストール
 
