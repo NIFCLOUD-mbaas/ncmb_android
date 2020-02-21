@@ -16,7 +16,7 @@
 package com.nifcloud.mbaas.core;
 
 /**
- * NCMBException is a class that defines the error to be returened from NIF Cloud mobile backend
+ * NCMBException is a class that defines the error to be returened from NIFCLOUD mobile backend
  */
 public class NCMBException extends Exception {
 
@@ -142,7 +142,7 @@ public class NCMBException extends Exception {
 
     /**
      * E502001 ストレージエラー<br>
-     * NIF Cloud ストレージでエラーが発生した場合のエラー
+     * NIFCLOUD ストレージでエラーが発生した場合のエラー
      */
     public static final String STORAGE_ERROR = "E502001";
 

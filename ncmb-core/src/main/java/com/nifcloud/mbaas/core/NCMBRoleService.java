@@ -134,7 +134,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleName role name
      * @return role Id
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject createRole(String roleName) throws NCMBException {
         RequestParams reqParams = createRoleParams(roleName);
@@ -148,7 +148,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleName role name
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void createRoleInBackground(String roleName, ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = createRoleParams(roleName);
@@ -198,7 +198,7 @@ public class NCMBRoleService extends NCMBService {
      * Delete role
      *
      * @param roleId object id of role
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void deleteRole(String roleId) throws NCMBException {
         RequestParams reqParams = deleteRoleParams(roleId);
@@ -212,7 +212,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId   object id of role
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void deleteRoleInBackground(String roleId, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = deleteRoleParams(roleId);
@@ -237,7 +237,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @return parameters in object
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public RequestParams getRoleParams(String roleId) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -263,7 +263,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @return role object
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBRole fetchRole(String roleId) throws NCMBException {
         RequestParams reqParams = getRoleParams(roleId);
@@ -278,7 +278,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param objectId objectId of role
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void fetchRoleInBackground(String objectId, final FetchCallback callback) throws NCMBException {
         if (objectId == null) {
@@ -308,7 +308,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param conditions conditions for role search
      * @return result list of role search
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public ArrayList<NCMBRole> searchRole(JSONObject conditions) throws NCMBException {
 
@@ -416,7 +416,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @return belong user ids
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public ArrayList<String> findBelongUser(String roleId) throws NCMBException {
         String url = mContext.baseUrl + mServicePath;
@@ -445,7 +445,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param users  users added or removed
      * @return parameters in object
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     protected RequestParams userRelationsParams(String roleId, List<NCMBUser> users, boolean isAdd) throws NCMBException {
         try {
@@ -490,7 +490,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param users  users added
      * @return result of add user to relations
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject addUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
         RequestParams reqParams = userRelationsParams(roleId, users, true);
@@ -506,7 +506,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId   role id
      * @param users    users added
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void addUserRelationsInBackground(String roleId, List<NCMBUser> users,
                                              ExecuteServiceCallback callback) throws NCMBException {
@@ -533,7 +533,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param users  users removed
      * @return result of remove user to relations
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject removeUserRelations(String roleId, List<NCMBUser> users) throws NCMBException {
         RequestParams reqParams = userRelationsParams(roleId, users, false);
@@ -548,7 +548,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId   role id
      * @param users    users removed
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void removeUserRelationsInBackground(String roleId, List<NCMBUser> users,
                                                 ExecuteServiceCallback callback) throws NCMBException {
@@ -608,7 +608,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param roles  roles added
      * @return result of add role to relations
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject addRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
         RequestParams reqParams = roleRelationParams(roleId, roles, true);
@@ -624,7 +624,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId   role id
      * @param roles    roles added
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void addRoleRelationsInBackground(String roleId, List<NCMBRole> roles,
                                              ExecuteServiceCallback callback) throws NCMBException {
@@ -651,7 +651,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param roles  roles removed
      * @return result of remove role to relations
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject removeRoleRelations(String roleId, List<NCMBRole> roles) throws NCMBException {
         RequestParams reqParams = roleRelationParams(roleId, roles, false);
@@ -666,7 +666,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId   role id
      * @param roles    roles removed
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void removeRoleRelationsInBackground(String roleId, List<NCMBRole> roles,
                                                 ExecuteServiceCallback callback) throws NCMBException {
@@ -729,7 +729,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @param acl    Assigned ACL
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void updateAcl(String roleId, NCMBAcl acl) throws NCMBException {
         RequestParams reqParams = setAclParams(roleId, acl);
@@ -744,7 +744,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId   role id
      * @param acl      Assigned ACL
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void updateAclInBackground(String roleId, NCMBAcl acl, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = setAclParams(roleId, acl);

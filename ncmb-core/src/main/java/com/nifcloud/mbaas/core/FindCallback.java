@@ -25,7 +25,7 @@ public interface FindCallback<T extends NCMBBase> {
     /**
      * Override this method with the code you want to run after find object
      * @param results list of search result
-     * @param e NCMBException from NIF Cloud mobile backend
+     * @param e NCMBException from NIFCLOUD mobile backend
      */
     void done(List<T> results, NCMBException e);
 }
