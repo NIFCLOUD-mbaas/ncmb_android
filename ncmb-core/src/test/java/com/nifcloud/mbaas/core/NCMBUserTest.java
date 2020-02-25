@@ -121,11 +121,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Ncmb Tarou", user.getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -147,12 +147,12 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("test", user.mFields.getString("testField"));
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Ncmb Tarou", user.getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -234,11 +234,11 @@ public class NCMBUserTest {
         ShadowLooper.runUiThreadTasks();
 
         NCMBUser user = NCMBUser.getCurrentUser();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("dummyObjectId", user.getObjectId());
         Assert.assertEquals("Ncmb Tarou", user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -270,10 +270,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -285,8 +286,8 @@ public class NCMBUserTest {
         } catch (Exception error) {
             Assert.fail(error.getMessage());
         }
-        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
 
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
     }
@@ -309,6 +310,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
@@ -381,6 +383,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         NCMBUser user = NCMBUser.getCurrentUser();
         Assert.assertEquals(user.getObjectId(), "dummyObjectId");
@@ -391,7 +394,6 @@ public class NCMBUserTest {
         Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("facebook"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -429,9 +431,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -506,6 +508,7 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         NCMBUser user = NCMBUser.getCurrentUser();
         Assert.assertEquals("dummyObjectId", user.getObjectId());
@@ -519,7 +522,6 @@ public class NCMBUserTest {
         Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
 
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("twitter"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -561,9 +563,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -660,9 +662,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -691,7 +693,6 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
-
         Assert.assertTrue(callbackFlag);
     }
 
@@ -723,10 +724,10 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         SimpleDateFormat df = NCMBDateFormat.getIso8601();
         Assert.assertEquals(df.parse("2014-06-04T11:28:30.348Z"), user.getUpdateDate());
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -776,9 +777,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertTrue(user.isLinkedWith("facebook"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -829,9 +830,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertFalse(user.isLinkedWith("facebook"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -884,9 +885,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertTrue(user.isLinkedWith("twitter"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -940,9 +941,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertFalse(user.isLinkedWith("twitter"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -986,9 +987,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertTrue(user.isLinkedWith("google"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1032,9 +1033,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertFalse(user.isLinkedWith("google"));
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1101,9 +1102,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertFalse(user.isLinkedWith("google"));
-        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -1160,9 +1161,9 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertEquals("Ncmb Tarou", user.getUserName());
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1199,11 +1200,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNull(user.getUserName());
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
         Assert.assertNull(NCMB.getCurrentContext().userId);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1241,11 +1242,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
 
         Assert.assertNull(user.getUserName());
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.getCurrentContext().sessionToken);
         Assert.assertEquals("dummyObjectId", NCMB.getCurrentContext().userId);
-        Assert.assertTrue(callbackFlag);
     }
 
     @Test
@@ -1291,7 +1292,7 @@ public class NCMBUserTest {
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
         Assert.assertTrue(callbackFlag);
-
+        
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
     }
@@ -2419,10 +2420,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("dummyObjectIdSave", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("saveAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenSave", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -2477,10 +2479,11 @@ public class NCMBUserTest {
         });
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
     }
 
     /**
@@ -2580,11 +2583,11 @@ public class NCMBUserTest {
         });
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
-
     }
 
     /**
@@ -2615,10 +2618,11 @@ public class NCMBUserTest {
         });
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("Ncmb Tarou", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
 
         NCMBUser user2 = new NCMBUser();
         user2.setUserName("Ncmb Tarou");
@@ -2658,10 +2662,11 @@ public class NCMBUserTest {
 
         Robolectric.flushBackgroundThreadScheduler();
         ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
         Assert.assertEquals("dummyObjectIdSave", NCMBUser.getCurrentUser().getObjectId());
         Assert.assertEquals("saveAfterLogin", NCMBUser.getCurrentUser().getUserName());
         Assert.assertEquals("dummySessionTokenSave", NCMB.getCurrentContext().sessionToken);
-        Assert.assertTrue(callbackFlag);
 
         NCMBUser user2 = new NCMBUser();
         user2.setUserName("Ncmb Tarou");
