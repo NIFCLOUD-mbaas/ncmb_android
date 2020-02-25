@@ -37,7 +37,7 @@ import java.util.List;
  * NCMBPush is used to retrieve and send the push notification.<br>
  * NCMBPush can not add any field.<br>
  * Information about the field names that can be set , refer to the following reference .<br>
- * @see <a target="_blank" href="https://mbaas.nifcloud.com/doc/current/rest/push/pushRegistration.html">NIF Cloud mobile backned API Reference(Japanese)</a>
+ * @see <a target="_blank" href="https://mbaas.nifcloud.com/doc/current/rest/push/pushRegistration.html">NIFCLOUD mobile backend API Reference(Japanese)</a>
  */
 public class NCMBPush extends NCMBBase {
 
@@ -649,7 +649,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Send push object
      *
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void send() throws NCMBException {
         //connect
@@ -732,7 +732,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Get push object
      *
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void fetch() throws NCMBException {
         //connect
@@ -786,7 +786,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Delete push object
      *
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void delete() throws NCMBException {
         //connect
@@ -939,7 +939,7 @@ public class NCMBPush extends NCMBBase {
         if (recentPushId.equals(currentPushId)) {
             return;
         }
-        
+
         SharedPreferences.Editor editor = recentPushIdPref.edit();
         editor.putString("recentPushId", currentPushId);
         editor.commit();

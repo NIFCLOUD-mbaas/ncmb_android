@@ -66,11 +66,11 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Saving JSONObject data to NIF Cloud mobile backend
+     * Saving JSONObject data to NIFCLOUD mobile backend
      * @param className Datastore class name which to save the object
      * @param params Saving Object data
      * @return result of save object
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject saveObject(String className, JSONObject params) throws NCMBException {
         if (!validateClassName(className)){
@@ -87,7 +87,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Saving JSONObject data to NIF Cloud mobile backend in background thread
+     * Saving JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to save the object
      * @param params saving Object data
      * @param callback callback for after object save
@@ -134,11 +134,11 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Fetching JSONObject data from NIF Cloud mobile backend
+     * Fetching JSONObject data from NIFCLOUD mobile backend
      * @param className Datastore class name which to fetch the object
      * @param objectId Datastore object id of fetch data
      * @return NCMBObject of fetch data
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBObject fetchObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -155,7 +155,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Fetching JSONObject data from NIF Cloud mobile backend in background thread
+     * Fetching JSONObject data from NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to fetch the object
      * @param objectId Datastore object id of fetch data
      * @param callback callback for after object fetch
@@ -201,12 +201,12 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Updating JSONObject data to NIF Cloud mobile backend
+     * Updating JSONObject data to NIFCLOUD mobile backend
      * @param className Datastore class name which to update the object
      * @param objectId Datastore object id of update data
      * @param params JSONObject of update data
      * @return JSONObject of update result
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject updateObject(String className, String objectId, JSONObject params) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -223,7 +223,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Updating JSONObject data to NIF Cloud mobile backend in background thread
+     * Updating JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to update the object
      * @param objectId Datastore object id of update data
      * @param params JSONObject of update data
@@ -268,11 +268,11 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Deleting JSONObject data from NIF Cloud mobile backend
+     * Deleting JSONObject data from NIFCLOUD mobile backend
      * @param className Datastore class name which to delete the object
      * @param objectId Datastore object id of delete data
      * @return JSONObject of delete result
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject deleteObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -289,7 +289,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Deleting JSONObject data from NIF Cloud mobile backend in background thread
+     * Deleting JSONObject data from NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to delete the object
      * @param objectId Datastore object id of delete data
      * @param callback callback for after object delete
@@ -335,11 +335,11 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Searching JSONObject data from NIF Cloud mobile backend
+     * Searching JSONObject data from NIFCLOUD mobile backend
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @return List of NCMBObject of search results
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public List searchObject (String className, JSONObject conditions) throws NCMBException {
         if (!validateClassName(className)){
@@ -357,7 +357,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Searching JSONObject data to NIF Cloud mobile backend in background thread
+     * Searching JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @param callback callback for after object search
@@ -428,11 +428,11 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Counting search object results from NIF Cloud mobile backend
+     * Counting search object results from NIFCLOUD mobile backend
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @return number of search results
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public int countObject (String className, JSONObject conditions) throws NCMBException  {
         if (!validateClassName(className)){
@@ -454,7 +454,7 @@ public class NCMBObjectService extends NCMBService{
     }
 
     /**
-     * Counting search object results from NIF Cloud mobile backend
+     * Counting search object results from NIFCLOUD mobile backend
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @param callback callback for after object search and count data
@@ -508,7 +508,7 @@ public class NCMBObjectService extends NCMBService{
      *
      * @param responseData API response data
      * @return JSONArray
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     List<NCMBObject> createSearchResults(String className, JSONObject responseData) throws NCMBException {
         try {

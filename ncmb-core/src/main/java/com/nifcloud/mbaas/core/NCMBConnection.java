@@ -35,11 +35,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * NCMBConnection is a class that communicates with NIF Cloud mobile backend
+ * NCMBConnection is a class that communicates with NIFCLOUD mobile backend
  */
 public class NCMBConnection {
 
-    //time out millisecond from NIF Cloud mobile backend
+    //time out millisecond from NIFCLOUD mobile backend
     static int sConnectionTimeout = 10000;
 
     //API request object
@@ -67,10 +67,10 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIF Cloud mobile backed api synchronously
+     * Request NIFCLOUD mobile backed api synchronously
      *
-     * @return result object from NIF Cloud mobile backend
-     * @throws NCMBException exception from NIF Cloud mobile backend
+     * @return result object from NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBResponse sendRequest() throws NCMBException {
 
@@ -216,7 +216,7 @@ public class NCMBConnection {
     }
 
     /**
-     * Request NIF Cloud mobile backend api asynchronously
+     * Request NIFCLOUD mobile backend api asynchronously
      *
      * @param callback execute callback after api request
      */

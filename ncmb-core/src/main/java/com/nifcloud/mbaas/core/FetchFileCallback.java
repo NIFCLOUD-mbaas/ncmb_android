@@ -22,7 +22,7 @@ public interface FetchFileCallback extends CallbackBase{
     /**
      * Override this method with the code you want to run after process completed
      * @param data get file data
-     * @param e exception sdk internal or NIF Cloud mobile backend
+     * @param e exception sdk internal or NIFCLOUD mobile backend
      */
     void done(byte[] data, NCMBException e);
 }

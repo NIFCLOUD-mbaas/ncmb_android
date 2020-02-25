@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * NCMBResponse contains response data from NIF Cloud mobile backend
+ * NCMBResponse contains response data from NIFCLOUD mobile backend
  */
 public class NCMBResponse {
     /** http status for success */
@@ -53,7 +53,7 @@ public class NCMBResponse {
      * @param in              InputStream
      * @param responseCode    statusCode
      * @param responseHeaders responseHeaders
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBResponse(InputStream in, int responseCode, Map<String, List<String>> responseHeaders) throws NCMBException {
         statusCode = responseCode;
