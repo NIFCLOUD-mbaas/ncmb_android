@@ -21,7 +21,7 @@ package com.nifcloud.mbaas.core;
 public interface DoneCallback extends CallbackBase {
     /**
      * Override this method with the code you want to run after process completed
-     * @param e exception from NIF Cloud mobile backend
+     * @param e exception from NIFCLOUD mobile backend
      */
     void done(NCMBException e);
 }

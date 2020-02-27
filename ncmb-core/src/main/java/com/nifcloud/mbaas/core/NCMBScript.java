@@ -123,7 +123,7 @@ public class NCMBScript {
      * @param body   content data
      * @param query  query params
      * @return Result to script
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public byte[] execute(Map<String, String> header, JSONObject body, JSONObject query) throws NCMBException {
         NCMBScriptService scriptService = (NCMBScriptService) NCMB.factory(NCMB.ServiceType.SCRIPT);

@@ -24,7 +24,7 @@ public interface ExecuteScriptCallback extends CallbackBase {
      * Override this method with the code you want to run after executing script service
      *
      * @param data Result to script
-     * @param e    NCMBException from NIF Cloud mobile backend
+     * @param e    NCMBException from NIFCLOUD mobile backend
      */
     void done(byte[] data, NCMBException e);
 }

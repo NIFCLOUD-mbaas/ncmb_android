@@ -99,7 +99,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @return new NCMBUser object that registered
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser registerByName(String userName, String password) throws NCMBException {
         try {
@@ -134,12 +134,52 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Save new user by name
+     *
+     * @param userName user name
+     * @param password password
+     * @return new NCMBUser object that save
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    public void saveByName(String userName, String password) throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            saveUser(params, false);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Save new user by name
+     *
+     * @param userName user name
+     * @param password password
+     * @param otherFields other fields
+     * @return new NCMBUser object that save
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    public void saveByName(String userName, String password,JSONObject otherFields) throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
+            saveUser(params, false);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
      * Register new user by name in background
      *
      * @param userName user name
      * @param password password
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void registerByNameInBackground(String userName, String password, LoginCallback callback)
             throws NCMBException {
@@ -170,6 +210,48 @@ public class NCMBUserService extends NCMBService {
             params.put("password", password);
             mergeJSONObject(params,otherFields);
             registerUserInBackground(params, false, callback);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Internal Save new user by name in background
+     *
+     * @param userName user name
+     * @param password password
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    protected void saveByNameInBackground(String userName, String password, DoneCallback callback)
+            throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            saveUserInBackground(params, callback);
+        } catch (JSONException e) {
+            throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
+        }
+    }
+
+    /**
+     * Internal Save new user by name in background
+     *
+     * @param userName userName
+     * @param password password
+     * @param otherFields other fields
+     * @param callback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    protected void saveByNameInBackground(String userName, String password, JSONObject otherFields, DoneCallback callback)
+            throws NCMBException {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
+            mergeJSONObject(params,otherFields);
+            saveUserInBackground(params, callback);
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -245,7 +327,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param oauthOptions OAuth options
      * @return new NCMBUser object that registered
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser registerByOauth(JSONObject oauthOptions) throws NCMBException {
         JSONObject params = registerByOauthSetup(oauthOptions);
@@ -257,7 +339,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param oauthOptions OAuth options
      * @param callback     callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void registerByOauthInBackground(JSONObject oauthOptions, LoginCallback callback) throws NCMBException {
         JSONObject params = registerByOauthSetup(oauthOptions);
@@ -323,7 +405,7 @@ public class NCMBUserService extends NCMBService {
      * ( /requestMailAddressUserEntry API )
      *
      * @param mailAddress mail address
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void inviteByMail(String mailAddress) throws NCMBException {
         RequestParams reqParams = inviteByMailParams(mailAddress);
@@ -338,7 +420,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param mailAddress mail address
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void inviteByMailInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = inviteByMailParams(mailAddress);
@@ -383,7 +465,7 @@ public class NCMBUserService extends NCMBService {
      * Send Email for the password reset in background thread
      *
      * @param mailAddress mail address
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void requestPasswordReset(String mailAddress) throws NCMBException {
         RequestParams reqParams = null;
@@ -400,7 +482,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param mailAddress mail address
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void requestPasswordResetInBackground(String mailAddress, DoneCallback callback) throws NCMBException {
         RequestParams reqParams = null;
@@ -494,6 +576,21 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Internal method to save user
+     *
+     * @param params parameters
+     * @param oauth use oauth or not
+     * @return NCMBUser
+     * @throws NCMBException
+     */
+    protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
+        RequestParams reqParams = registerUserParams(params);
+
+        NCMBResponse response = sendRequest(reqParams);
+        registerUserCheckResponse(response, oauth);
+    }
+
+    /**
      * Internal method to register user in background
      *
      * @param params   parameters
@@ -543,6 +640,30 @@ public class NCMBUserService extends NCMBService {
     }
 
     /**
+     * Internal method to save user in background
+     *
+     * @param params    parameters
+     * @param callback  callback when process finished
+     * @throws NCMBException
+     */
+    protected void saveUserInBackground(JSONObject params, final DoneCallback callback)
+            throws NCMBException {
+        RequestParams reqParams = registerUserParams(params);
+
+        sendRequestAsync(reqParams, new UserServiceCallback(this, callback) {
+            @Override
+            public void handleResponse(NCMBResponse response) {
+                callback.done(null);
+            }
+
+            @Override
+            public void handleError(NCMBException e) {
+                callback.done(e);
+            }
+        });
+    }
+
+    /**
      * Setup params to get user entity
      *
      * @param userId user id
@@ -574,7 +695,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId user id
      * @return NCMBUser instance
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser fetchUser(String userId) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
@@ -589,7 +710,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId   user id
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void fetchUserInBackground(String userId, final FetchCallback callback) throws NCMBException {
         RequestParams reqParams = getUserParams(userId);
@@ -647,7 +768,7 @@ public class NCMBUserService extends NCMBService {
      * @param userId user id
      * @param params update values
      * @return result of update user
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject updateUser(String userId, JSONObject params) throws NCMBException {
         RequestParams reqParams = updateUserParams(userId, params);
@@ -669,7 +790,7 @@ public class NCMBUserService extends NCMBService {
      * @param userId   user id
      * @param params   update values
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void updateUserInBackground(final String userId, final JSONObject params, final ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = updateUserParams(userId, params);
@@ -741,7 +862,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @return new NCMBUser object that logged-in
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser loginByName(String userName, String password) throws NCMBException {
         RequestParams requestParams = loginByNameParams(userName, password);
@@ -756,7 +877,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @param callback callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void loginByNameInBackground(String userName, String password,
                                         LoginCallback callback) throws NCMBException {
@@ -791,7 +912,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @return parameters in object
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     protected RequestParams loginByMailParams(String mailAddress, String password) throws NCMBException {
         try {
@@ -829,7 +950,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @return new NCMBUser object that loggged-in
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBUser loginByMail(String mailAddress, String password) throws NCMBException {
         RequestParams params = loginByMailParams(mailAddress, password);
@@ -844,7 +965,7 @@ public class NCMBUserService extends NCMBService {
      * @param mailAddress mail address
      * @param password    password
      * @param callback    callback when process finished
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void loginByMailInBackground(String mailAddress, String password,
                                         LoginCallback callback) throws NCMBException {
@@ -932,7 +1053,7 @@ public class NCMBUserService extends NCMBService {
      * Delete user by given id
      *
      * @param userId user id
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void deleteUser(String userId) throws NCMBException {
         RequestParams reqParams = deleteUserParams(userId);
@@ -950,7 +1071,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId   user id
      * @param callback Callback is executed after delete user
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void deleteUserInBackground(final String userId, ExecuteServiceCallback callback) throws NCMBException {
         RequestParams reqParams = deleteUserParams(userId);
@@ -1002,7 +1123,7 @@ public class NCMBUserService extends NCMBService {
     /**
      * Logout from session
      *
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void logout() throws NCMBException {
         RequestParams reqParams = logoutParams();
@@ -1019,7 +1140,7 @@ public class NCMBUserService extends NCMBService {
      * Logout from session in background
      *
      * @param callback callback when logout completed
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void logoutInBackground(DoneCallback callback) throws NCMBException {
         RequestParams reqParams = logoutParams();
@@ -1104,7 +1225,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param conditions search conditions, if no condition set to null
      * @return result of search user
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public ArrayList<NCMBUser> searchUser(JSONObject conditions) throws NCMBException {
         RequestParams reqParams = searchUserParams(conditions);

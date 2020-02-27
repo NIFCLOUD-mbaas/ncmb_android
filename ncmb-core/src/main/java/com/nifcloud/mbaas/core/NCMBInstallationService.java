@@ -95,7 +95,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param registrationId registration id
      * @param params         installation parameters
      * @return JSONObject response of installation create
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject createInstallation(String registrationId, JSONObject params) throws NCMBException {
         //null check
@@ -192,7 +192,7 @@ public class NCMBInstallationService extends NCMBService {
      * @param objectId objectId
      * @param params   installation parameters
      * @return result of update installation
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject updateInstallation(String objectId, JSONObject params) throws NCMBException {
         try {
@@ -291,7 +291,7 @@ public class NCMBInstallationService extends NCMBService {
      * Delete installation object
      *
      * @param objectId object id
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void deleteInstallation(String objectId) throws NCMBException {
         try {
@@ -368,7 +368,7 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param objectId object id
      * @return result of get installation
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public NCMBInstallation fetchInstallation(String objectId) throws NCMBException {
         //null check
@@ -430,7 +430,7 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param conditions search conditions
      * @return JSONObject
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public List searchInstallation(JSONObject conditions) throws NCMBException {
         //connect

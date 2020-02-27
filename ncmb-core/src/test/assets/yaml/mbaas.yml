@@ -133,7 +133,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "Asia/Tokyo"
       pushType: "fcm"
   response:
@@ -148,7 +148,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "Etc/UTC"
       key: "value"
       pushType: "fcm"
@@ -164,7 +164,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "UTC"
       key: "value"
       pushType: "fcm"
@@ -181,7 +181,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "Asia/Tokyo"
       pushType: "fcm"
   response:
@@ -197,7 +197,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "Etc/UTC"
       pushType: "fcm"
   response:
@@ -213,7 +213,7 @@
       deviceType: "android"
       applicationName: "ncmb-core"
       appVersion: "1.0"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       timeZone: "UTC"
       pushType: "fcm"
   response:
@@ -241,7 +241,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       pushType: "fcm"
   response:
@@ -255,7 +255,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Asia/Tokyo"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       key: "value_update"
       pushType: "fcm"
@@ -270,7 +270,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       pushType: "fcm"
   response:
@@ -284,7 +284,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "UTC"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       pushType: "fcm"
   response:
@@ -298,7 +298,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "Etc/UTC"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       key: "value_update"
       pushType: "fcm"
@@ -313,7 +313,7 @@
       deviceType: "android"
       appVersion: "1.0"
       timeZone: "UTC"
-      sdkVersion: "3.0.3"
+      sdkVersion: "3.0.4"
       applicationName: "ncmb-core"
       key: "value_update"
       pushType: "fcm"
@@ -1137,3 +1137,109 @@
   response:
     status: 200
     file: valid_count_file_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: GET
+  response:
+    status: 401
+    file: authentication_error_user.json
+---
+  request:
+    url: /2013-09-01/classes/TestClass/getObjectExpiredToken
+    method: GET
+  response:
+    status: 401
+    file: authentication_error_user.json
+---
+  request:
+    url: /2013-09-01/users/dummyAllowUserId
+    method: GET
+  response:
+    status: 401
+    file: authentication_error_user.json
+---
+  request:
+    url: /2013-09-01/users/dummyNotfoundUserId
+    method: GET
+  response:
+    status: 404
+    file: valid_error_userNotFound_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      userName: "NcmbCurrentUser"
+      password: dummyPassword
+    method: GET
+  response:
+    status: 200
+    file: valid_get_getCurrentUser_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyCurrentUserId
+    method: GET
+  response:
+    status: 404
+    file: valid_error_userNotFound_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      userName: "NcmbToTestAfterLogin"
+      password: dummyPassword
+    method: GET
+  response:
+    status: 200
+    file: valid_get_getUser_login_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserLoginId
+    method: GET
+  response:
+    status: 200
+    file: valid_get_getUser_login_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserLoginId
+    method: PUT
+    body:
+      key: "value"
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      userName: "NcmbToTestAfterLogin"
+      password: "dummyPassword"
+      authData: null
+      mailAddress: null
+      mailAddressConfirm: false
+      createDate: "2015-01-01T00:00:00.000Z"
+      updateDate: "2015-06-07T01:02:03.004Z"
+      sessionToken: "dummySessionTokenUserLogin"
+  response:
+    status: 409
+    file: valid_post_register_duplicate_user_response.json
+---
+request:
+  url: /2013-09-01/users/dummyUserLoginId
+  method: PUT
+  body:
+    key: "value"
+response:
+  status: 200
+  file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/login
+    query:
+      userName: "saveAfterLogin"
+      password: saveAfterLogin
+    method: GET
+  response:
+    status: 200
+    file: valid_get_login_to_save_user_response.json

@@ -18,7 +18,7 @@ package com.nifcloud.mbaas.core;
 import android.support.annotation.NonNull;
 
 /**
- * Parameters Object for login to NIF Cloud mobile backend with Google Account
+ * Parameters Object for login to NIFCLOUD mobile backend with Google Account
  */
 public class NCMBGoogleParameters {
 

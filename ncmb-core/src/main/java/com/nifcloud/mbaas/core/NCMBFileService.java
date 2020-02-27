@@ -68,13 +68,13 @@ public class NCMBFileService extends NCMBService {
 
 
     /**
-     * Upload file data to NIF Cloud mobile backend
+     * Upload file data to NIFCLOUD mobile backend
      *
      * @param fileName upload file name
      * @param fileData file data to byte[]
      * @param aclJson  saving file acl
      * @return API response
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject saveFile(String fileName, byte[] fileData, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -89,7 +89,7 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Upload file data to NIF Cloud mobile backend in background thread
+     * Upload file data to NIFCLOUD mobile backend in background thread
      *
      * @param fileName upload file name
      * @param fileData file data to byte[]
@@ -137,7 +137,7 @@ public class NCMBFileService extends NCMBService {
      * @param fileName update file name
      * @param aclJson  update file acl
      * @return API response
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject updateFile(String fileName, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -210,11 +210,11 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Delete file data to NIF Cloud mobile backend
+     * Delete file data to NIFCLOUD mobile backend
      *
      * @param fileName delete file name
      * @return API response
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public JSONObject deleteFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -231,7 +231,7 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Delete file data to NIF Cloud mobile backend in background thread
+     * Delete file data to NIFCLOUD mobile backend in background thread
      *
      * @param fileName delete file name
      * @param callback callback for after file delete
@@ -273,11 +273,11 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Get file data from NIF Cloud mobile backend
+     * Get file data from NIFCLOUD mobile backend
      *
      * @param fileName get file name
      * @return API response
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public byte[] fetchFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -294,7 +294,7 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Get file data from NIF Cloud mobile backend in background thread
+     * Get file data from NIFCLOUD mobile backend in background thread
      *
      * @param fileName get file name
      * @param callback callback for after file get
@@ -337,11 +337,11 @@ public class NCMBFileService extends NCMBService {
     }
 
     /**
-     * Get files from NIF Cloud mobile backend
+     * Get files from NIFCLOUD mobile backend
      *
      * @param conditions search conditions
      * @return NCMBFile list
-     * @throws NCMBException exception sdk internal or NIF Cloud mobile backend
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public List searchFile(JSONObject conditions) throws NCMBException {
         String url = createURL(null);
@@ -355,7 +355,7 @@ public class NCMBFileService extends NCMBService {
 
 
     /**
-     * Get files from NIF Cloud mobile backend in background thread
+     * Get files from NIFCLOUD mobile backend in background thread
      *
      * @param conditions search conditions
      * @param callback   callback for after file get

@@ -23,8 +23,8 @@ import org.json.JSONObject;
 public interface ExecuteServiceCallback extends CallbackBase {
     /**
      * Override this method with the code you want to run after executing service
-     * @param json response from NIF Cloud mobile backend
-     * @param e exception from NIF Cloud mobile backend
+     * @param json response from NIFCLOUD mobile backend
+     * @param e exception from NIFCLOUD mobile backend
      */
     void done(JSONObject json, NCMBException e);
 }

@@ -26,7 +26,7 @@ import java.util.List;
  * NCMBFile class.<br>
  * NCMBFile can not add any field.<br>
  * Information about the field names that can be set , refer to the following reference .<br>
- * @see <a target="_blank" href="https://mbaas.nifcloud.com/doc/current/rest/filestore/fileRegistration.html">NIF Cloud mobile backned API Reference(Japanese)</a>
+ * @see <a target="_blank" href="https://mbaas.nifcloud.com/doc/current/rest/filestore/fileRegistration.html">NIFCLOUD mobile backend API Reference(Japanese)</a>
  */
 public class NCMBFile extends NCMBBase {
 
@@ -144,7 +144,7 @@ public class NCMBFile extends NCMBBase {
     /**
      * Upload file to file store
      *
-     * @throws NCMBException exception from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void save() throws NCMBException {
         JSONObject aclJson = createAclJSON();
@@ -195,7 +195,7 @@ public class NCMBFile extends NCMBBase {
     /**
      * Update file to file store
      *
-     * @throws NCMBException exception from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void update() throws NCMBException {
         JSONObject aclJson = createAclJSON();
@@ -246,7 +246,7 @@ public class NCMBFile extends NCMBBase {
     /**
      * Delete file from file store
      *
-     * @throws NCMBException exception from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void delete() throws NCMBException {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
@@ -280,7 +280,7 @@ public class NCMBFile extends NCMBBase {
      * Get fileData from file store
      *
      * @return byte data obtained from filestore
-     * @throws NCMBException exception from NIF Cloud mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public byte[] fetch() throws NCMBException {
         NCMBFileService fileService = (NCMBFileService) NCMB.factory(NCMB.ServiceType.FILE);
