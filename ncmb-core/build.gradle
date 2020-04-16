@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.2.0'
     }
 }
 
@@ -17,8 +17,8 @@ allprojects {
     }
 }
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion 14
@@ -33,7 +33,7 @@ android {
     }
 
     lintOptions {
-        disable 'GradleCompatible'
+        disable 'GradleDependency'
         lintConfig file("lint.xml")
     }
 }
@@ -47,19 +47,19 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.1.0'
     implementation 'com.google.android.gms:play-services-base:15.0.1'
     implementation 'com.google.code.gson:gson:2.3.1'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.robolectric:robolectric:3.0"
     testImplementation 'org.robolectric:shadows-httpclient:3.0'
     testImplementation 'com.squareup.okhttp:mockwebserver:2.3.0'
-    testImplementation 'org.mockito:mockito-core:1.+'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
     testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
     testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.5'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.6.5'
     testImplementation 'org.yaml:snakeyaml:1.15'
-    testImplementation 'org.skyscreamer:jsonassert:1.2.+'
+    testImplementation 'org.skyscreamer:jsonassert:1.2.3'
     testImplementation "org.robolectric:shadows-play-services:3.0"
     testImplementation "org.robolectric:shadows-support-v4:3.0"
 }
@@ -68,7 +68,7 @@ task clearJar(type: Delete) {
     delete 'build/libs/' + JAR_NAME
 }
 task makeJar(type: Copy) {
-    from('build/intermediates/bundles/release/')
+    from('build/intermediates/intermediate-jars/release')
     into('release/')
     include('classes.jar')
     rename('classes.jar', JAR_NAME)
