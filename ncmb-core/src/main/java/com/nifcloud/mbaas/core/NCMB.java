@@ -63,6 +63,11 @@ public class NCMB {
     public static final String OAUTH_GOOGLE = "google";
 
     /**
+     * OAuth type of Apple
+     */
+    public static final String OAUTH_APPLE = "apple";
+
+    /**
      * Anonymous authentication
      */
     public static final String OAUTH_ANONYMOUS = "anonymous";

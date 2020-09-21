@@ -202,7 +202,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * Check for specified provider's authentication data is linked
      *
-     * @param provider facebook or twitter or google or anonymous
+     * @param provider facebook or twitter or google or apple or anonymous
      * @return Return true if authentication data is linked
      */
     public boolean isLinkedWith(String provider) {
@@ -237,7 +237,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * Get Specified Authentication Data
      *
-     * @param provider String "facebook" or "twitter" or "google" or "anonymous"
+     * @param provider String "facebook" or "twitter" or "google" or "apple" or "anonymous"
      * @return Specified Authentication Data or null
      */
     public JSONObject getAuthData(String provider) {
@@ -598,7 +598,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * login with parameter that can be obtained after the OAuth authentication
      *
-     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters or NCMBAppleParameters
      * @return Authenticated user
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
@@ -626,8 +626,11 @@ public class NCMBUser extends NCMBObject {
         } else if (params.getClass().equals(NCMBAnonymousParameters.class)) {
             authDataJSON = createAnonymousAuthData((NCMBAnonymousParameters) params);
             authDataJSON.put("type", "anonymous");
+        } else if (params.getClass().equals(NCMBAppleParameters.class)) {
+            authDataJSON = createAppleAuthData((NCMBAppleParameters) params);
+            authDataJSON.put("type", "apple");
         } else {
-            throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters");
+            throw new IllegalArgumentException("Parameters must be NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters or NCMBAppleParameters");
         }
         return authDataJSON;
     }
@@ -662,6 +665,15 @@ public class NCMBUser extends NCMBObject {
         return authDataJson;
     }
 
+    private static JSONObject createAppleAuthData(NCMBAppleParameters params) throws JSONException {
+        JSONObject authDataJson = new JSONObject();
+        authDataJson.put("id", params.userId);
+        authDataJson.put("access_token", params.accessToken);
+        authDataJson.put("client_id", params.clientId);
+
+        return authDataJson;
+    }
+
     private static JSONObject createAnonymousAuthData(NCMBAnonymousParameters params) throws JSONException {
         JSONObject authDataJson = new JSONObject();
         authDataJson.put("id", params.userId);
@@ -672,7 +684,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * login asynchronously with parameter that can be obtained after the OAuth authentication
      *
-     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param authData NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters or NCMBAppleParameters
      * @param callback if login is succeeded, callback include authenticated user.
      */
     public static void loginInBackgroundWith(Object authData, LoginCallback callback) {
@@ -693,7 +705,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * link specified authentication data for current user
      *
-     * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param params NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters or NCMBAppleParameters
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void linkWith(Object params) throws NCMBException {
@@ -734,7 +746,7 @@ public class NCMBUser extends NCMBObject {
     /**
      * link specified authentication data asynchronously for current user
      *
-     * @param params   NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters
+     * @param params   NCMBFacebookParameters or NCMBTwitterParameters or NCMBGoogleParameters or NCMBAppleParameters
      * @param callback Callback is executed after link or throw Exception
      */
     public void linkInBackgroundWith(Object params, final DoneCallback callback) {
@@ -782,7 +794,7 @@ public class NCMBUser extends NCMBObject {
 
     public void unlink(@NonNull String provider) throws NCMBException {
         JSONObject currentAuthData;
-        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google") || provider.equals("apple"))) {
             currentAuthData = getJSONObject("authData");
             JSONObject unlinkData = new JSONObject();
             try {
@@ -801,7 +813,7 @@ public class NCMBUser extends NCMBObject {
                 throw new NCMBException(NCMBException.INVALID_JSON, e.getMessage());
             }
         } else {
-            throw new IllegalArgumentException("provider must be facebook or twitter or google");
+            throw new IllegalArgumentException("provider must be facebook or twitter or google or apple");
         }
     }
 
@@ -809,7 +821,7 @@ public class NCMBUser extends NCMBObject {
 
         final JSONObject currentAuthData;
 
-        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google"))) {
+        if (provider != null && (provider.equals("facebook") || provider.equals("twitter") || provider.equals("google") || provider.equals("apple"))) {
             currentAuthData = getJSONObject("authData");
             JSONObject unlinkData = new JSONObject();
             try {
@@ -849,7 +861,7 @@ public class NCMBUser extends NCMBObject {
                 }
             }
         } else {
-            throw new IllegalArgumentException("provider must be facebook or twitter or google");
+            throw new IllegalArgumentException("provider must be facebook or twitter or google or apple");
 
         }
 

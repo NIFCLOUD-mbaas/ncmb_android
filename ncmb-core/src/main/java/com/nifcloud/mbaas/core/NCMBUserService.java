@@ -304,6 +304,14 @@ public class NCMBUserService extends NCMBService {
                     };
                     authData.put("google", fillParameters(gglKeys, oauthOptions));
                     break;
+                case NCMB.OAUTH_APPLE:
+                    String[] appleKeys = {
+                            "id",
+                            "access_token",
+                            "client_id"
+                    };
+                    authData.put("apple", fillParameters(appleKeys, oauthOptions));
+                    break;
                 case NCMB.OAUTH_ANONYMOUS:
                     String[] anKeys = {
                             "id"
