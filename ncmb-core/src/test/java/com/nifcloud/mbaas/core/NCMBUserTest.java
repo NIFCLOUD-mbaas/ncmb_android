@@ -668,6 +668,112 @@ public class NCMBUserTest {
     }
 
     @Test
+    public void login_with_apple_account() throws Exception {
+
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+        NCMBUser user = NCMBUser.loginWith(appleParams);
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(appleParams.userId, user.getAuthData("apple").getString("id"));
+        Assert.assertEquals(appleParams.accessToken, user.getAuthData("apple").getString("access_token"));
+        Assert.assertEquals(appleParams.clientId, user.getAuthData("apple").getString("client_id"));
+
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("apple"));
+    }
+
+    @Test
+    public void login_with_invalid_apple_account() throws Exception {
+
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "invalidAppleDummyId",
+                "invalidAppleDummyAccessToken",
+                "invalidAppleClientidDummy"
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(appleParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertNull(user);
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+    }
+
+    @Test
+    public void login_with_apple_in_background() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+
+        NCMBUser.loginInBackgroundWith(appleParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+
+        NCMBUser user = NCMBUser.getCurrentUser();
+        Assert.assertEquals(user.getObjectId(), "dummyObjectId");
+        Assert.assertEquals(appleParams.userId, user.getAuthData("apple").getString("id"));
+        Assert.assertEquals(appleParams.accessToken, user.getAuthData("apple").getString("access_token"));
+        Assert.assertEquals(appleParams.clientId, user.getAuthData("apple").getString("client_id"));
+        Assert.assertNotNull(NCMB.getCurrentContext().sessionToken);
+
+        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("apple"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void login_with_empty_apple_auth_data() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                null,
+                "invalidAppleDummyAccessToken",
+                "invalidAppleClientidDummy"
+        );
+
+        NCMBUser.loginWith(appleParams);
+    }
+
+    @Test
+    public void login_with_invalid_apple_in_background() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "invalidAppleDummyId",
+                "invalidAppleDummyAccessToken",
+                "invalidAppleClientidDummy"
+        );
+
+        NCMBUser.loginInBackgroundWith(appleParams, new LoginCallback() {
+            @Override
+            public void done(NCMBUser user, NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertNull(NCMB.getCurrentContext().sessionToken);
+    }
+
+    @Test
     public void logout() throws Exception {
         NCMBUser.logout();
 
@@ -1105,6 +1211,174 @@ public class NCMBUserTest {
         Assert.assertTrue(callbackFlag);
 
         Assert.assertFalse(user.isLinkedWith("google"));
+    }
+
+    @Test
+    public void link_apple_auth_data() throws Exception {
+
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(appleParams);
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertTrue(user.isLinkedWith("apple"));
+    }
+
+    @Test
+    public void link_apple_auth_data_in_background() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(appleParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertTrue(user.isLinkedWith("apple"));
+    }
+
+    @Test
+    public void link_invalid_apple_auth_data() throws Exception {
+
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "invalidAppleDummyId",
+                "invalidAppleDummyAccessToken",
+                "invalidAppleClientidDummy"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+        try {
+            user.linkWith(appleParams);
+        } catch (NCMBException e) {
+            Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+        }
+
+        Assert.assertFalse(user.isLinkedWith("apple"));
+    }
+
+    @Test
+    public void link_invalid_apple_auth_data_in_background() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "invalidAppleDummyId",
+                "invalidAppleDummyAccessToken",
+                "invalidAppleClientidDummy"
+        );
+
+        NCMBUser user = new NCMBUser();
+        user.setObjectId("dummyUserId");
+
+        user.linkInBackgroundWith(appleParams, new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.assertEquals(NCMBException.OAUTH_FAILURE, e.getCode());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertFalse(user.isLinkedWith("apple"));
+    }
+
+    @Test
+    public void login_with_twitter_and_link_apple_auth_data() throws Exception {
+
+        NCMBTwitterParameters twitterParams = new NCMBTwitterParameters(
+                "twitterDummyId",
+                "twitterDummyScreenName",
+                "twitterDummyConsumerKey",
+                "twitterDummyConsumerSecret",
+                "twitterDummyOauthToken",
+                "twitterDummyOauthSecret"
+        );
+        NCMBUser user = null;
+        try {
+            user = NCMBUser.loginWith(twitterParams);
+            user.setObjectId("dummyUserId");
+
+            NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                    "appleDummyId",
+                    "appleDummyAccessToken",
+                    "appleClientidDummy"
+            );
+
+            user.linkWith(appleParams);
+            Assert.assertTrue(user.isLinkedWith("twitter"));
+            Assert.assertTrue(user.isLinkedWith("apple"));
+        } catch (NCMBException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void unlink_authentication_apple_data() throws Exception {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+        NCMBUser user = NCMBUser.loginWith(appleParams);
+        Assert.assertTrue(user.isLinkedWith("apple"));
+
+        user.unlink("apple");
+
+        Assert.assertFalse(user.isLinkedWith("apple"));
+    }
+
+    @Test
+    public void unlink_authentication_apple_data_in_background() throws NCMBException {
+        NCMBAppleParameters appleParams = new NCMBAppleParameters(
+                "appleDummyId",
+                "appleDummyAccessToken",
+                "appleClientidDummy"
+        );
+        NCMBUser user = NCMBUser.loginWith(appleParams);
+        Assert.assertTrue(user.isLinkedWith("apple"));
+
+        user.unlinkInBackground("apple", new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e != null) {
+                    Assert.fail(e.getMessage());
+                }
+                callbackFlag = true;
+            }
+        });
+
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+
+        Assert.assertFalse(user.isLinkedWith("apple"));
     }
 
     /**

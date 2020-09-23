@@ -1,0 +1,17 @@
+{
+  "createDate":"2015-01-01T00:00:00.000Z",
+  "objectId":"dummyObjectId",
+  "userName":"Ncmb Tarou",
+  "authData":{
+    "apple":{
+      "id":"appleDummyId",
+      "access_token": "appleDummyAccessToken",
+      "client_id": "appleClientidDummy"
+    }
+  },
+  "mailAddress":null,
+  "mailAddressConfirm":false,
+  "sessionToken":"dummySessionToken",
+  "updateDate": "2015-06-07T01:02:03.004Z"
+}
+

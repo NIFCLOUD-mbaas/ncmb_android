@@ -697,6 +697,68 @@
     method: POST
     body:
       authData:
+        apple:
+          id: appleDummyId
+          access_token: appleDummyAccessToken
+          client_id: appleClientidDummy
+  response:
+    status: 200
+    file: valid_post_registerUserApple_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
+        apple:
+          id: invalidAppleDummyId
+          access_token: invalidAppleDummyAccessToken
+          client_id: invalidAppleClientidDummy
+  response:
+    status: 401
+    file: authentication_error_apple.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        apple:
+          id: appleDummyId
+          access_token: appleDummyAccessToken
+          client_id: appleClientidDummy
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users/dummyUserId
+    method: PUT
+    body:
+      authData:
+        apple:
+          id: invalidAppleDummyId
+          access_token: invalidAppleDummyAccessToken
+          client_id: invalidAppleClientidDummy
+  response:
+    status: 401
+    file: authentication_error_apple.json
+---
+  request:
+    url: /2013-09-01/users/dummyObjectId
+    method: PUT
+    body:
+      authData:
+        apple: null
+  response:
+    status: 200
+    file: valid_put_response.json
+---
+  request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+      authData:
         anonymous:
           id: anonymousDummyId
   response:
