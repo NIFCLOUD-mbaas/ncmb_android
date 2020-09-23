@@ -1,5 +1,21 @@
+/*
+ * Copyright 2017-2020 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.nifcloud.mbaas.core;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
@@ -16,15 +32,21 @@ import com.google.gson.Gson;
 import java.util.UUID;
 
 public class NCMBAppleOauthDialog {
+    private final String APPLE_URL_REQUEST = "https://appleid.apple.com/auth/authorize?response_type=code%20id_token";
+    private final String APPLE_RESPONSE_MODE = "&response_mode=form_post";
+    private final String APPLE_REQUEST_CLIENT_ID = "&client_id=";
+    private final String APPLE_REQUEST_SCOPE = "&scope=name%20email";
+    private final String APPLE_REQUEST_STATE = "&state=";
+    private final String APPLE_REQUEST_REDIRECT_URI = "&redirect_uri=";
+
     private Context mContext;
     private OnAppleAuthen mOnAppleAuthen;
     private Dialog dialog;
-    private WebView webview;
     private String clientId;
     private String redirectUrl;
-    private String mUrl;
 
-    private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    private static final FrameLayout.LayoutParams FILL =
+            new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
     public interface OnAppleAuthen {
         void success(String userid, String accessToken, String clientId);
@@ -40,22 +62,22 @@ public class NCMBAppleOauthDialog {
         this.redirectUrl = redirectUrl;
         mOnAppleAuthen = null;
         buildDialog();
+        dialog.show();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void buildDialog() {
         String state = UUID.randomUUID().toString();
-        mUrl = "https://appleid.apple.com/auth/authorize?response_type=code%20id_token" +
-                "&response_mode=form_post" +
-                "&client_id=" + clientId +
-                "&scope=name%20email" +
-                "&state=" + state +
-                "&redirect_uri=" + redirectUrl;
+        String mUrl = APPLE_URL_REQUEST + APPLE_RESPONSE_MODE +
+                APPLE_REQUEST_CLIENT_ID + clientId +
+                APPLE_REQUEST_SCOPE +
+                APPLE_REQUEST_STATE + state +
+                APPLE_REQUEST_REDIRECT_URI + redirectUrl;
 
         dialog = new Dialog(mContext, android.R.style.Theme_Translucent_NoTitleBar);
         FrameLayout container = new FrameLayout(mContext);
 
-
-        webview = new WebView(mContext);
+        WebView webview = new WebView(mContext);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(webViewClient);
         webview.loadUrl(mUrl);
@@ -85,31 +107,41 @@ public class NCMBAppleOauthDialog {
         }
 
         private boolean shouldOverrideUrlLoading(final String url) {
-            String idToken = url.substring(url.lastIndexOf("id_token=") + 9, url.length());
-            String code = url.substring(url.indexOf("code=") + 5, url.indexOf("id_token=") - 1);
-            String payload = idToken.split("\\.")[1];//0 is header we ignore it for now
-            String decoded = new String(java.util.Base64.getDecoder().decode(payload));
-            Gson gson = new Gson();
-            IdTokenPayload idTokenPayload = gson.fromJson(decoded, IdTokenPayload.class);
-            String userId = idTokenPayload.getSub();
+            Uri uri = Uri.parse(url);
+            String status = uri.getQueryParameter("status");
+            if (status != null && status.equals("0")) {
+                String idToken = uri.getQueryParameter("id_token");
+                String code = uri.getQueryParameter("code");
+                if (idToken != null && code != null) {
+                    String payload = idToken.split("\\.")[1]; //0 is header we ignore it for now
+                    String decoded;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        decoded = new String(java.util.Base64.getDecoder().decode(payload));
+                    } else {
+                        decoded = new String(android.util.Base64.decode(payload, android.util.Base64.DEFAULT));
+                    }
+                    Gson gson = new Gson();
+                    IdTokenPayload idTokenPayload = gson.fromJson(decoded, IdTokenPayload.class);
+                    String userId = idTokenPayload.getSub();
 
-            if (idToken != null && code != null && userId != null) {
-                mOnAppleAuthen.success(userId, code, clientId);
+                    if (userId != null) {
+                        mOnAppleAuthen.success(userId, code, clientId);
+                    } else {
+                        mOnAppleAuthen.failure("UserID is incorrect.");
+                    }
+                } else {
+                    mOnAppleAuthen.failure("code or id token is incorrect.");
+                }
+
             } else {
-                mOnAppleAuthen.failure("Error!");
+                mOnAppleAuthen.failure("No such application.");
             }
-            return true; // Returning True means that application wants to leave the current WebView and handle the url itself, otherwise return false.
+            dialog.hide();
+            return true;
         }
     };
 
-    public void show() {
-        dialog.show();
-    }
-    public void hide() {
-        dialog.hide();
-    }
-
-    private class IdTokenPayload {
+    private static class IdTokenPayload {
         private String iss;
         private String aud;
         private Long exp;
@@ -175,4 +207,5 @@ public class NCMBAppleOauthDialog {
         }
 
     }
+
 }
