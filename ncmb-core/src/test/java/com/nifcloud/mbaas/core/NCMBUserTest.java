@@ -667,6 +667,11 @@ public class NCMBUserTest {
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * Login Nifclound mobile backend by Apple account.
+     *
+     * @throws Exception
+     */
     @Test
     public void login_with_apple_account() throws Exception {
 
@@ -686,6 +691,11 @@ public class NCMBUserTest {
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("apple"));
     }
 
+    /**
+     * Login Nifclound mobile backend by invalid Apple account.
+     *
+     * @throws Exception
+     */
     @Test
     public void login_with_invalid_apple_account() throws Exception {
 
@@ -707,6 +717,11 @@ public class NCMBUserTest {
         Assert.assertNull(NCMB.getCurrentContext().sessionToken);
     }
 
+    /**
+     * Login Nifclound mobile backend by Apple account. (Using in background method)
+     *
+     * @throws Exception
+     */
     @Test
     public void login_with_apple_in_background() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -737,6 +752,11 @@ public class NCMBUserTest {
         Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("apple"));
     }
 
+    /**
+     * Login Nifclound mobile backend by Apple account. (Empty post request)
+     *
+     * @throws Exception
+     */
     @Test(expected = IllegalArgumentException.class)
     public void login_with_empty_apple_auth_data() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -748,6 +768,11 @@ public class NCMBUserTest {
         NCMBUser.loginWith(appleParams);
     }
 
+    /**
+     * Login Nifclound mobile backend by invalid Apple account. (Using in background method)
+     *
+     * @throws Exception
+     */
     @Test
     public void login_with_invalid_apple_in_background() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -1213,6 +1238,11 @@ public class NCMBUserTest {
         Assert.assertFalse(user.isLinkedWith("google"));
     }
 
+    /**
+     * Link Nifclound mobile backend by Apple account.
+     *
+     * @throws Exception
+     */
     @Test
     public void link_apple_auth_data() throws Exception {
 
@@ -1233,6 +1263,11 @@ public class NCMBUserTest {
         Assert.assertTrue(user.isLinkedWith("apple"));
     }
 
+    /**
+     * Link Nifclound mobile backend by Apple account. (Using in background method).
+     *
+     * @throws Exception
+     */
     @Test
     public void link_apple_auth_data_in_background() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -1261,6 +1296,11 @@ public class NCMBUserTest {
         Assert.assertTrue(user.isLinkedWith("apple"));
     }
 
+    /**
+     * Link Nifclound mobile backend by invalid Apple account.
+     *
+     * @throws Exception
+     */
     @Test
     public void link_invalid_apple_auth_data() throws Exception {
 
@@ -1281,6 +1321,11 @@ public class NCMBUserTest {
         Assert.assertFalse(user.isLinkedWith("apple"));
     }
 
+    /**
+     * Link Nifclound mobile backend by invalid Apple account. (Using in background method).
+     *
+     * @throws Exception
+     */
     @Test
     public void link_invalid_apple_auth_data_in_background() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -1309,6 +1354,11 @@ public class NCMBUserTest {
         Assert.assertFalse(user.isLinkedWith("apple"));
     }
 
+    /**
+     * Link Nifclound mobile backend by Apple account. (Exist Twitter's account linked)
+     *
+     * @throws Exception
+     */
     @Test
     public void login_with_twitter_and_link_apple_auth_data() throws Exception {
 
@@ -1339,6 +1389,11 @@ public class NCMBUserTest {
         }
     }
 
+    /**
+     * Unlink Nifclound mobile backend with Apple account.
+     *
+     * @throws Exception
+     */
     @Test
     public void unlink_authentication_apple_data() throws Exception {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(
@@ -1354,6 +1409,11 @@ public class NCMBUserTest {
         Assert.assertFalse(user.isLinkedWith("apple"));
     }
 
+    /**
+     * Unlink Nifclound mobile backend with Apple account. (Using in background method).
+     *
+     * @throws NCMBException
+     */
     @Test
     public void unlink_authentication_apple_data_in_background() throws NCMBException {
         NCMBAppleParameters appleParams = new NCMBAppleParameters(

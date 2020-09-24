@@ -28,15 +28,15 @@ public class NCMBAppleParameters {
     /***
      * Constructor
      *
-     * @param aUserId User id of Apple account
+     * @param anUserId User id of Apple account
      * @param anAccessToken Access token that can be obtained in the OAuth authentication
      * @param aClientId
      */
-    public NCMBAppleParameters(@NonNull String aUserId, @NonNull String anAccessToken, @NonNull String aClientId) {
-        if (aUserId == null || anAccessToken == null || aClientId == null) {
+    public NCMBAppleParameters(@NonNull String anUserId, @NonNull String anAccessToken, @NonNull String aClientId) {
+        if (anUserId == null || anAccessToken == null || aClientId == null) {
             throw new IllegalArgumentException("aUserId or anAccessToken or aClientId must not be null.");
         }
-        this.userId = aUserId;
+        this.userId = anUserId;
         this.accessToken = anAccessToken;
         this.clientId = aClientId;
     }
