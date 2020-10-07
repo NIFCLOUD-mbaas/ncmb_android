@@ -104,11 +104,17 @@ public class NCMBAnonymousTest {
         NCMBUser user = new NCMBUser();
         user.setUserName("Ncmb Tarou");
         user.setPassword("Ncmbtarou");
+        user.signUpInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
+                    Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
+                    Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
+                }
+            }
+        });
 
-        user.signUp();
-        Assert.assertTrue(NCMBUser.getCurrentUser().isLinkedWith("anonymous"));
-        Assert.assertEquals("dummySessionToken", NCMB.getCurrentContext().sessionToken);
-        Assert.assertEquals("dummyObjectId", NCMBUser.getCurrentUser().getObjectId());
     }
 
     @Test
