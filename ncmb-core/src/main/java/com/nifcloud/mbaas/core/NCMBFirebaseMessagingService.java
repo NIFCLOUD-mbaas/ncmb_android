@@ -26,7 +26,7 @@ import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -72,7 +72,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
             if (!recentPushId.equals(currentPushId)) {
                 SharedPreferences.Editor editor = recentPushIdPref.edit();
                 editor.putString("recentPushId", currentPushId);
-                editor.commit();
+                editor.apply();
                 super.onMessageReceived(remoteMessage);
                 Bundle bundle = getBundleFromRemoteMessage(remoteMessage);
                 sendNotification(bundle);

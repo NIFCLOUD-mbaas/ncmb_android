@@ -942,7 +942,7 @@ public class NCMBPush extends NCMBBase {
 
         SharedPreferences.Editor editor = recentPushIdPref.edit();
         editor.putString("recentPushId", currentPushId);
-        editor.commit();
+        editor.apply();
 
         if (dialogPushConfiguration.getDisplayType() == NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
             //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
