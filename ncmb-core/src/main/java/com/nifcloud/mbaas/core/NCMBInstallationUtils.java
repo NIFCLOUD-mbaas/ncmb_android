@@ -67,6 +67,8 @@ class NCMBInstallationUtils {
                                 } else if (NCMBException.DATA_NOT_FOUND.equals(saveErr.getCode())) {
                                     //保存失敗 : 端末情報の該当データがない
                                     reRegistInstallation(installation);
+                                } else {
+                                    DeviceTokenCallbackQueue.getInstance().execQueue(token,saveErr);
                                 }
                             }
                         });
