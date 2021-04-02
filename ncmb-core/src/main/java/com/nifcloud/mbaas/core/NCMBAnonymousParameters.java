@@ -15,7 +15,7 @@
  */
 package com.nifcloud.mbaas.core;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Parameters Object for login to NIFCLOUD mobile backend with Anonymous Account

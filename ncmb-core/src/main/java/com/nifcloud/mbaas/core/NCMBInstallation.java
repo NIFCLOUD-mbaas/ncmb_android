@@ -16,7 +16,7 @@
 package com.nifcloud.mbaas.core;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCanceledListener;
