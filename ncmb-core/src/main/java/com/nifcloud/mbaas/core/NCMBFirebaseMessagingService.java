@@ -222,6 +222,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
                 .setColor(smallIconColor) //通知エリアのアイコンカラー設定
                 .setContentTitle(title)
                 .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message).setBigContentTitle(title))
                 .setAutoCancel(true)//通知をタップしたら自動で削除する
                 .setSound(defaultSoundUri)//端末のデフォルトサウンド
                 .setContentIntent(pendingIntent);//通知をタップした際に起動するActivity
