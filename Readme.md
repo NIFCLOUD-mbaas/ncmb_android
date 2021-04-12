@@ -36,7 +36,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 ## 動作環境
 
 本SDKは、Android 7.x ～ 11.x, Android Studio 4.x にて動作確認を行っております。
-(※2021年1月時点)
+(※2021年4月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -45,7 +45,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v3.0.3 ～ (※2021年1月時点)
+- v3.0.4 ～ (※2021年4月時点)
 
 ## インストール
 
@@ -105,6 +105,7 @@ obj.saveInBackground(new DoneCallback() {
 
 ## 参考URL集
 
-- [ニフクラ mobile backend](https://mbaas.nifcloud.com)
-- [ドキュメント](https://mbaas.nifcloud.com/doc/current)
+- [ニフクラ mobile backend](https://mbaas.nifcloud.com/)
+- [SDKの詳細な使い方](https://mbaas.nifcloud.com/doc/current/)
+- [サンプル＆チュートリアル](https://mbaas.nifcloud.com/doc/current/tutorial/tutorial_android.html)
 - [ユーザーコミュニティ](https://github.com/NIFCLOUD-mbaas/UserCommunity)

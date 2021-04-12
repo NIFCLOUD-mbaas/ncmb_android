@@ -67,6 +67,8 @@ class NCMBInstallationUtils {
                                 } else if (NCMBException.DATA_NOT_FOUND.equals(saveErr.getCode())) {
                                     //保存失敗 : 端末情報の該当データがない
                                     reRegistInstallation(installation);
+                                } else {
+                                    DeviceTokenCallbackQueue.getInstance().execQueue(token,saveErr);
                                 }
                             }
                         });
@@ -112,20 +114,22 @@ class NCMBInstallationUtils {
             @Override
             public void done(List<NCMBInstallation> results, NCMBException e) {
 
-                //検索された端末情報のobjectIdを設定
-                try {
-                    installation.setObjectId(results.get(0).getObjectId());
-                } catch (NCMBException searchErr) {
+                if (results.size() > 0) {
+                    //検索された端末情報のobjectIdを設定
+                    try {
+                        installation.setObjectId(results.get(0).getObjectId());
+                    } catch (NCMBException searchErr) {
 
-                }
-
-                //端末情報を更新する
-                installation.saveInBackground(new DoneCallback() {
-                    @Override
-                    public void done(NCMBException e) {
-                        DeviceTokenCallbackQueue.getInstance().execQueue(installation.getLocalDeviceToken(),null);
                     }
-                });
+
+                    //端末情報を更新する
+                    installation.saveInBackground(new DoneCallback() {
+                        @Override
+                        public void done(NCMBException e) {
+                            DeviceTokenCallbackQueue.getInstance().execQueue(installation.getLocalDeviceToken(), null);
+                        }
+                    });
+                }
             }
         });
     }
