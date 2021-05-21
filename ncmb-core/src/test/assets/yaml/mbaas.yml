@@ -833,6 +833,24 @@
   request:
     url: /2013-09-01/logout
     method: GET
+    header:
+      {"X-NCMB-Apps-Session-Token":"testSessionTokenError404"}
+  response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+  request:
+    url: /2013-09-01/logout
+    method: GET
+    header:
+      {"X-NCMB-Apps-Session-Token":"testSessionTokenError401"}
+  response:
+    status: 401
+    file: valid_error_header_incorrect_response.json
+---
+  request:
+    url: /2013-09-01/logout
+    method: GET
   response:
     status: 200
     file: valid_get_logout_response.json

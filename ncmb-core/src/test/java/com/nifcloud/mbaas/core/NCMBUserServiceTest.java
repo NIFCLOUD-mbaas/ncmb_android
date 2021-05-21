@@ -799,6 +799,50 @@ public class NCMBUserServiceTest {
         Assert.assertTrue(callbackFlag);
     }
 
+    @Test
+    public void logoutInBackground_error_401() throws Exception {
+        NCMBUserService userService = getUserService();
+
+        userService.mContext.sessionToken = "testSessionTokenError401";
+
+        userService.logoutInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(NCMBException.INVALID_AUTH_HEADER, e.getCode());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+    }
+
+    @Test
+    public void logoutInBackground_error_404() throws Exception {
+        NCMBUserService userService = getUserService();
+
+        userService.mContext.sessionToken = "testSessionTokenError404";
+
+        userService.logoutInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if (e == null) {
+                    Assert.fail("this should not be happen.");
+                } else {
+                    Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.getCode());
+                }
+                callbackFlag = true;
+            }
+        });
+        Robolectric.flushBackgroundThreadScheduler();
+        ShadowLooper.runUiThreadTasks();
+        Assert.assertTrue(callbackFlag);
+    }
+
     /**
      * - 内容：searchUser が全件取得で成功する事を確認する
      * - 結果：result に NCMBUser が正しく格納されていること
