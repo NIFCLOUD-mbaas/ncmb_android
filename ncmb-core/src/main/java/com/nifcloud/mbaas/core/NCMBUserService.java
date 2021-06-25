@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Service for user api
@@ -1160,6 +1161,11 @@ public class NCMBUserService extends NCMBService {
 
             @Override
             public void handleError(NCMBException e) {
+                if (NCMBException.INVALID_AUTH_HEADER.equals(e.getCode()) || NCMBException.DATA_NOT_FOUND.equals(e.getCode())) {
+                    mContext.sessionToken = null;
+                    mContext.userId = null;
+                    clearCurrentUser();
+                }
                 DoneCallback callback = (DoneCallback) mCallback;
                 callback.done(e);
             }
