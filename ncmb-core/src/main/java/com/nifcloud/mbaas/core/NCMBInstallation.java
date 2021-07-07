@@ -23,8 +23,7 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -208,23 +207,25 @@ public class NCMBInstallation extends NCMBObject {
      */
     void getDeviceTokenInternalProcess(final TokenCallback callback) {
         if (!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()) {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                    if (task.isSuccessful()) {
-                        callback.done(task.getResult().getToken(), null);
-                    } else {
-                        callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
-                    }
-                }
-            });
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (task.isSuccessful()) {
+                                // Get new FCM registration token
+                                String token = task.getResult();
+                                callback.done(token, null);
 
-            FirebaseInstanceId.getInstance().getInstanceId().addOnCanceledListener(new OnCanceledListener() {
-                @Override
-                public void onCanceled() {
-                    callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
-                }
-            });
+                            } else {
+                                callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
+                            }
+                        }
+                    }).addOnCanceledListener(new OnCanceledListener() {
+                        @Override
+                        public void onCanceled() {
+                            callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
+                        }
+                    });
         } else {
             callback.done(null, new NCMBException(new IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)));
         }
