@@ -41,6 +41,7 @@ public class NCMBConnection {
 
     //time out millisecond from NIFCLOUD mobile backend
     static int sConnectionTimeout = 10000;
+    private int mConnectionTimeout = 10000;
 
     //API request object
     private NCMBRequest ncmbRequest = null;
@@ -64,6 +65,7 @@ public class NCMBConnection {
      */
     public NCMBConnection(NCMBRequest request) {
         this.ncmbRequest = request;
+        setConnectionTimeout(sConnectionTimeout);
     }
 
     /**
@@ -167,7 +169,7 @@ public class NCMBConnection {
 
             });
 
-            res = future.get(sConnectionTimeout, TimeUnit.MILLISECONDS);
+            res = future.get(this.mConnectionTimeout, TimeUnit.MILLISECONDS);
             if (res.statusCode != HttpURLConnection.HTTP_CREATED &&
                     res.statusCode != HttpURLConnection.HTTP_OK) {
                 throw new NCMBException(res.mbStatus, res.mbErrorMessage);
@@ -270,5 +272,9 @@ public class NCMBConnection {
                 connection.mCallback.done(res, error);
             }
         }
+    }
+
+    protected void setConnectionTimeout(int timeout){
+        this.mConnectionTimeout = timeout;
     }
 }
