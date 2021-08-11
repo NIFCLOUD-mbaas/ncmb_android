@@ -231,7 +231,7 @@ public class NCMBObject extends NCMBBase{
      * @throws NCMBException exception from sdk internal
      */
     public void addToList(String key, List objects) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null){
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {
@@ -257,7 +257,7 @@ public class NCMBObject extends NCMBBase{
      * @throws NCMBException exception from sdk internal
      */
     public void addUniqueToList(String key, List objects) throws NCMBException {
-        if (getObjectId() != null && !mFields.isNull(key)){
+        if (getObjectId() != null){
             if (isIgnoreKey(key)) {
                 throw new NCMBException(NCMBException.INVALID_FORMAT, "Can't put data to same name with property key.");
             } else {
