@@ -3,7 +3,8 @@ apply plugin: 'com.android.library'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
@@ -13,7 +14,8 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 android {
@@ -43,8 +45,8 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.firebase:firebase-messaging:20.2.3'
-    implementation 'com.google.android.gms:play-services-base:17.3.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation 'com.google.android.gms:play-services-base:17.6.0'
     implementation 'com.google.code.gson:gson:2.3.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
