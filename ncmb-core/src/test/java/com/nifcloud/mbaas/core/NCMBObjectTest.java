@@ -563,10 +563,15 @@ public class NCMBObjectTest {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addToList("list", Arrays.asList("value1", "value2"));
+        obj.addToList("newkey", Arrays.asList("value1", "value2"));
 
         JSONAssert.assertEquals(new JSONObject("{\"__op\":\"Add\",\"objects\":[\"value1\",\"value2\"]}"),
                 obj.mFields.getJSONObject("list"),
                 true);
+        JSONAssert.assertEquals(new JSONObject("{\"__op\":\"Add\",\"objects\":[\"value1\",\"value2\"]}"),
+                obj.mFields.getJSONObject("newkey"),
+                true);
+        Assert.assertEquals(2, obj.mUpdateKeys.size());
     }
 
     @Test
@@ -574,11 +579,17 @@ public class NCMBObjectTest {
         NCMBObject obj = new NCMBObject("testClass", new JSONObject("{\"list\":[\"value1\",\"value2\"]}"));
         obj.setObjectId("testObjectId");
         obj.addUniqueToList("list", Arrays.asList("value1", "value2"));
+        obj.addUniqueToList("newkey", Arrays.asList("value1", "value2"));
 
         JSONAssert.assertEquals(
                 new JSONObject("{\"__op\":\"AddUnique\",\"objects\":[\"value1\",\"value2\"]}"),
                 obj.mFields.getJSONObject("list"),
                 true);
+        JSONAssert.assertEquals(
+                new JSONObject("{\"__op\":\"AddUnique\",\"objects\":[\"value1\",\"value2\"]}"),
+                obj.mFields.getJSONObject("newkey"),
+                true);
+        Assert.assertEquals(2, obj.mUpdateKeys.size());
     }
 
     @Test
