@@ -222,8 +222,9 @@ public class NCMBTest {
 
             NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
 
-            // 両方 =Null場合　IllegalArgumentException発生する
             NCMBContext testContext = NCMB.getCurrentContext();
+            //check
+            Assert.assertNotNull(testContext);
 
         } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
