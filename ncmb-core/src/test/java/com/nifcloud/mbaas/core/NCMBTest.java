@@ -147,7 +147,7 @@ public class NCMBTest {
     @Test
     public void checkContextAndContextImplNull() {
 
-        IllegalArgumentException error = null;
+        RuntimeException error = null;
         try {
             //初期化
             NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
@@ -172,7 +172,7 @@ public class NCMBTest {
             Assert.fail(e.getMessage());
         } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             error = e;
             Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
         }
@@ -183,7 +183,7 @@ public class NCMBTest {
 
         try {
             NCMBUser user = NCMBUser.getCurrentUser();
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             error = e;
             Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
         }
@@ -192,7 +192,7 @@ public class NCMBTest {
 
         try {
             NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             error = e;
             Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
         }
@@ -202,7 +202,7 @@ public class NCMBTest {
     @Test
     public void checkContextAndContextImplNullCanBeReproducedByInitialize() {
 
-        IllegalArgumentException error = null;
+        RuntimeException error = null;
         try {
             //初期化
             NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
@@ -230,7 +230,7 @@ public class NCMBTest {
             Assert.fail(e.getMessage());
         } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             error = e;
         }
 
