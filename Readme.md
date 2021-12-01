@@ -35,8 +35,8 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 
 ## 動作環境
 
-本SDKは、Android 8.x ～ 11.x, Android Studio 4.x にて動作確認を行っております。
-(※2021年7月時点)
+本SDKは、Android 8.x ～ 12.x, Android Studio 4.x にて動作確認を行っております。
+(※2021年12月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -45,7 +45,7 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v3.0.4 ～ (※2021年7月時点)
+- v3.0.4 ～ (※2021年12月時点)
 
 ## インストール
 
