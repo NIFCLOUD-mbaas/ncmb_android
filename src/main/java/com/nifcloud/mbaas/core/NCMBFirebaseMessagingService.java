@@ -27,10 +27,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import android.util.Log;
@@ -59,6 +57,8 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
     static final String SMALL_ICON_KEY = "smallIcon";
     static final String SMALL_ICON_COLOR_KEY = "smallIconColor";
     static final String NOTIFICATION_OVERLAP_KEY = "notificationOverlap";
+    static final String USER_SETTING_JSON_KEY = "com.nifcloud.mbaas.Data";
+    static final String USER_SETTING_JSON_BIG_PICTURE_URL_KEY = "bigPictureUrlKey";
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -231,15 +231,15 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 
         //Notification作成
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        final String dataKey = "com.nifcloud.mbaas.Data";
 
-        if (pushData.getString(dataKey) != null) {
+        if (pushData.getString(USER_SETTING_JSON_KEY) != null) {
             String imageUrl = null;
             Bitmap bitmap = null;
             try {
-                JSONObject userSettingJson = new JSONObject((String) pushData.get(dataKey));
-                if (userSettingJson.get("imgUrl") != null) {
-                    imageUrl = userSettingJson.get("imgUrl").toString();
+                JSONObject userSettingJson = new JSONObject((String) pushData.get(USER_SETTING_JSON_KEY));
+                String bigPictureUrlKey = appInfo.metaData.getString(USER_SETTING_JSON_BIG_PICTURE_URL_KEY);
+                if (userSettingJson.get(bigPictureUrlKey) != null) {
+                    imageUrl = userSettingJson.get(bigPictureUrlKey).toString();
                 }
             } catch (JSONException e) {}
 
@@ -266,6 +266,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationBuilder.setSmallIcon(icon)//通知エリアのアイコン設定
                 .setColor(smallIconColor) //通知エリアのアイコンカラー設定
+                .setLargeIcon(bitmap)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setStyle(bigPictureStyle)
