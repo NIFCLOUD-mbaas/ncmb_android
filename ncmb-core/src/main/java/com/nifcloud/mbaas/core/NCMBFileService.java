@@ -32,6 +32,8 @@ public class NCMBFileService extends NCMBService {
     /** service path for API category */
     public static final String SERVICE_PATH = "files";
 
+    private final int mConnectionTimeout = 120000;
+
     /**
      * Inner class for callback
      */
@@ -437,5 +439,8 @@ public class NCMBFileService extends NCMBService {
             return false;
         }
         return true;
+    }
+    protected int getConnectionTimeout(){
+        return this.mConnectionTimeout;
     }
 }

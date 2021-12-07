@@ -193,6 +193,7 @@ public abstract class NCMBService {
                 sessionToken, applicationKey, clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(getConnectionTimeout());
         NCMBResponse response = connection.sendRequest();
         return response;
     }
@@ -221,6 +222,7 @@ public abstract class NCMBService {
         NCMBRequest request = new NCMBRequest(url, method, fileName, fileData, aclJson, sessionToken, applicationKey, clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(getConnectionTimeout());
         NCMBResponse response = connection.sendRequest();
         return response;
     }
@@ -259,6 +261,7 @@ public abstract class NCMBService {
                 clientKey);
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(getConnectionTimeout());
         connection.sendRequestAsynchronously(new RequestApiCallback() {
             @Override
             public void done(NCMBResponse res, NCMBException e) {
@@ -317,6 +320,7 @@ public abstract class NCMBService {
         );
 
         NCMBConnection connection = new NCMBConnection(request);
+        connection.setConnectionTimeout(getConnectionTimeout());
         connection.sendRequestAsynchronously(callback);
 
     }
@@ -331,5 +335,8 @@ public abstract class NCMBService {
     protected void sendRequestAsync(RequestParams params, ServiceCallback callback)
             throws NCMBException {
         sendRequestAsync(params.url, params.type, params.content, params.query, callback);
+    }
+    protected int getConnectionTimeout(){
+        return NCMBConnection.sConnectionTimeout;
     }
 }
