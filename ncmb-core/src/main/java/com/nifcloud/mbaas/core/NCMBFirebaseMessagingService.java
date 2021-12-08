@@ -183,8 +183,7 @@ public class NCMBFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtras(pushData);
 
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, new Random().nextInt(), intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, new Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE);
 
         //pushDataから情報を取得
         String message = "";
