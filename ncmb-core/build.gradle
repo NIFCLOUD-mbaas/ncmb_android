@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 buildscript {
     repositories {
@@ -10,6 +13,9 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
+
+version = '4.0.2'
+group = 'com.nifcloud.mbaas'
 
 allprojects {
     repositories {
@@ -41,6 +47,8 @@ android {
 }
 repositories {
     google()
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -75,3 +83,82 @@ task makeJar(type: Copy) {
     rename('classes.jar', JAR_NAME)
 }
 makeJar.dependsOn(clearJar, build)
+
+ext.sharedManifest = manifest {
+    attributes(
+            "Implementation-Title": project.name,
+            "Implementation-Version": version,
+            "Implementation-Vendor": project.group,
+            "Bundle-Vendor": project.group
+    )
+}
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    manifest {
+        from sharedManifest
+    }
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+signing {
+    useGpgCmd()
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives{
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'ncmb_android'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'A application used as an example on how to set up pushing  its components to the Central Repository.'
+                url 'https://mbaas.nifcloud.com/doc/current/index.html#/Android'
+
+                scm {
+                    connection 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                    developerConnection 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                    url 'https://github.com/NIFCLOUD-mbaas/ncmb_android'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'ncmbsdk'
+                        name 'NCMB SDK Team'
+                        email 'ncmb_sdk@list.fjct.fujitsu.com'
+                    }
+                }
+            }
+        }
+    }
+}
