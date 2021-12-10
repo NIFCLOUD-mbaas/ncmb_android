@@ -90,7 +90,7 @@ public class NCMBScriptService extends NCMBService {
      * @param query      query params
      * @param baseUrl    script base url
      * @return Result to script
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public byte[] executeScript(String scriptName, MethodType method, Map<String, String> header, JSONObject body, JSONObject query, String baseUrl) throws NCMBException {
 
