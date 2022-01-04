@@ -256,8 +256,6 @@ public class NCMB {
 
     /**
      * Get NCMBContext
-     *
-     * @return sCurrentContext new NCMB context
      */
     public static NCMBContext getCurrentContext() {
         if (sCurrentContext == null) {

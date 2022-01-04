@@ -139,6 +139,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userName user name
      * @param password password
+     * @return new NCMBUser object that save
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void saveByName(String userName, String password) throws NCMBException {
@@ -158,6 +159,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @param otherFields other fields
+     * @return new NCMBUser object that save
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public void saveByName(String userName, String password,JSONObject otherFields) throws NCMBException {
@@ -261,7 +263,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param oauthOptions OAuth options
      * @return "authData" params in JSONObject
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected JSONObject registerByOauthSetup(JSONObject oauthOptions) throws NCMBException {
         try {
@@ -351,7 +353,6 @@ public class NCMBUserService extends NCMBService {
      * @param keys String[] keys to copy
      * @param src  JSONObject source of copy
      * @return JSONObject
-     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected JSONObject fillParameters(String[] keys, JSONObject src) throws NCMBException {
         JSONObject result = new JSONObject();
@@ -370,7 +371,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param mailAddress mail address
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams inviteByMailParams(String mailAddress) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -391,8 +392,8 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to invite new user by Email
      *
-     * @param response response of invitation mail
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @param response
+     * @throws NCMBException
      */
     protected void inviteByMailCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_REQUEST_ACCEPTED) {
@@ -519,7 +520,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param params user parameters
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams registerUserParams(JSONObject params) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -534,9 +535,9 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to register new user
      *
-     * @param response response of the registration
+     * @param response
      * @param oauth    use oauth or not
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void registerUserCheckResponse(NCMBResponse response, boolean oauth) throws NCMBException {
         switch (response.statusCode) {
@@ -564,7 +565,7 @@ public class NCMBUserService extends NCMBService {
      * @param params parameters
      * @param oauth  use oauth or not
      * @return new NCMBUser object that logged-in
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected NCMBUser registerUser(JSONObject params, boolean oauth) throws NCMBException {
         RequestParams reqParams = registerUserParams(params);
@@ -580,6 +581,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param params parameters
      * @param oauth use oauth or not
+     * @return NCMBUser
      * @throws NCMBException
      */
     protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
@@ -595,7 +597,7 @@ public class NCMBUserService extends NCMBService {
      * @param params   parameters
      * @param oauth    use oauth or not
      * @param callback callback when process finished
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void registerUserInBackground(JSONObject params, boolean oauth, final LoginCallback callback)
             throws NCMBException {
@@ -643,7 +645,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param params    parameters
      * @param callback  callback when process finished
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void saveUserInBackground(JSONObject params, final DoneCallback callback)
             throws NCMBException {
@@ -667,7 +669,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param userId user id
      * @return parameters for NCMBRequest
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams getUserParams(String userId) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -681,7 +683,7 @@ public class NCMBUserService extends NCMBService {
      * Check response to get user entity
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void getUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -753,7 +755,7 @@ public class NCMBUserService extends NCMBService {
      * Check response to update user information
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void updateUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -825,7 +827,7 @@ public class NCMBUserService extends NCMBService {
      * @param userName user name
      * @param password password
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams loginByNameParams(String userName, String password) throws NCMBException {
         try {
@@ -847,7 +849,7 @@ public class NCMBUserService extends NCMBService {
      * Check response to login by user name
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void loginByNameCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -935,7 +937,7 @@ public class NCMBUserService extends NCMBService {
      * Check response to login by mail address
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void loginByMailCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -1002,7 +1004,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param response response object
      * @return new NCMBUser object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected NCMBUser postLoginProcess(NCMBResponse response) throws NCMBException {
         try {

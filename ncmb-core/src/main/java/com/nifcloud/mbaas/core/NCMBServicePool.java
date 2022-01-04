@@ -41,7 +41,7 @@ public class NCMBServicePool {
      * Return service object is already cached
      * @param serviceType service type
      * @param context context
-     * @return service object is already cached
+     * @return
      */
     public boolean exists(NCMB.ServiceType serviceType, NCMBContext context) {
         if (!pool.containsKey(serviceType)) {
@@ -57,7 +57,7 @@ public class NCMBServicePool {
     /**
      * Get context-keyed hash of given service type
      * @param serviceType service type
-     * @return context-keyed hash
+     * @return
      */
     protected HashMap<NCMBContext, NCMBService> getServices(NCMB.ServiceType serviceType) {
         if (pool.containsKey(serviceType)) {

@@ -99,7 +99,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleName role name
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams createRoleParams(String roleName) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -121,7 +121,7 @@ public class NCMBRoleService extends NCMBService {
      * Check response to create role with gevin name
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void createRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_CREATED) {
@@ -173,7 +173,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId object id for role
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams deleteRoleParams(String roleId) throws NCMBException {
         RequestParams reqParams = new RequestParams();
@@ -186,7 +186,7 @@ public class NCMBRoleService extends NCMBService {
      * Check response to delete role
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void deleteRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_DELETED) {
@@ -250,7 +250,7 @@ public class NCMBRoleService extends NCMBService {
      * Check response to get role information
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void getRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -476,7 +476,7 @@ public class NCMBRoleService extends NCMBService {
      * Check response to update role
      *
      * @param response
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected void updateRoleCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {
@@ -575,9 +575,8 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @param roles  roles added or removed
-     * @param isAdd to add or remove relation
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams roleRelationParams(String roleId, List<NCMBRole> roles, boolean isAdd) throws NCMBException {
         try {
@@ -695,7 +694,7 @@ public class NCMBRoleService extends NCMBService {
      * @param roleId role id
      * @param acl    Assiend ACL
      * @return parameters in object
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @throws NCMBException
      */
     protected RequestParams setAclParams(String roleId, NCMBAcl acl) throws NCMBException {
         try {
@@ -716,8 +715,8 @@ public class NCMBRoleService extends NCMBService {
     /**
      * Check response to set ACL to role
      *
-     * @param response response to set ACL to role
-     * @throws NCMBException exception from NIFCLOUD mobile backend
+     * @param response
+     * @throws NCMBException
      */
     protected void setAclCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != HTTP_STATUS_ROLE_UPDATED) {

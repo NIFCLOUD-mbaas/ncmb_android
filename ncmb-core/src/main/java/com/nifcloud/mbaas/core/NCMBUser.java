@@ -517,7 +517,6 @@ public class NCMBUser extends NCMBObject {
     /**
      * Login with anonymous
      *
-     * @return anonymous user authenticated
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     public static NCMBUser loginWithAnonymous() throws NCMBException {
