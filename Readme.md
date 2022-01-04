@@ -2,23 +2,7 @@
 
 [![Build Status](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android)
 
-## ダウンロード
 
-Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
-
-## jarの作成
-
-リリースページからダウンロードせずにjarを作成する場合は、<br>
-以下のコマンドをプロジェクトのルートディレクトリで実行してください。
-
-```
-./gradlew clean makeJar
-```
-
-`ncmb-core/release`にNCMB.jarが作成されます。
-
-Android Studioから作成する場合は、<br>
-Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
 
 ## 依存ライブラリ
 
@@ -51,15 +35,50 @@ Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行する�
 
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
-1. app/libsフォルダにNCMB.jarをコピーします
-2. app/build.gradleファイルに以下を追加します
+- v4.0.4~  
+    以下の２つの方法があります。  
+    また、v.4.0.4からは依存関係が含まれておりますのでGsonの設定は必要ありません。
 
-```
-dependencies {
-    implementation 'com.google.code.gson:gson:2.3.1'
-    api files('libs/NCMB.jar')
-}
-```
+    【依存関係に追加する方法】 　   
+    app/build.gradleに以下を追加します  
+    ```
+    dependencies{
+        implementation `com.nifcloud.mbaas:ncmb_android:4.0.4'
+    }
+    ```
+    【aarファイルをダウンロードして使用する方法】  
+     1. [Central Repositoryのページ](https://search.maven.org/artifact/com.nifcloud.mbaas/ncmb_android/4.0.4/aar)の右上のダウンロードボタンからaarファイルをダウンロードします
+     2. app/libsフォルダにダウンロードしたaarファイルをコピーします
+     3. app/build.gradleファイルに以下を追加します
+     ```
+     dependencies{
+         implementation files('./libs/ncmb_android-4.0.4.aar')
+     }
+     ```
+- v4.0.3以前  
+    【jarファイルを使用する方法】
+    1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします  
+        ※リリースページからダウンロードせずにjarを作成する場合は、<br>
+    以下のコマンドをプロジェクトのルートディレクトリで実行してください。
+
+            ```
+            ./gradlew clean makeJar
+            ```
+
+         `ncmb-core/release`にNCMB.jarが作成されます。
+
+        Android Studioから作成する場合は、<br>
+        Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
+
+    2. app/libsフォルダにNCMB.jarをコピーします
+    3. app/build.gradleファイルに以下を追加します
+
+    ```
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.3.1'
+        api files('libs/NCMB.jar')
+    }
+    ```
 
 ## クイックスタート
 
