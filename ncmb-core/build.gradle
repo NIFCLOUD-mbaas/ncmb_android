@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-version = '4.0.2'
+version = 'x.x.x'
 group = 'com.nifcloud.mbaas'
 
 allprojects {
