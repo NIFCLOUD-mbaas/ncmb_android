@@ -94,6 +94,7 @@ ext.sharedManifest = manifest {
             "Bundle-Vendor": project.group
     )
 }
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
@@ -101,6 +102,7 @@ task sourcesJar(type: Jar) {
         from sharedManifest
     }
 }
+
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
@@ -157,7 +159,6 @@ uploadArchives{
                     developer {
                         id 'ncmbsdk'
                         name 'NCMB SDK Team'
-                        email 'ncmb_sdk@list.fjct.fujitsu.com'
                     }
                 }
             }
