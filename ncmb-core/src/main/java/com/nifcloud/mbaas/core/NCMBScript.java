@@ -103,7 +103,7 @@ public class NCMBScript {
     }
 
     /**
-     * Create NCMBScript instance with specified script name and request method <br/>
+     * Create NCMBScript instance with specified script name and request method
      * This constructor can set the custom endpoint for debug
      *
      * @param scriptName script name

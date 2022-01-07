@@ -206,7 +206,7 @@ public abstract class NCMBService {
      * @param fileData file data
      * @param aclJson  JSON of acl
      * @return NCMBResponse response object
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected NCMBResponse sendRequestFile(String url, String method, String fileName, byte[] fileData, JSONObject aclJson)
             throws NCMBException {
@@ -237,7 +237,7 @@ public abstract class NCMBService {
      * @param content     contnt body
      * @param queryString query string
      * @param callback    callback on finished
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void sendRequestAsync(String url, String method, String content, JSONObject queryString,
                                     final ServiceCallback callback) throws NCMBException {
@@ -326,7 +326,7 @@ public abstract class NCMBService {
      *
      * @param params   params for NCMBRequest
      * @param callback callback on finished
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void sendRequestAsync(RequestParams params, ServiceCallback callback)
             throws NCMBException {
