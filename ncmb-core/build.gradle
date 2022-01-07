@@ -137,7 +137,7 @@ uploadArchives{
                 name 'ncmb_android'
                 packaging 'jar'
                 // optionally artifactId can be defined here
-                description 'A application used as an example on how to set up pushing  its components to the Central Repository.'
+                description 'NIFCLOUD mobile backend Android SDK'
                 url 'https://mbaas.nifcloud.com/doc/current/index.html#/Android'
 
                 scm {
