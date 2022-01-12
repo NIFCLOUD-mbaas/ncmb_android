@@ -143,4 +143,99 @@ public class NCMBTest {
         NCMB.enableResponseValidation(true);
         Assert.assertEquals(true, preferences.getBoolean("responseValidation", false));
     }
+
+    @Test
+    public void checkContextAndContextImplNull() {
+
+        RuntimeException error = null;
+        try {
+            //初期化
+            NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
+
+            // Context = null設定
+            // GCがstaticを解放した場合やプロセスが破棄された場合をモック(sCurrentContextがnullになる)
+            Field modifiersField = null;
+            modifiersField = NCMB.class.getDeclaredField("sCurrentContext");
+            modifiersField.setAccessible(true);
+            modifiersField.set(null, null);// モックの戻り値
+
+            // ContextImpl = null設定
+            Field modifiersField2 = null;
+            modifiersField2 = NCMBApplicationController.class.getDeclaredField("sApplicationState");
+            modifiersField2.setAccessible(true);
+            modifiersField2.set(null, null);// モックの戻り値
+
+            // 両方 =Null場合　IllegalArgumentException発生する
+            NCMBContext testContext = NCMB.getCurrentContext();
+
+        } catch (NoSuchFieldException e) {
+            Assert.fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            Assert.fail(e.getMessage());
+        } catch (RuntimeException e) {
+            error = e;
+            Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
+        }
+
+        //check
+        Assert.assertNotNull(error);
+        error = null;
+
+        try {
+            NCMBUser user = NCMBUser.getCurrentUser();
+        } catch (RuntimeException e) {
+            error = e;
+            Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
+        }
+        Assert.assertNotNull(error);
+        error = null;
+
+        try {
+            NCMBInstallation installation = NCMBInstallation.getCurrentInstallation();
+        } catch (RuntimeException e) {
+            error = e;
+            Assert.assertEquals("Please call the NCMB.initialize() method.", e.getMessage());
+        }
+        Assert.assertNotNull(error);
+    }
+
+    @Test
+    public void checkContextAndContextImplNullCanBeReproducedByInitialize() {
+
+        RuntimeException error = null;
+        try {
+            //初期化
+            NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
+
+            // Context = null設定
+            // GCがstaticを解放した場合やプロセスが破棄された場合をモック(sCurrentContextがnullになる)
+            Field modifiersField = null;
+            modifiersField = NCMB.class.getDeclaredField("sCurrentContext");
+            modifiersField.setAccessible(true);
+            modifiersField.set(null, null);// モックの戻り値
+
+            // ContextImpl = null設定
+            Field modifiersField2 = null;
+            modifiersField2 = NCMBApplicationController.class.getDeclaredField("sApplicationState");
+            modifiersField2.setAccessible(true);
+            modifiersField2.set(null, null);// モックの戻り値
+
+            NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(), "applicationKey", "clientKey");
+
+            NCMBContext testContext = NCMB.getCurrentContext();
+            //check
+            Assert.assertNotNull(testContext);
+
+        } catch (NoSuchFieldException e) {
+            Assert.fail(e.getMessage());
+        } catch (IllegalAccessException e) {
+            Assert.fail(e.getMessage());
+        } catch (RuntimeException e) {
+            error = e;
+        }
+
+        //check
+        Assert.assertNull(error);
+    }
+
 }

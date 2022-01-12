@@ -30,7 +30,7 @@ public class NCMB {
     /**
      * Version of this SDK
      */
-    public static final String SDK_VERSION = "4.0.2";
+    public static final String SDK_VERSION = "4.0.3";
 
     /**
      * Prefix of keys in metadata for NCMB settings
@@ -256,12 +256,14 @@ public class NCMB {
 
     /**
      * Get NCMBContext
+     *
+     * @return sCurrentContext new NCMB context
      */
     public static NCMBContext getCurrentContext() {
         if (sCurrentContext == null) {
             Context context = NCMBApplicationController.getApplicationState();
-            if (!getApplicationKey().isEmpty() && !getClientKey().isEmpty() && !getApiBaseUrl().isEmpty() && context == null) {
-                throw new IllegalArgumentException("Please call the NCMB.initialize() method.");
+            if (context == null) {
+                throw new RuntimeException("Please call the NCMB.initialize() method.");
             }
 
             // staticが破棄(プロセスの終了やGCによる解放など)された後にinitializeメソッドが実行されていない場合は永続化したデータを元に再生成

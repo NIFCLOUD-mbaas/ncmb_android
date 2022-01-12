@@ -442,6 +442,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, List value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -462,6 +463,7 @@ public class NCMBBase {
      *
      * @param key    field name for put the value
      * @param object NCMBObject to put as pointer
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, NCMBObject object) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -661,6 +663,7 @@ public class NCMBBase {
     /***
      * Get NCMBObject if given key data include pointer object data
      *
+     * @param <T> type parameter
      * @param key key name for getting include object
      * @return instance of NCMBObject / NCMBUser / NCMBPush / NCMBInstallation / NCMBRole or null
      */
