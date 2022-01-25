@@ -15,10 +15,10 @@ Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロード�
 ./gradlew clean makeJar
 ```
 
-`ncmb-core/release`にNCMB.jarが作成されます。
+`release`にNCMB.jarが作成されます。
 
 Android Studioから作成する場合は、<br>
-Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
+Gradle projectsタブの `Tasks > other > makejar` を実行することで作成されます。
 
 ## 依存ライブラリ
 
