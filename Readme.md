@@ -41,8 +41,8 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
     ```
     dependencies{
         implementation `com.nifcloud.mbaas:ncmb_android:4.0.4'
-    }`
-    ``
+    }
+    ```
 
     v.4.0.4からは依存関係が含まれておりますのでGsonの設定は必要ありません。
     
