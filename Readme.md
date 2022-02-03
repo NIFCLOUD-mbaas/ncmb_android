@@ -82,6 +82,17 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
+* 利用するライブラリの宣言
+
+Activityの冒頭に利用するライブラリを追記します
+
+```
+import com.nifcloud.mbaas.core.NCMB;
+import com.nifcloud.mbaas.core.NCMBException;
+import com.nifcloud.mbaas.core.NCMBObject;
+import com.nifcloud.mbaas.core.DoneCallback;
+```
+
 * 初期化
 
 ActivityのonCreateメソッド内に以下を記載します。
