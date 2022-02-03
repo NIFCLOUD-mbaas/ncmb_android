@@ -40,7 +40,7 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
     app/build.gradleに以下を追加します  
     ```
     dependencies{
-        implementation `com.nifcloud.mbaas:ncmb_android:4.0.4'
+        implementation 'com.nifcloud.mbaas:ncmb_android:4.0.4'
     }
     ```
 
