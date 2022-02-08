@@ -85,15 +85,24 @@ NCMB.initialize(this,"APP_KEY","CLIENT_KEY");
 NCMB.initializeの下に以下を記載します。
 
 ```
-NCMBObject obj = new NCMBObject("TestObject");
-obj.put("message", "Hello, NCMB!");
+// クラスのNCMBObjectを作成
+NCMBObject obj = new NCMBObject("TestClass");
+// オブジェクトの値を設定
+try {
+    obj.put("message", "Hello, NCMB!");
+} catch (NCMBException e) {
+    e.printStackTrace();
+}
+// データストアへの登録
 obj.saveInBackground(new DoneCallback() {
     @Override
     public void done(NCMBException e) {
-        if(e == null){
-            //保存成功
+        if(e != null){
+            //保存に失敗した場合の処理
+
         }else {
-            //保存失敗
+            //保存に成功した場合の処理
+
         }
     }
 });
