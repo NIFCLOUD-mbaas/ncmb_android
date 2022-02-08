@@ -35,8 +35,8 @@
 
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
-- v4.0.4~  
-    【依存関係に追加する方法】 　   
+- v4.1.0~  
+      
     app/build.gradleに以下を追加します  
     ```
     dependencies{
@@ -44,23 +44,11 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
     }
     ```
 
-    v.4.0.4からは依存関係が含まれておりますのでGsonの設定は必要ありません。
+    ※v.4.1.0からは依存関係が含まれておりますので以前必要だったGsonの設定は必要ありません。
     
 - v4.0.3以前  
-    【jarファイルを使用する方法】
+    
     1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします  
-        ※リリースページからダウンロードせずにjarを作成する場合は、<br>
-    以下のコマンドをプロジェクトのルートディレクトリで実行してください。
-
-            ```
-            ./gradlew clean makeJar
-            ```
-
-         `ncmb-core/release`にNCMB.jarが作成されます。
-
-        Android Studioから作成する場合は、<br>
-        Gradle projectsタブの `ncmb-core > Tasks > other > makejar` を実行することで作成されます。
-
     2. app/libsフォルダにNCMB.jarをコピーします
     3. app/build.gradleファイルに以下を追加します
 
