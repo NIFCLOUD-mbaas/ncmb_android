@@ -34,22 +34,22 @@
 
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
-- v4.1.0~  
+- v4.1.0以降の場合  
       
-    app/build.gradleに以下を追加します  
+    app/build.gradleに以下を追加します。  
     ```
     dependencies{
         implementation 'com.nifcloud.mbaas:ncmb_android:4.0.4'
     }
     ```
 
-    ※v.4.1.0からは依存関係が含まれておりますので以前必要だったGsonの設定は必要ありません。
+    ※v.4.1.0からは依存関係が含まれておりますので以前必要だったGsonライブラリの設定は必要ありません。
     
-- v4.0.3以前  
+- v4.0.3以前の場合  
     
-    1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします  
-    2. app/libsフォルダにNCMB.jarをコピーします
-    3. app/build.gradleファイルに以下を追加します
+    1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします。  
+    2. app/libsフォルダにNCMB.jarをコピーします。
+    3. app/build.gradleファイルに以下を追加します。
 
     ```
     dependencies {
@@ -71,7 +71,7 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
 
 * 利用するライブラリの宣言
 
-Activityの冒頭に利用するライブラリを追記します
+Activityの冒頭に利用するライブラリを追記します。
 
 ```
 import com.nifcloud.mbaas.core.NCMB;
