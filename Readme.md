@@ -2,23 +2,6 @@
 
 [![Build Status](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android)
 
-## ダウンロード
-
-Githubリリースページの NCMB.x.x.x.zip ボタンからダウンロードしてください。
-
-## jarの作成
-
-リリースページからダウンロードせずにjarを作成する場合は、<br>
-以下のコマンドをプロジェクトのルートディレクトリで実行してください。
-
-```
-./gradlew clean makeJar
-```
-
-`release`にNCMB.jarが作成されます。
-
-Android Studioから作成する場合は、<br>
-Gradle projectsタブの `Tasks > other > makejar` を実行することで作成されます。
 
 ## 依存ライブラリ
 
@@ -51,15 +34,29 @@ Gradle projectsタブの `Tasks > other > makejar` を実行することで作�
 
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
-1. app/libsフォルダにNCMB.jarをコピーします
-2. app/build.gradleファイルに以下を追加します
+- v4.1.0以降の場合  
+      
+    app/build.gradleに以下を追加します。  
+    ```
+    dependencies{
+        implementation 'com.nifcloud.mbaas:ncmb_android:4.1.0'
+    }
+    ```
 
-```
-dependencies {
-    implementation 'com.google.code.gson:gson:2.3.1'
-    api files('libs/NCMB.jar')
-}
-```
+    ※v4.1.0からは依存関係が含まれておりますので以前必要だったGsonライブラリの設定は必要ありません。
+    
+- v4.0.3以前の場合  
+    
+    1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします。  
+    2. app/libsフォルダにNCMB.jarをコピーします。
+    3. app/build.gradleファイルに以下を追加します。
+
+    ```
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.3.1'
+        api files('libs/NCMB.jar')
+    }
+    ```
 
 ## クイックスタート
 
@@ -70,6 +67,17 @@ dependencies {
 ```
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+
+* 利用するライブラリの宣言
+
+Activityの冒頭に利用するライブラリを追記します。
+
+```
+import com.nifcloud.mbaas.core.NCMB;
+import com.nifcloud.mbaas.core.NCMBException;
+import com.nifcloud.mbaas.core.NCMBObject;
+import com.nifcloud.mbaas.core.DoneCallback;
 ```
 
 * 初期化
