@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android)
 
 
-
 ## 依存ライブラリ
 
 このSDKでは、以下のライブラリを使用しています。
@@ -19,8 +18,8 @@
 
 ## 動作環境
 
-本SDKは、Android 8.x ～ 11.x, Android Studio 4.x にて動作確認を行っております。
-(※2021年7月時点)
+本SDKは、Android 8.x ～ 12.x, Android Studio 4.x にて動作確認を行っております。
+(※2021年12月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -29,7 +28,7 @@
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v3.0.4 ～ (※2021年7月時点)
+- v3.0.5 ～ (※2021年12月時点)
 
 ## インストール
 
@@ -94,15 +93,24 @@ NCMB.initialize(this,"APP_KEY","CLIENT_KEY");
 NCMB.initializeの下に以下を記載します。
 
 ```
-NCMBObject obj = new NCMBObject("TestObject");
-obj.put("message", "Hello, NCMB!");
+// クラスのNCMBObjectを作成
+NCMBObject obj = new NCMBObject("TestClass");
+// オブジェクトの値を設定
+try {
+    obj.put("message", "Hello, NCMB!");
+} catch (NCMBException e) {
+    e.printStackTrace();
+}
+// データストアへの登録
 obj.saveInBackground(new DoneCallback() {
     @Override
     public void done(NCMBException e) {
-        if(e == null){
-            //保存成功
+        if(e != null){
+            //保存に失敗した場合の処理
+
         }else {
-            //保存失敗
+            //保存に成功した場合の処理
+
         }
     }
 });

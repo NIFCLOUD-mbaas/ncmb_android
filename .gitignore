@@ -4,10 +4,10 @@
 build/
 release/
 local.properties
-ncmb-core/.idea/libraries
-ncmb-core/.idea/gradle.xml
-ncmb-core/.idea/misc.xml
-ncmb-core/.idea/workspace.xml 
+.idea/libraries
+.idea/gradle.xml
+.idea/misc.xml
+.idea/workspace.xml 
 
 # others
 .DS_Store

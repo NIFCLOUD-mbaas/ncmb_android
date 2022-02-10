@@ -1,0 +1,42 @@
+{
+  "results": [
+    {
+      "objectId": "dummyObjectId01",
+      "deviceType": "android",
+      "badge": 0,
+      "appVersion": 1.0,
+      "createDate": "2015-08-11T10:14:37.330Z",
+      "updateDate": "2015-08-11T10:14:37.331Z",
+      "channels": [],
+      "timeZone": "Asia\/Tokyo",
+      "applicationName": "UnitTestApp",
+      "sdkVersion": "4.0.3",
+      "deviceToken": "dummyDeviceToken01",
+      "acl": {
+        "*": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "objectId": "dummyObjectId02",
+      "deviceType": "android",
+      "badge": 0,
+      "appVersion": 1.0,
+      "createDate": "2015-08-12T10:14:37.330Z",
+      "updateDate": "2015-08-12T10:14:37.331Z",
+      "channels": [],
+      "timeZone": "Asia\/Tokyo",
+      "applicationName": "UnitTestApp",
+      "sdkVersion": "4.0.3",
+      "deviceToken": "dummyDeviceToken02",
+      "acl": {
+        "*": {
+          "read": true,
+          "write": true
+        }
+      }
+    }
+  ]
+}
