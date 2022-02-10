@@ -39,11 +39,11 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
     app/build.gradleに以下を追加します。  
     ```
     dependencies{
-        implementation 'com.nifcloud.mbaas:ncmb_android:4.0.4'
+        implementation 'com.nifcloud.mbaas:ncmb_android:4.1.0'
     }
     ```
 
-    ※v.4.1.0からは依存関係が含まれておりますので以前必要だったGsonライブラリの設定は必要ありません。
+    ※v4.1.0からは依存関係が含まれておりますので以前必要だったGsonライブラリの設定は必要ありません。
     
 - v4.0.3以前の場合  
     
