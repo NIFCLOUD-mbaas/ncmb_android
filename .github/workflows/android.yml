@@ -2,6 +2,11 @@ name: Android
 
 on: [push, pull_request]
 
+env:
+  secret_ossrhUsername: ${{secrets.ossrhUsername}}
+  secret_ossrhPassword: ${{secrets.ossrhPassword}}
+
+
 jobs:
   build_and_test:
 
