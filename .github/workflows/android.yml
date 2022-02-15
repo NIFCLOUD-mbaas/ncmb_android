@@ -3,8 +3,8 @@ name: Android
 on: [push, pull_request]
 
 env:
-  MAVEN_USERNAME: ${{ secrets.ossrhUsername }}
-  MAVEN_PASSWORD: ${{ secrets.ossrhPassword }}
+  MAVEN_USERNAME: ${{ secrets.OSSRHUSERNAME }}
+  MAVEN_PASSWORD: ${{ secrets.OSSRHPASSWORD }}
 
 
 jobs:
