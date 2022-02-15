@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
@@ -114,26 +113,25 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives javadocJar, sourcesJar
 }
-signing {
-    useGpgCmd()
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
 
-uploadArchives{
+
+publishing{
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+        maven {
+            // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            name = "OSSRH"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
 
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+            credentials{
+                userName = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD") 
             }
+        }
 
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: process.env.secret_ossrhUsername, password: process.env.secret_ossrhPassword)
-            }
-
-            pom.project {
+        relocation(MavenPublication) {
+            pom{
                 name 'ncmb_android'
                 packaging 'jar'
                 // optionally artifactId can be defined here
@@ -162,4 +160,9 @@ uploadArchives{
             }
         }
     }
+}
+signing {
+    useGpgCmd()
+    required { gradle.taskGraph.hasTask("publishing") }
+    sign publishing.repositories
 }

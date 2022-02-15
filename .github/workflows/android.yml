@@ -3,8 +3,8 @@ name: Android
 on: [push, pull_request]
 
 env:
-  secret_ossrhUsername: ${{secrets.ossrhUsername}}
-  secret_ossrhPassword: ${{secrets.ossrhPassword}}
+  MAVEN_USERNAME: ${{ secrets.ossrhUsername }}
+  MAVEN_PASSWORD: ${{ secrets.ossrhPassword }}
 
 
 jobs:
@@ -21,3 +21,8 @@ jobs:
 
     - name: build and test
       run: ./gradlew build test --continue --info
+
+    - name: Publish to Nexus repository
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: publish      
