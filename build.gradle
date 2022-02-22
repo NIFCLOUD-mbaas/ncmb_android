@@ -119,13 +119,14 @@ publishing{
     repositories {
         maven {
             // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            name = "OSSRH"
-            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
+            // name = "OSSRH"
+            // def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            // def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            // url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
+            url 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
 
             credentials{
-                userName = System.getenv("MAVEN_USERNAME")
+                username = System.getenv("MAVEN_USERNAME")
                 password = System.getenv("MAVEN_PASSWORD") 
             }
         }
