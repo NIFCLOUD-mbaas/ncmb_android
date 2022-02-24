@@ -5,6 +5,8 @@ on: [push, pull_request]
 env:
   MAVEN_USERNAME: ${{ secrets.OSSRHUSERNAME }}
   MAVEN_PASSWORD: ${{ secrets.OSSRHPASSWORD }}
+  GPG_PRIVATE_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  PASSPHRASE: ${{ secrets.GPG_PASSWORD }}
 
 
 jobs:
