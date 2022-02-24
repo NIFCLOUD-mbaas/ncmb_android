@@ -20,6 +20,7 @@ jobs:
         java-version: 1.8
 
     - name: build and test
+      uses: gradle/gradle-build-action@v2
       run: ./gradlew build test --continue --info
 
     - name: Publish to Nexus repository
