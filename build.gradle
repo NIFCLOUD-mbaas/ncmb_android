@@ -1,4 +1,4 @@
- apply plugin: 'android-library'
+ apply plugin: 'com.android.library'
  apply plugin: 'maven-publish'
  apply plugin: 'signing'
 
@@ -17,11 +17,12 @@ buildscript{
 
 
 
- allprojects {
-     repositories {
-         mavenCentral()
-     }
+allprojects {
+ repositories {
+     google()
+     mavenCentral()
  }
+}
 
 android {
     compileSdkVersion 29
@@ -55,6 +56,7 @@ android {
 //}
 
 repositories {
+    google()
     mavenCentral()
     gradlePluginPortal()
 }
