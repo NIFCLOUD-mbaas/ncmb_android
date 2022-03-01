@@ -29,10 +29,10 @@ jobs:
       with:
         java-version: 1.8
         server-id: ossrh
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        gpg-private-key: GPG_PRIVATE_KEY
-        gpg-passphrase: GPG_PASSPHRASE
+        server-username: ${{ secrets.OSSRH_USERNAME }}
+        server-password: ${{ secrets.OSSRH_TOKEN }}
+        gpg-private-key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
+        gpg-passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
     - name: build and test
       run: ./gradlew build test --continue --info
 
