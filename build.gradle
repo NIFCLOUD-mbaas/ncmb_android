@@ -149,10 +149,10 @@ publishing{
         group = 'com.nifcloud.mbaas'
         maven(MavenPublication){
 
-//            signing {
-//                useGpgCmd()
-//                sign publishing.publications
-//            }
+            signing {
+                useGpgCmd()
+                sign configurations.archives
+            }
 
             pom{
                 name = 'ncmb_android'
