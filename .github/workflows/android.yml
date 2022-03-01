@@ -38,7 +38,7 @@ jobs:
     - name: Signing
       run : |
         useGpgCmd()
-        sign publishing.publications
+        sign configurations.archives
     - name: Publish to Nexus repository
       uses: gradle/gradle-build-action@v2
       with:
