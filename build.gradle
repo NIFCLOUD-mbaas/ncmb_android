@@ -124,7 +124,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 
-version = 'x.x.x'
+version = '4.1.0'
 group = 'com.nifcloud.mbaas'
 
 publishing{
