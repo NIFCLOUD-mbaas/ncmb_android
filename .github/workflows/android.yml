@@ -35,8 +35,11 @@ jobs:
         gpg-passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
     - name: build and test
       run: ./gradlew build test --continue --info
-
+    - name: Signing
+      run : |
+        useGpgCmd()
+        sign publishing.publications
     - name: Publish to Nexus repository
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publish      
+        arguments: publish  
