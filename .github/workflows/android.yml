@@ -20,7 +20,7 @@ jobs:
       id: import_gpg
       uses: crazy-max/ghaction-import-gpg@v4
       with:
-        gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
+        gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}.keys[0]
         passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
     - name: List Keys
       run: gpg -K
