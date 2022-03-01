@@ -21,6 +21,14 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Import GPG key
+      id: import_gpg
+      uses: crazy-max/ghaction-import-gpg@v4
+      with:
+        gpg_private_key: ${{secrets.GPG_SECRET_KEY}}
+        passphrase: ${{ secrets.GPG_PASSWORD }}
+    - name: List Keys
+      run: gpg -K
     - name: build and test
       run: ./gradlew build test --continue --info
 
