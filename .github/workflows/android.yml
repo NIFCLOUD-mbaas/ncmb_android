@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   MAVEN_USERNAME: ${{ secrets.OSSRHUSERNAME }}
   MAVEN_PASSWORD: ${{ secrets.OSSRHPASSWORD }}
-  GPG_PRIVATE_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_PRIVATE_KEY: ${{ secrets.GNUPG_SECRET_KEY }}
   PASSPHRASE: ${{ secrets.GPG_PASSWORD }}
 
 
@@ -25,8 +25,8 @@ jobs:
       id: import_gpg
       uses: crazy-max/ghaction-import-gpg@v4
       with:
-        gpg_private_key: ${{secrets.GPG_SECRET_KEY}}
-        passphrase: ${{ secrets.GPG_PASSWORD }}
+        gpg_private_key: ${{secrets.GNUPG_SECRET_KEY}}
+        passphrase: ${{ secrets.GNUPG_PASSWORD }}
     - name: List Keys
       run: gpg -K
     - name: build and test
