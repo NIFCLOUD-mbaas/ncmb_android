@@ -119,12 +119,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc
 }
 
-
-
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 afterEvaluate {
     publishing {
         publications {
