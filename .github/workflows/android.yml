@@ -33,7 +33,8 @@ jobs:
         GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID}}
         GPG_PRIVATE_KEY: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
         GPG_PASSPHRASE: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
-      run:
+      shell: bash
+      run: |
         echo "signing.gnupg.keyId=$GPG_KEY_ID" >> ./gradle.properties
         echo "signing.gnupg.password=$GPG_PASSPHRASE" >> ./gradle.properties
         echo "signing.gnupg.secretKeyRingFile=$GPG_PRIVATE_KEY" >> ./gradle.properties
