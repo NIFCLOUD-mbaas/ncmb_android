@@ -120,60 +120,67 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 
-version = '4.1.0'
-group = 'com.nifcloud.mbaas'
 
-publishing{
-    publications{
-        maven(MavenPublication){
-            artifacts {
-                archives javadocJar, sourcesJar
-            }
-            pom{
-                name = 'ncmb_android'
-                packaging = 'jar'
-                // optionally artifactId can be defined here
-                description = 'NIFCLOUD mobile backend Android SDK'
-                url = 'https://mbaas.nifcloud.com/en/'
 
-                scm {
-                    connection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
-                    developerConnection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
-                    url = 'https://github.com/NIFCLOUD-mbaas/ncmb_android'
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                version = '4.1.0'
+                group = 'com.nifcloud.mbaas'
+                artifacts {
+                    archives javadocJar, sourcesJar
                 }
-
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'https://github.com/NIFCLOUD-mbaas/ncmb_android/blob/master/LICENCE'
+                pom {
+                    signing {
+                        sign publishing.publications.release
+                        sign configurations.archives
                     }
-                }
+                    name = 'ncmb_android'
+                    packaging = 'jar'
+                    // optionally artifactId can be defined here
+                    description = 'NIFCLOUD mobile backend Android SDK'
+                    url = 'https://mbaas.nifcloud.com/en/'
 
-                developers {
-                    developer {
-                        id = 'ncmbsdk'
-                        name = 'NCMB SDK Team'
+                    scm {
+                        connection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                        developerConnection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                        url = 'https://github.com/NIFCLOUD-mbaas/ncmb_android'
+                    }
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'https://github.com/NIFCLOUD-mbaas/ncmb_android/blob/master/LICENCE'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'ncmbsdk'
+                            name = 'NCMB SDK Team'
+                        }
                     }
                 }
             }
         }
-    }
-    repositories {
-        maven {
-            // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            // name = "OSSRH"
-            // def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            // def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            // url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
-            url 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+        repositories {
+            maven {
+                // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                // name = "OSSRH"
+                // def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                // def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                // url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
+                url 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
             }
         }
     }
 }
 
-signing {
- sign publishing.publications
-}
