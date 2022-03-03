@@ -33,14 +33,14 @@ jobs:
         gpg-private-key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
         gpg-passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
     - name: Restore gradle.properties
-      run: 
+      run:
         echo "signing.gnupg.keyId=$GPG_KEY_ID" >> ./gradle.properties
         echo "signing.gnupg.password=$GPG_PASSPHRASE" >> ./gradle.properties
         echo "signing.gnupg.secretKeyRingFile=$GPG_PRIVATE_KEY" >> ./gradle.properties
 
     - name: build and test
-      run: ./gradlew build test --continue --info
+      run: ./gradlew build test --continue --info  --debug  --stacktrace
     - name: Publish to Nexus repository
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publish  
+        arguments: publish
