@@ -5,10 +5,6 @@ on: [push, pull_request]
 env:
   MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
   MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-  GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID}}
-  GPG_PRIVATE_KEY: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
-  GPG_PASSPHRASE: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
-
 
 jobs:
   build_and_test:
@@ -33,15 +29,17 @@ jobs:
         gpg-private-key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
         gpg-passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
     - name: Restore gradle.properties
+      env:
+        GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID}}
+        GPG_PRIVATE_KEY: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
+        GPG_PASSPHRASE: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
       run:
         echo "signing.gnupg.keyId=$GPG_KEY_ID" >> ./gradle.properties
         echo "signing.gnupg.password=$GPG_PASSPHRASE" >> ./gradle.properties
         echo "signing.gnupg.secretKeyRingFile=$GPG_PRIVATE_KEY" >> ./gradle.properties
-
     - name: build and test
       run: ./gradlew build test --continue --info  --debug  --stacktrace --scan
-
     - name: Publish to Nexus repository
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publish
+        arguments: publish  
