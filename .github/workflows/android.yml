@@ -39,8 +39,8 @@ jobs:
         echo "signing.gnupg.secretKeyRingFile=$GPG_PRIVATE_KEY" >> ./gradle.properties
 
     - name: build and test
-      run: ./gradlew build test --continue --info  --debug  --stacktrace
-      
+      run: ./gradlew build test --continue --info  --debug  --stacktrace --scan
+
     - name: Publish to Nexus repository
       uses: gradle/gradle-build-action@v2
       with:
