@@ -39,7 +39,13 @@ jobs:
         echo "signing.gnupg.secretKeyRingFile=$GPG_PRIVATE_KEY" >> ./gradle.properties
     - name: build and test
       run: ./gradlew build test --continue --info  --debug  --stacktrace --scan
-    - name: Publish to Nexus repository
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: publish  
+    - name: Publish to the Maven Central Repository
+        run: |
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
