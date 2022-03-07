@@ -26,7 +26,7 @@ jobs:
       uses: sonatype-nexus-community/nexus-repo-github-action@master
       with:
         serverUrl: https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
-        username: ${{ secrets.OSSRH_USERNAME }}
+        username: ncmbsdk
         password: ${{ secrets.OSSRH_TOKEN }}
         format: maven2
         repository: maven-release
