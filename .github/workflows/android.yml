@@ -29,7 +29,7 @@ jobs:
         username: ${{ secrets.OSSRH_USERNAME }}
         password: ${{ secrets.OSSRH_TOKEN }}
         format: maven2
-        repository: ncmb_android
+        repository: maven-release
         coordinates: groupId=com.nifcloud.mbaas
         assets: extension=jar
         filename: ...
