@@ -30,6 +30,6 @@ jobs:
         password: ${{ secrets.OSSRH_TOKEN }}
         format: maven2
         repository: maven-release
-        coordinates: groupId=com.nifcloud.mbaas
+        coordinates: groupId=com.nifcloud.mbaas artifactId=ncmb_android version=4.1.0
         assets: extension=jar
-        filename: ...
+        filename: ncmb_android
