@@ -32,4 +32,4 @@ jobs:
         repository: ncmb_android
         coordinates: groupId=com.nifcloud.mbaas
         assets: extension=jar
-        filename: ../ncmb_android
+        filename: ...
