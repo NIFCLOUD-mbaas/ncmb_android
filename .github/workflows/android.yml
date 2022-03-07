@@ -27,7 +27,7 @@ jobs:
       with:
         serverUrl: https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
         username: ncmbsdk
-        password: ${{ secrets.OSSRH_TOKEN }}
+        password: MAVEN_PASSWORD
         format: maven2
         repository: maven-release
         coordinates: groupId=com.nifcloud.mbaas artifactId=ncmb_android version=4.1.0
