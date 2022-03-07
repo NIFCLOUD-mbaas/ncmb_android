@@ -32,4 +32,4 @@ jobs:
         repository: maven-release
         coordinates: groupId=com.nifcloud.mbaas artifactId=ncmb_android version=4.1.0
         assets: extension=jar
-        filename: ncmb_android
+        filename: ..../ncmb_android
