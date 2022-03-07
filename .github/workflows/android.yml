@@ -13,12 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Import GPG key
-      id: import_gpg
-      uses: crazy-max/ghaction-import-gpg@v4
-      with:
-        gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}.keys[0]
-        passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
+    - name: Install git-crypt
+      run: sudo apt install -y git-crypt gnupg2
+    - name: Import private GPG key from variable GITHUB_SECRETS_PRIVATE_GPG_KEY
+      run: echo "${{ secrets.SIGNING_GNUPG_SECRETKEY }}" | gpg2 --import
     - name: List GPG keys
       run: |
         gpg2 --list-keys
