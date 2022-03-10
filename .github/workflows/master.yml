@@ -2,7 +2,7 @@ name: AndroidSDK_MasterCI
 on:
   push:
     branches:
-      - mfeature_uploadArchive_maven
+      - feature_uploadArchive_maven
 jobs:
   build_and_test:
     runs-on: macOS-latest
@@ -53,9 +53,6 @@ jobs:
           echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
           cat ./gradle.properties
-
-      - name: build and test Android SDK
-        run: ./gradlew build test --continue --info
 
       - name: Publish to Nexus repository
         run: ./gradlew uploadArchive
