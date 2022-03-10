@@ -54,6 +54,9 @@ jobs:
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
           cat ./gradle.properties
 
+      - name: build and test Android SDK
+        run: ./gradlew build test --continue --info
+
       - name: Publish to Nexus repository
         run: ./gradlew uploadArchive
 
