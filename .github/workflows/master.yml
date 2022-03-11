@@ -30,9 +30,8 @@ jobs:
           gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
           passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
 
-      - name: List all GPG secret keys and test gpg key
+      - name: Test gpg key
         run: |
-          gpg --list-secret-keys --keyid-format=long
           touch test.txt
           gpg -ab test.txt
           gpg --verify test.txt.asc
