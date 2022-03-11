@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 buildscript {
     repositories {
@@ -9,6 +11,9 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
+
+version = 'x.x.x'
+group = 'com.nifcloud.mbaas'
 
 allprojects {
     repositories {
@@ -32,13 +37,22 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         disable 'GradleDependency'
         lintConfig file("lint.xml")
     }
 }
+
+
 repositories {
     google()
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -75,3 +89,84 @@ task makeJar(type: Copy) {
     rename('classes.jar', JAR_NAME)
 }
 makeJar.dependsOn(clearJar, build)
+
+ext.sharedManifest = manifest {
+    attributes(
+            "Implementation-Title": project.name,
+            "Implementation-Version": version,
+            "Implementation-Vendor": project.group,
+            "Bundle-Vendor": project.group
+    )
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    manifest {
+        from sharedManifest
+    }
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    useGpgCmd()
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives{
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'ncmb_android'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'NIFCLOUD mobile backend Android SDK'
+                url 'https://github.com/NIFCLOUD-mbaas/ncmb_android#readme'
+
+                scm {
+                    connection 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                    developerConnection 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_android.git'
+                    url 'https://github.com/NIFCLOUD-mbaas/ncmb_android'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'https://github.com/NIFCLOUD-mbaas/ncmb_android/blob/master/LICENCE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'ncmbsdk'
+                        name 'NCMB SDK Team'
+                    }
+                }
+            }
+        }
+    }
+}

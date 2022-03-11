@@ -1,5 +1,9 @@
-name: AndroidSDK_Branch_CI
-on: [push]
+name: AndroidSDK_MasterCI
+on:
+  push:
+    branches:
+      - master
+
 jobs:
   build_and_test:
     runs-on: macOS-latest
@@ -52,3 +56,6 @@ jobs:
 
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
+
+      - name: Publish to Nexus repository
+        run: ./gradlew uploadArchive
