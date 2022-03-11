@@ -2,8 +2,8 @@ name: AndroidSDK_MasterCI
 on:
   push:
     branches:
-      - feature_uploadArchive_maven
-      
+      - master
+
 jobs:
   build_and_test:
     runs-on: macOS-latest
@@ -20,7 +20,7 @@ jobs:
 
       - name: Import public GPG key
         run: |
-          gpg --keyserver keyserver.ubuntu.com --recv-keys 2E34F971E62E12E5
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ secrets.SIGNING_GNUPG_KEYID }}
           gpg --list-keys
 
       - name: Import GPG key
@@ -60,4 +60,3 @@ jobs:
 
       - name: Publish to Nexus repository
         run: ./gradlew uploadArchive
-

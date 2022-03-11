@@ -16,7 +16,7 @@ jobs:
 
       - name: Import public GPG key
         run: |
-          gpg --keyserver keyserver.ubuntu.com --recv-keys 2E34F971E62E12E5
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ secrets.SIGNING_GNUPG_KEYID }}
           gpg --list-keys
 
       - name: Import GPG key
