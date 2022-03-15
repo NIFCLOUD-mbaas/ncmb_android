@@ -10,7 +10,7 @@
       "channels": [],
       "timeZone": "Asia\/Tokyo",
       "applicationName": "UnitTestApp",
-      "sdkVersion": "4.0.3",
+      "sdkVersion": "4.1.0",
       "deviceToken": "dummyDeviceToken01",
       "acl": {
         "*": {
@@ -29,7 +29,7 @@
       "channels": [],
       "timeZone": "Asia\/Tokyo",
       "applicationName": "UnitTestApp",
-      "sdkVersion": "4.0.3",
+      "sdkVersion": "4.1.0",
       "deviceToken": "dummyDeviceToken02",
       "acl": {
         "*": {
