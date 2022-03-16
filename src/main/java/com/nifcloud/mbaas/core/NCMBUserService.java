@@ -680,7 +680,7 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to get user entity
      *
-     * @param response
+     * @param response response to get user entity
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void getUserCheckResponse(NCMBResponse response) throws NCMBException {
@@ -752,7 +752,7 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to update user information
      *
-     * @param response
+     * @param response response to update user information
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void updateUserCheckResponse(NCMBResponse response) throws NCMBException {
@@ -846,7 +846,7 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to login by user name
      *
-     * @param response
+     * @param response response to login by user name
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void loginByNameCheckResponse(NCMBResponse response) throws NCMBException {

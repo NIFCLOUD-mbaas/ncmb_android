@@ -120,7 +120,7 @@ public class NCMBRoleService extends NCMBService {
     /**
      * Check response to create role with gevin name
      *
-     * @param response
+     * @param response　response to create role with gevin name
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void createRoleCheckResponse(NCMBResponse response) throws NCMBException {
@@ -185,7 +185,7 @@ public class NCMBRoleService extends NCMBService {
     /**
      * Check response to delete role
      *
-     * @param response
+     * @param response　response to delete role
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void deleteRoleCheckResponse(NCMBResponse response) throws NCMBException {
@@ -249,7 +249,7 @@ public class NCMBRoleService extends NCMBService {
     /**
      * Check response to get role information
      *
-     * @param response
+     * @param response　response to get role information
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void getRoleCheckResponse(NCMBResponse response) throws NCMBException {
@@ -444,6 +444,7 @@ public class NCMBRoleService extends NCMBService {
      *
      * @param roleId role id
      * @param users  users added or removed
+     * @param isAdd add or remove users
      * @return parameters in object
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
@@ -475,7 +476,7 @@ public class NCMBRoleService extends NCMBService {
     /**
      * Check response to update role
      *
-     * @param response
+     * @param response response to update role
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void updateRoleCheckResponse(NCMBResponse response) throws NCMBException {

@@ -102,6 +102,7 @@ public class NCMBFile extends NCMBBase {
 
     /**
      * Constructor
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBFile() throws NCMBException {
         this(null, null, null);
@@ -111,6 +112,7 @@ public class NCMBFile extends NCMBBase {
      * Constructor with fileName
      *
      * @param fileName file name
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBFile(String fileName) throws NCMBException {
         this(fileName, null, null);
@@ -121,6 +123,7 @@ public class NCMBFile extends NCMBBase {
      *
      * @param fileName file name
      * @param acl      file acl
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBFile(String fileName, NCMBAcl acl) throws NCMBException {
         this(fileName, null, acl);
@@ -132,6 +135,7 @@ public class NCMBFile extends NCMBBase {
      * @param fileName file name
      * @param fileData file data
      * @param acl      file acl
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBFile(String fileName, byte[] fileData, NCMBAcl acl) throws NCMBException {
         super("files");
