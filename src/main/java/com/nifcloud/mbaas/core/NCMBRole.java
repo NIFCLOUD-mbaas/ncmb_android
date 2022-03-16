@@ -68,7 +68,7 @@ public class NCMBRole extends NCMBBase {
      * Constructor from JSON
      *
      * @param params source JSON
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     NCMBRole(JSONObject params) {
         super("role", params);
@@ -106,7 +106,7 @@ public class NCMBRole extends NCMBBase {
      * add users to role
      *
      * @param users NCMBUser list to add role
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void addUser(List<NCMBUser> users) throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -163,7 +163,7 @@ public class NCMBRole extends NCMBBase {
      * remove users to role
      *
      * @param users NCMBUser list to remove role
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void removeUser(List<NCMBUser> users) throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -220,7 +220,7 @@ public class NCMBRole extends NCMBBase {
      * add roles to role
      *
      * @param roles NCMBRole list to add role
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void addRole(List<NCMBRole> roles) throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -276,7 +276,7 @@ public class NCMBRole extends NCMBBase {
      * remove roles to role
      *
      * @param roles NCMBRole list to remove role
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void removeRole(List<NCMBRole> roles) throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -331,7 +331,7 @@ public class NCMBRole extends NCMBBase {
     /**
      * create role
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void createRole() throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -376,7 +376,7 @@ public class NCMBRole extends NCMBBase {
     /**
      * fetch role
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void fetchObject() throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);
@@ -418,7 +418,7 @@ public class NCMBRole extends NCMBBase {
     /**
      * delete role
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void deleteObject() throws NCMBException {
         NCMBRoleService roleService = (NCMBRoleService) NCMB.factory(NCMB.ServiceType.ROLE);

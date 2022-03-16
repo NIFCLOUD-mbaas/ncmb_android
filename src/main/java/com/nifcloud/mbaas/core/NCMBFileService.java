@@ -74,7 +74,7 @@ public class NCMBFileService extends NCMBService {
      * @param fileData file data to byte[]
      * @param aclJson  saving file acl
      * @return API response
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject saveFile(String fileName, byte[] fileData, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -137,7 +137,7 @@ public class NCMBFileService extends NCMBService {
      * @param fileName update file name
      * @param aclJson  update file acl
      * @return API response
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject updateFile(String fileName, JSONObject aclJson) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -214,7 +214,7 @@ public class NCMBFileService extends NCMBService {
      *
      * @param fileName delete file name
      * @return API response
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject deleteFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -277,7 +277,7 @@ public class NCMBFileService extends NCMBService {
      *
      * @param fileName get file name
      * @return API response
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public byte[] fetchFile(String fileName) throws NCMBException {
         if (!validateFileName(fileName)) {
@@ -341,7 +341,7 @@ public class NCMBFileService extends NCMBService {
      *
      * @param conditions search conditions
      * @return NCMBFile list
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public List searchFile(JSONObject conditions) throws NCMBException {
         String url = createURL(null);
@@ -400,7 +400,7 @@ public class NCMBFileService extends NCMBService {
      *
      * @param responseData API response data
      * @return NCMBFile list
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     List<NCMBFile> createSearchResults(JSONObject responseData) throws NCMBException {
         try {

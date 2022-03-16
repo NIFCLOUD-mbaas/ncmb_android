@@ -53,7 +53,7 @@ public class NCMBResponse {
      * @param in              InputStream
      * @param responseCode    statusCode
      * @param responseHeaders responseHeaders
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBResponse(InputStream in, int responseCode, Map<String, List<String>> responseHeaders) throws NCMBException {
         statusCode = responseCode;
