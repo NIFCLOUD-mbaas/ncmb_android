@@ -77,7 +77,7 @@ public class NCMBRoleService extends NCMBService {
          * Check response in each casse, then throe exception when it's wrong
          *
          * @param response response object
-         * @throws NCMBException
+         * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
          */
         public void checkResponse(NCMBResponse response) throws NCMBException {
             // do nothing in default

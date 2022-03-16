@@ -580,7 +580,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param params parameters
      * @param oauth use oauth or not
-     * @throws NCMBException
+     * @throws NCMBException　exception from NIFCLOUD mobile backend
      */
     protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
         RequestParams reqParams = registerUserParams(params);
@@ -934,7 +934,7 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to login by mail address
      *
-     * @param response
+     * @param response exception from NIFCLOUD mobile backend
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void loginByMailCheckResponse(NCMBResponse response) throws NCMBException {
@@ -1039,8 +1039,8 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check responkse to delete user
      *
-     * @param response
-     * @throws NCMBException
+     * @param response responkse to delete user
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void deleteUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -1110,8 +1110,8 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to logout
      *
-     * @param response
-     * @throws NCMBException
+     * @param response response to logout
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     protected void logoutCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -1191,8 +1191,8 @@ public class NCMBUserService extends NCMBService {
     /**
      * Check response to search users
      *
-     * @param response
-     * @throws NCMBException
+     * @param response response to search users
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     protected void searchUserCheckResponse(NCMBResponse response) throws NCMBException {
         if (response.statusCode != NCMBResponse.HTTP_STATUS_OK) {
@@ -1205,7 +1205,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param data response body in JSONObject
      * @return found users in ArrayList
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     protected ArrayList<NCMBUser> searchUserPostProcess(JSONObject data) throws NCMBException {
         try {
@@ -1324,7 +1324,7 @@ public class NCMBUserService extends NCMBService {
      *
      * @param base    base JSONObject
      * @param compare merge JSONObject
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     static void mergeJSONObject(JSONObject base, JSONObject compare) throws NCMBException {
         try {

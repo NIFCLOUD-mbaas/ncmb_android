@@ -400,7 +400,7 @@ public class NCMBFileService extends NCMBService {
      *
      * @param responseData API response data
      * @return NCMBFile list
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     List<NCMBFile> createSearchResults(JSONObject responseData) throws NCMBException {
         try {

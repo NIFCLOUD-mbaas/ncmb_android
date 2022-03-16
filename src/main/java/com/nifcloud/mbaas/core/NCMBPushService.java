@@ -499,7 +499,7 @@ public class NCMBPushService extends NCMBService {
      *
      * @param responseData API response data
      * @return List
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     ArrayList<NCMBPush> createSearchResults(JSONObject responseData) throws NCMBException {
         try {

@@ -637,7 +637,7 @@ public class NCMBPush extends NCMBBase {
      * Constructor
      *
      * @param params input parameters
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     NCMBPush(JSONObject params){
         super("push", params);

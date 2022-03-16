@@ -68,7 +68,7 @@ public class NCMBRole extends NCMBBase {
      * Constructor from JSON
      *
      * @param params source JSON
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     NCMBRole(JSONObject params) {
         super("role", params);

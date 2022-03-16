@@ -558,7 +558,7 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param registrationId registration id
      * @param params         installation parameters
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     JSONObject argumentNullCheckForPOST(String registrationId, JSONObject params) throws NCMBException {
         if (registrationId == null) {
@@ -576,7 +576,7 @@ public class NCMBInstallationService extends NCMBService {
      *
      * @param objectId objectId
      * @param params   installation parameters
-     * @throws NCMBException
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     JSONObject argumentNullCheckForPUT(String objectId, JSONObject params) throws NCMBException {
         if (objectId == null) {
