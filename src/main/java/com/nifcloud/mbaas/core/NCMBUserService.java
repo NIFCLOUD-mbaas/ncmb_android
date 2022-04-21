@@ -580,11 +580,9 @@ public class NCMBUserService extends NCMBService {
      *
      * @param params parameters
      * @param oauth use oauth or not
-     * @throws NCMBException　exception from NIFCLOUD mobile backend
      */
     protected void saveUser(JSONObject params, boolean oauth) throws NCMBException {
         RequestParams reqParams = registerUserParams(params);
-
         NCMBResponse response = sendRequest(reqParams);
         registerUserCheckResponse(response, oauth);
     }
