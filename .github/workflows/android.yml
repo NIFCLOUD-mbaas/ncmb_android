@@ -61,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: NCMB.jar
-          path: /home/runner/work/ncmb_android/release/NCMB.jar
+          path: ./release/NCMB.jar
