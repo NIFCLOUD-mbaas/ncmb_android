@@ -56,7 +56,7 @@ jobs:
       - name: makeJar
         run: |
            ./gradlew clean makeJar
-           ls /home/runner/work/ncmb_android/release/NCMB.jar
+           ls ./release/NCMB.jar
       - name: upload NCMB.jar
         uses: actions/upload-artifact@v2
         with:
