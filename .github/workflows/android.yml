@@ -54,7 +54,7 @@ jobs:
         run: ./gradlew build test --continue --info
 
       - name: makeJar
-        run:
+        run: |
            ./gradlew clean makeJar
            ls /home/runner/work/ncmb_android/release/NCMB.jar
       - name: upload NCMB.jar
