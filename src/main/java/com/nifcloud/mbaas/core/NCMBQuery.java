@@ -56,7 +56,7 @@ public class NCMBQuery<T extends NCMBBase> {
     /**
      * search data from NIFCLOUD mobile backend
      * @return NCMBObject(include extend class) list of search result
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public List<T> find () throws NCMBException {
         if (mClassName.equals("user")) {
@@ -725,7 +725,7 @@ public class NCMBQuery<T extends NCMBBase> {
     /**
      * return the number of search results
      * @return number of search results
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public int count () throws NCMBException {
         int iSetLimitNumber = limitNumber;

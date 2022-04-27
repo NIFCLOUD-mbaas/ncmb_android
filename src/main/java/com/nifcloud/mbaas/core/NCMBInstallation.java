@@ -469,7 +469,7 @@ public class NCMBInstallation extends NCMBObject {
      * Constructor from JSON
      *
      * @param params params source JSON
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     NCMBInstallation(JSONObject params) {
         super("installation", params);

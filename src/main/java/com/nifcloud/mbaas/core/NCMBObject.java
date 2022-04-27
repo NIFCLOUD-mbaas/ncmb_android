@@ -43,7 +43,7 @@ public class NCMBObject extends NCMBBase{
      * Constructor with class name and default value
      * @param className class name for data store
      * @param params parameter for setting value. same field name as property(objectId, createDate, updateDate, acl) can't set.
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     NCMBObject(String className, JSONObject params){
         super(className, params);

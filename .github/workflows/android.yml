@@ -52,3 +52,13 @@ jobs:
 
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
+
+      - name: makeJar
+        run: |
+           ./gradlew clean makeJar
+           ls ./release/NCMB.jar
+      - name: upload NCMB.jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: NCMB.jar
+          path: ./release/NCMB.jar

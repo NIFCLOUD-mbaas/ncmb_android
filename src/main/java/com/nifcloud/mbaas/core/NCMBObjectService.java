@@ -70,7 +70,7 @@ public class NCMBObjectService extends NCMBService{
      * @param className Datastore class name which to save the object
      * @param params Saving Object data
      * @return result of save object
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject saveObject(String className, JSONObject params) throws NCMBException {
         if (!validateClassName(className)){
@@ -138,7 +138,7 @@ public class NCMBObjectService extends NCMBService{
      * @param className Datastore class name which to fetch the object
      * @param objectId Datastore object id of fetch data
      * @return NCMBObject of fetch data
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public NCMBObject fetchObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -206,7 +206,7 @@ public class NCMBObjectService extends NCMBService{
      * @param objectId Datastore object id of update data
      * @param params JSONObject of update data
      * @return JSONObject of update result
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject updateObject(String className, String objectId, JSONObject params) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -272,7 +272,7 @@ public class NCMBObjectService extends NCMBService{
      * @param className Datastore class name which to delete the object
      * @param objectId Datastore object id of delete data
      * @return JSONObject of delete result
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public JSONObject deleteObject(String className,String objectId) throws NCMBException {
         if (!validateClassName(className) || !validateObjectId(objectId)){
@@ -339,7 +339,7 @@ public class NCMBObjectService extends NCMBService{
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @return List of NCMBObject of search results
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public List searchObject (String className, JSONObject conditions) throws NCMBException {
         if (!validateClassName(className)){
@@ -432,7 +432,7 @@ public class NCMBObjectService extends NCMBService{
      * @param className Datastore class name which to search the object
      * @param conditions JSONObject of search conditions
      * @return number of search results
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public int countObject (String className, JSONObject conditions) throws NCMBException  {
         if (!validateClassName(className)){
@@ -508,7 +508,7 @@ public class NCMBObjectService extends NCMBService{
      *
      * @param responseData API response data
      * @return JSONArray
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     List<NCMBObject> createSearchResults(String className, JSONObject responseData) throws NCMBException {
         try {
