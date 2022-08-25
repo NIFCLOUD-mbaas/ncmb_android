@@ -2,4 +2,7 @@
     <issue id="ClickableViewAccessibility">
         <ignore path="**/NCMBDialogActivity.java"/>
     </issue>
+    <issue id="LintError">
+        <ignore regexp=".*module-info\.class.*"/>
+    </issue>
 </lint>
