@@ -114,12 +114,12 @@ class NCMBInstallationUtils {
             @Override
             public void done(List<NCMBInstallation> results, NCMBException e) {
 
-                if (results != null && results.size() > 0) {
+                if (results.size() > 0) {
                     //検索された端末情報のobjectIdを設定
                     try {
                         installation.setObjectId(results.get(0).getObjectId());
                     } catch (NCMBException searchErr) {
-                        Log.e("Error", searchErr.toString());
+
                     }
 
                     //端末情報を更新する
