@@ -15,6 +15,21 @@
  */
 package com.nifcloud.mbaas.core;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+
+import com.squareup.okhttp.mockwebserver.MockWebServer;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
+import org.robolectric.res.builder.RobolectricPackageManager;
+import org.robolectric.shadows.ShadowLog;
+
 /**
  * Test for NCMBInstallationTest
  */
