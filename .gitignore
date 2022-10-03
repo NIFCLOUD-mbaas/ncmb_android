@@ -13,5 +13,7 @@ local.properties
 .DS_Store
 proguard-rules.pro
 
+node_modules/
+
 # テスト設定が消えるため指定しない
 # .idea/workspace.xml
