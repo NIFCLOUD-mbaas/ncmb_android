@@ -14,7 +14,7 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Generate reference
-        run: javadoc
+        run: ./gradlew javadoc
       - name: Setup git
         env:
             EMAIL: ${{ secrets.EMAIL }}
