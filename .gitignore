@@ -7,7 +7,10 @@ local.properties
 .idea/libraries
 .idea/gradle.xml
 .idea/misc.xml
-.idea/workspace.xml 
+.idea/workspace.xml
+.idea/modules.xml
+.idea/runConfigurations.xml
+.idea/vcs.xml
 
 # others
 .DS_Store
