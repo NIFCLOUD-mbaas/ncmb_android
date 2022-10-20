@@ -20,6 +20,7 @@
 
 本SDKは、以下の環境にて動作確認を行っております。
 - Android 8.x ～ 13.x
+- API levels 26 ～ 33
 - Android Studio 4.x ～ 2021.3.1
 (※2022年10月時点)
 
