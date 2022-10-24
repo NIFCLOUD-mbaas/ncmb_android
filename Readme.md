@@ -18,8 +18,11 @@
 
 ## 動作環境
 
-本SDKは、Android 8.x ～ 12.x, Android Studio 4.x にて動作確認を行っております。
-(※2022年2月時点)
+本SDKは、以下の環境にて動作確認を行っております。
+- Android 8.x ～ 13.x
+- API levels 26 ～ 33
+- Android Studio 4.x ～ 2021.3.1
+(※2022年10月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -35,7 +38,7 @@
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。
 
 - v4.1.0以降の場合  
-      
+
     app/build.gradleに以下を追加します。  
     ```
     dependencies{
@@ -44,9 +47,9 @@ Android Studioでプロジェクトを開き、以下の手順でSDKをインス
     ```
 
     ※v4.1.0からは依存関係が含まれておりますので以前必要だったGsonライブラリの設定は必要ありません。
-    
+
 - v4.0.3以前の場合  
-    
+
     1. Githubリリースページの NCMB.x.x.x.zip ボタンからNCMB.jarをダウンロードします。  
     2. app/libsフォルダにNCMB.jarをコピーします。
     3. app/build.gradleファイルに以下を追加します。
