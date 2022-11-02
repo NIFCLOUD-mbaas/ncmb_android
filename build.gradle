@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-version = '4.1.0'
+version = '4.1.1'
 group = 'com.nifcloud.mbaas'
 
 allprojects {
@@ -59,7 +59,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation 'com.google.android.gms:play-services-base:17.6.0'
-    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation 'com.google.code.gson:gson:2.9.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation "androidx.annotation:annotation:1.0.0"
 

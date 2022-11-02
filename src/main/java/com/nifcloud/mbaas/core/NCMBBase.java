@@ -245,6 +245,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, boolean value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -283,6 +284,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, long value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -302,6 +304,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, float value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -321,6 +324,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, double value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -340,6 +344,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, Date value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -362,6 +367,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, Location value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -384,6 +390,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, JSONObject value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -403,6 +410,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, JSONArray value) throws NCMBException {
         if (isIgnoreKey(key)) {
@@ -422,6 +430,7 @@ public class NCMBBase {
      *
      * @param key   field name for put the value
      * @param value value to put
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void put(String key, Map value) throws NCMBException {
         if (isIgnoreKey(key)) {

@@ -637,7 +637,7 @@ public class NCMBPush extends NCMBBase {
      * Constructor
      *
      * @param params input parameters
-     * @throws NCMBException
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     NCMBPush(JSONObject params){
         super("push", params);
@@ -649,7 +649,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Send push object
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void send() throws NCMBException {
         //connect
@@ -732,7 +732,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Get push object
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void fetch() throws NCMBException {
         //connect
@@ -786,7 +786,7 @@ public class NCMBPush extends NCMBBase {
     /**
      * Delete push object
      *
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     public void delete() throws NCMBException {
         //connect

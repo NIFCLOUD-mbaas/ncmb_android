@@ -153,6 +153,7 @@ public abstract class NCMBService {
      * @param url  URL
      * @param type http method
      * @return NCMBResponse object
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected NCMBResponse sendRequest(String url, String type) throws NCMBException {
         return sendRequest(url, type, null, null);
@@ -165,6 +166,7 @@ public abstract class NCMBService {
      * @param type    http method
      * @param content content body
      * @return NCMBResponse object
+     *　@throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected NCMBResponse sendRequest(String url, String type, String content) throws NCMBException {
         return sendRequest(url, type, content, null);
@@ -178,6 +180,7 @@ public abstract class NCMBService {
      * @param content     content body
      * @param queryString query string
      * @return NCMBResponse response object
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected NCMBResponse sendRequest(String url, String type, String content, JSONObject queryString)
             throws NCMBException {
@@ -294,6 +297,7 @@ public abstract class NCMBService {
      * @param fileData file data
      * @param aclJson  JSON of acl
      * @param callback callback on finished
+     * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     protected void sendRequestFileAsync(String url, String method, String fileName, byte[] fileData, JSONObject aclJson,
                                         RequestApiCallback callback)
