@@ -1,5 +1,5 @@
 name: AndroidSDK_Branch_CI
-on: [push]
+on: [ push, workflow_dispatch ]
 jobs:
   build_and_test:
     runs-on: macOS-latest
