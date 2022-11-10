@@ -117,8 +117,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-task myJavadoc(type: Javadoc) {
-    description = 'Generates API documents.'
+task docsJavadoc(type: Javadoc) {
+    description = 'Generates API documents for Reference'
     source = android.sourceSets.main.java.srcDirs
 }
 
