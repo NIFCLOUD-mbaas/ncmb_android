@@ -121,6 +121,8 @@ task generateReference (type:Javadoc) {
     description = 'Generates API documents for Reference'
     source = android.sourceSets.main.java.srcDirs
     destinationDir = reporting.file("docs")
+    options.charSet("utf-8")
+    options.showFromPublic()
 }
 
 artifacts {
