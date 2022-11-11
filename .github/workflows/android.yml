@@ -55,15 +55,15 @@ jobs:
 
       - name: makeJar
         run: |
-           ./gradlew clean makeJar
-           ls ./release/NCMB.jar
+          ./gradlew clean makeJar
+          ls ./release/NCMB.jar
       - name: upload NCMB.jar
         uses: actions/upload-artifact@v3
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
       - name: Generate reference
-        run: gradle javadocRef
+        run: gradle javadoc
       - name: zip docs
         run: zip -r docs.zip javadoc/
       - name: Archive docs
