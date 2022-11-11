@@ -63,7 +63,7 @@ jobs:
           name: NCMB.jar
           path: ./release/NCMB.jar
       - name: Generate reference
-        run: ./gradlew docsJavadoc
+        run: gradle javadocRef
       - name: zip docs
         run: zip -r docs.zip javadoc/
       - name: Archive docs
