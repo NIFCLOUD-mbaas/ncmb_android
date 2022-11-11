@@ -1,5 +1,5 @@
 name: AndroidSDK_Branch_CI
-on: [push]
+on: [ push, workflow_dispatch ]
 jobs:
   build_and_test:
     runs-on: macOS-latest
@@ -58,7 +58,16 @@ jobs:
            ./gradlew clean makeJar
            ls ./release/NCMB.jar
       - name: upload NCMB.jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
+      - name: Generate reference
+        run: ./gradlew docsJavadoc
+      - name: zip docs
+        run: zip -r docs.zip javadoc/
+      - name: Archive docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs.zip
