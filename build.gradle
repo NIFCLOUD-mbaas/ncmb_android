@@ -120,6 +120,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 task docsJavadoc(type: Javadoc) {
     description = 'Generates API documents for Reference'
     source = android.sourceSets.main.java.srcDirs
+    into('docs/')
 }
 
 artifacts {
