@@ -117,9 +117,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-javadoc {
+task generateReference (type:Javadoc) {
     description = 'Generates API documents for Reference'
-    destinatinDir = file("docs")
+    destinationDir = reporting.file("docs")
 }
 
 artifacts {
