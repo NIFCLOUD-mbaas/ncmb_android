@@ -48,7 +48,12 @@ jobs:
           echo "signing.gnupg.password=$GPG_PASSPHRASE" >> ./gradle.properties
           echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
-          cat ./gradle.properties
+          cat ./gradle.
+      - uses: sdkman/sdkman-action@master
+        id: sdkman
+        with:
+          candidate: gradle
+          version: 6.9.3
 
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
