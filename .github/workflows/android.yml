@@ -1,5 +1,8 @@
 name: AndroidSDK_Branch_CI
-on: [ push, workflow_dispatch ]
+on:
+  push:
+    braches:
+      - develop
 jobs:
   build_and_test:
     runs-on: macOS-latest
@@ -62,16 +65,17 @@ jobs:
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
+      
+      - run: |
+          mkdir docs
+          mv build/docs/javadoc/ docs/
       - name: zip docs
-        run: zip -r docs.zip build/docs/javadoc/
+        run: zip -r docs.zip docs/
       - name: Archive docs
         uses: actions/upload-artifact@v3
         with:
           name: docs
           path: docs.zip
-      - run: |
-          mkdir docs
-          mv build/docs/javadoc/ docs/
       - name: Setup git
         env:
             EMAIL: ${{ secrets.EMAIL }}
@@ -80,10 +84,9 @@ jobs:
           git config --global user.name "ncmbadmin"
       - name: Commit docs
         run: |
+          git add -N docs/
           if ! git diff --exit-code --quiet
           then
-            git add .
             git commit -m "Auto replace reference files"
-            git pull
-            git push origin develop
+            git push
           fi
