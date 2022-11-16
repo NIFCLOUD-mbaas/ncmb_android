@@ -67,6 +67,7 @@ jobs:
           path: ./release/NCMB.jar
       
       - run: |
+          rm -r docs
           mkdir docs
           mv build/docs/javadoc/ docs/
       - name: zip docs
