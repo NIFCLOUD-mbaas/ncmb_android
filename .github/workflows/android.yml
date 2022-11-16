@@ -65,7 +65,7 @@ jobs:
       # - name: Generate reference
       #   run: ./gradlew generateReference --ignore-source-errors
       - name: zip docs
-        run: zip -r docs.zip javadoc/
+        run: zip -r docs.zip build/docs/javadoc/
       - name: Archive docs
         uses: actions/upload-artifact@v3
         with:
