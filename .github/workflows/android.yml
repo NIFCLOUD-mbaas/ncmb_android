@@ -63,7 +63,7 @@ jobs:
           name: NCMB.jar
           path: ./release/NCMB.jar
       - name: Generate reference
-        run: ./gradlew generateReference --ignore-source-errors -sourcepath "ncmb_android-4.1.1-sources.jar" -d "ncmb_android-4.1.1-javadoc" -subpackage
+        run: ./gradlew generateReference --ignore-source-errors
       - name: zip docs
         run: zip -r docs.zip javadoc/
       - name: Archive docs
