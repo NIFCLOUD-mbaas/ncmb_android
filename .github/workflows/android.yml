@@ -69,7 +69,9 @@ jobs:
         with:
           name: docs
           path: docs.zip
-      - run: mv build/docs/javadoc/ docs/
+      - run: |
+          mkdir docs
+          mv build/docs/javadoc/ docs/
       - name: Setup git
         env:
             EMAIL: ${{ secrets.EMAIL }}
