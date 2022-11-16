@@ -65,7 +65,6 @@ jobs:
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
-      
       - run: |
           rm -r docs
           mkdir docs
@@ -88,6 +87,7 @@ jobs:
           git add -N docs/
           if ! git diff --exit-code --quiet
           then
+            git add .
             git commit -m "Auto replace reference files"
             git push
           fi
