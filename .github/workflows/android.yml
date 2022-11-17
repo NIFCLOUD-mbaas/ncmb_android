@@ -33,7 +33,7 @@ jobs:
         run: |
           touch test.txt
           gpg -ab test.txt
-          gpg --verify --no-tty test.txt.asc
+          gpg --verify test.txt.asc
 
       - name: Restore setting values to gradle.properties
         env:
