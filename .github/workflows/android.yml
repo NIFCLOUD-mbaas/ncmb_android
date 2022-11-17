@@ -59,7 +59,7 @@ jobs:
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
-      - run: mv build/docs/javadoc/javadoc/ docs/
+      - run: mv build/docs/javadoc/* docs/
       - name: zip docs
         run: zip -r docs.zip docs/
       - name: Archive docs
