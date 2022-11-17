@@ -117,14 +117,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-// task generateReference (type:Javadoc) {
-//     description = 'Generates API documents for Reference'
-//     source = "ncmb_android-4.1.1-sources.jar"
-//     destinationDir = reporting.file("docs")
-//     options.charSet("utf-8")
-//     options.showFromPublic()
-// }
-
 artifacts {
     archives javadocJar, sourcesJar
 }
