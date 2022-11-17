@@ -29,12 +29,6 @@ jobs:
           gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
           passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
 
-      - name: Test gpg key
-        run: |
-          touch test.txt
-          gpg -ab test.txt
-          gpg --verify test.txt.asc
-
       - name: Restore setting values to gradle.properties
         env:
           GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID }}
