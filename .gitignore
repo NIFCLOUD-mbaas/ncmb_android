@@ -15,6 +15,9 @@ local.properties
 # others
 .DS_Store
 proguard-rules.pro
+docs.zip
+test.txt
+test.txt.asc
 
 # テスト設定が消えるため指定しない
 # .idea/workspace.xml
