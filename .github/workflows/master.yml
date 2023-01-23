@@ -2,7 +2,7 @@ name: AndroidSDK_MasterCI
 on:
   push:
     branches:
-      - temp
+      - temp/deploy-ghpages
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
