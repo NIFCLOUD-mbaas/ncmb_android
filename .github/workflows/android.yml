@@ -67,18 +67,4 @@ jobs:
         with:
           name: docs
           path: docs.zip
-      - name: Setup git
-        env:
-            EMAIL: ${{ secrets.EMAIL }}
-        run: |
-          git config --global user.email "$EMAIL"
-          git config --global user.name "ncmbadmin"
-      - name: Commit docs
-        run: |
-          git add -N docs/
-          if ! git diff --exit-code --quiet
-          then
-            git add .
-            git commit -m "Auto replace reference files"
-            git push
-          fi
+      
