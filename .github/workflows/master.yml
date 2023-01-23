@@ -81,6 +81,10 @@ jobs:
         uses: actions/configure-pages@v2
       - name: Publish to Nexus repository
         run: ./gradlew uploadArchive
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './docs'
 
   deploy:
     environment:
