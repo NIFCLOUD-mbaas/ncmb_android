@@ -4,7 +4,7 @@ jobs:
   build_and_test:
     runs-on: macOS-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -58,7 +58,7 @@ jobs:
            ./gradlew clean makeJar
            ls ./release/NCMB.jar
       - name: upload NCMB.jar
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
