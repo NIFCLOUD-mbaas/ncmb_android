@@ -1,5 +1,10 @@
 name: AndroidSDK_Branch_CI
+
 on: [push]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_and_test:
     runs-on: macOS-latest
