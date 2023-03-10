@@ -32,12 +32,6 @@ jobs:
           gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
           passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
 
-      - name: Test gpg key
-        run: |
-          touch test.txt
-          gpg -ab test.txt
-          gpg --verify test.txt.asc
-
       - name: Restore setting values to gradle.properties
         env:
           GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID }}
@@ -55,16 +49,25 @@ jobs:
           echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
           cat ./gradle.properties
-
+      - run: |
+          rm -r docs/
+          mkdir docs
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
-
       - name: makeJar
         run: |
-           ./gradlew clean makeJar
-           ls ./release/NCMB.jar
+          ./gradlew clean makeJar
       - name: upload NCMB.jar
         uses: actions/upload-artifact@v3
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
+      - run: mv build/docs/javadoc/* docs/
+      - name: zip docs
+        run: zip -r docs.zip docs/
+      - name: Archive docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs.zip
+      
