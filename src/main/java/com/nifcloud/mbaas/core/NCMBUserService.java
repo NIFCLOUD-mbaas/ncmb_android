@@ -829,12 +829,11 @@ public class NCMBUserService extends NCMBService {
         try {
             RequestParams params = new RequestParams();
             params.url = mContext.baseUrl + "login";
-            params.type = NCMBRequest.HTTP_METHOD_GET;
+            params.type = NCMBRequest.HTTP_METHOD_POST;
 
-            JSONObject query = new JSONObject();
-            query.put("userName", userName);
-            query.put("password", password);
-            params.query = query;
+            JSONObject params = new JSONObject();
+            params.put("userName", userName);
+            params.put("password", password);
             return params;
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
@@ -916,12 +915,11 @@ public class NCMBUserService extends NCMBService {
             RequestParams params = new RequestParams();
 
             params.url = mContext.baseUrl + "login";
-            params.type = NCMBRequest.HTTP_METHOD_GET;
+            params.type = NCMBRequest.HTTP_METHOD_POST;
 
-            JSONObject query = new JSONObject();
-            query.put("mailAddress", mailAddress);
-            query.put("password", password);
-            params.query = query;
+            JSONObject params = new JSONObject();
+            params.put("mailAddress", mailAddress);
+            params.put("password", password);
 
             return params;
         } catch (JSONException e) {
