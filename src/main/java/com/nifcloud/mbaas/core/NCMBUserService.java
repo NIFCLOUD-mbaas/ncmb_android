@@ -827,14 +827,15 @@ public class NCMBUserService extends NCMBService {
      */
     protected RequestParams loginByNameParams(String userName, String password) throws NCMBException {
         try {
-            RequestParams params = new RequestParams();
-            params.url = mContext.baseUrl + "login";
-            params.type = NCMBRequest.HTTP_METHOD_POST;
+            RequestParams reqParams = new RequestParams();
+            reqParams.url = mContext.baseUrl + "login";
+            reqParams.type = NCMBRequest.HTTP_METHOD_POST;
 
             JSONObject params = new JSONObject();
             params.put("userName", userName);
             params.put("password", password);
-            return params;
+            reqParams.content = params.toString();
+            return reqParams;
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "userName/password required");
         }
@@ -912,16 +913,16 @@ public class NCMBUserService extends NCMBService {
      */
     protected RequestParams loginByMailParams(String mailAddress, String password) throws NCMBException {
         try {
-            RequestParams params = new RequestParams();
+            RequestParams reqParams = new RequestParams();
 
-            params.url = mContext.baseUrl + "login";
-            params.type = NCMBRequest.HTTP_METHOD_POST;
+            reqParams.url = mContext.baseUrl + "login";
+            reqParams.type = NCMBRequest.HTTP_METHOD_POST;
 
             JSONObject params = new JSONObject();
             params.put("mailAddress", mailAddress);
             params.put("password", password);
-
-            return params;
+            reqParams.content = params.toString();
+            return reqParams;
         } catch (JSONException e) {
             throw new NCMBException(NCMBException.MISSING_VALUE, "mailAddress/password required");
         }
