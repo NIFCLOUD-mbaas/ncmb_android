@@ -786,7 +786,7 @@
     method: POST
     body:
       userName: "Ncmb Tarou"
-      password: dummyPassword
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_login_response.json
@@ -796,7 +796,7 @@
     method: POST
     body:
       mailAddress: "sample@example.com"
-      password: dummyPassword
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_login_response.json
@@ -1189,7 +1189,7 @@
     method: POST
     body:
       userName: "NcmbCurrentUser"
-      password: dummyPassword
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_getCurrentUser_response.json
@@ -1206,7 +1206,7 @@
     method: POST
     body:
       userName: "NcmbToTestAfterLogin"
-      password: dummyPassword
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_getUser_login_response.json
@@ -1257,7 +1257,7 @@
     method: POST
     body:
       userName: "saveAfterLogin"
-      password: saveAfterLogin
+      password: "saveAfterLogin"
   response:
     status: 200
     file: valid_get_login_to_save_user_response.json
