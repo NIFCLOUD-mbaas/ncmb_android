@@ -803,10 +803,10 @@
 ---
   request:
     url: /2013-09-01/login
-    query:
+    body:
       mailAddress: "sample@example.com"
       password: "incorrectPassword"
-    method: GET
+    method: POST
   response:
     status: 401
     file: valid_error_incorrect_password_response.json
