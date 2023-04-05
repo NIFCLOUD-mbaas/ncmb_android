@@ -783,49 +783,49 @@
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       userName: "Ncmb Tarou"
-      password: dummyPassword
-    method: GET
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_login_response.json
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       mailAddress: "sample@example.com"
-      password: dummyPassword
-    method: GET
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_login_response.json
 ---
   request:
     url: /2013-09-01/login
-    query:
+    body:
       mailAddress: "sample@example.com"
       password: "incorrectPassword"
-    method: GET
+    method: POST
   response:
     status: 401
     file: valid_error_incorrect_password_response.json
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       mailAddress: "sample@example.com"
-    method: GET
   response:
     status: 400
     file: valid_error_empty_password_response.json
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       mailAddress: "sample@example.com"
       password: ""
-    method: GET
   response:
     status: 400
     file: valid_error_empty_password_response.json
@@ -1186,10 +1186,10 @@
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       userName: "NcmbCurrentUser"
-      password: dummyPassword
-    method: GET
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_getCurrentUser_response.json
@@ -1203,10 +1203,10 @@
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       userName: "NcmbToTestAfterLogin"
-      password: dummyPassword
-    method: GET
+      password: "dummyPassword"
   response:
     status: 200
     file: valid_get_getUser_login_response.json
@@ -1243,21 +1243,21 @@
     status: 409
     file: valid_post_register_duplicate_user_response.json
 ---
-request:
-  url: /2013-09-01/users/dummyUserLoginId
-  method: PUT
-  body:
-    key: "value"
-response:
-  status: 200
-  file: valid_put_response.json
+  request:
+    url: /2013-09-01/users/dummyUserLoginId
+    method: PUT
+    body:
+      key: "value"
+  response:
+    status: 200
+    file: valid_put_response.json
 ---
   request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
       userName: "saveAfterLogin"
-      password: saveAfterLogin
-    method: GET
+      password: "saveAfterLogin"
   response:
     status: 200
     file: valid_get_login_to_save_user_response.json
