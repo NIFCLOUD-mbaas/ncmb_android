@@ -1,7 +1,5 @@
 ## Android SDK for NIFCLOUD mobile backend
 
-[![Build Status](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android.svg?branch=master)](https://travis-ci.org/NIFCLOUD-mbaas/ncmb_android)
-
 
 ## 依存ライブラリ
 
@@ -22,7 +20,7 @@
 - Android 8.x ～ 13.x
 - API levels 26 ～ 33
 - Android Studio 4.x ～ 2021.3.1
-(※2022年10月時点)
+(※2023年4月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -31,7 +29,7 @@
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v4.0.2 ～ (※2022年10月時点)
+- v4.0.3 ～ (※2023年4月時点)
 
 ## インストール
 
