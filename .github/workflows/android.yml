@@ -49,9 +49,6 @@ jobs:
           echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
           cat ./gradle.properties
-      - run: |
-          rm -r docs/
-          mkdir docs
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
       - name: makeJar
@@ -62,12 +59,3 @@ jobs:
         with:
           name: NCMB.jar
           path: ./release/NCMB.jar
-      - run: mv build/docs/javadoc/* docs/
-      - name: zip docs
-        run: zip -r docs.zip docs/
-      - name: Archive docs
-        uses: actions/upload-artifact@v3
-        with:
-          name: docs
-          path: docs.zip
-      
