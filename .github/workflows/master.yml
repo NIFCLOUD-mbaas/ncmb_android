@@ -65,9 +65,7 @@ jobs:
           echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
           echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
           cat ./gradle.properties
-      - run: |
-          rm -r docs/
-          mkdir docs
+      - run: mkdir docs
       - name: build and test Android SDK
         run: ./gradlew build test --continue --info
       - run: mv build/docs/javadoc/* docs/
