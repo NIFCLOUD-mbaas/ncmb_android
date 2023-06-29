@@ -35,7 +35,9 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.res.builder.RobolectricPackageManager;
+import org.robolectric.shadows.ShadowPackageManager;
+import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.Shadows.shadowOf;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.httpclient.FakeHttp;
@@ -76,8 +78,12 @@ public class NCMBInstallationServiceTest {
 
         FakeHttp.getFakeHttpLayer().interceptHttpRequests(false);
 
+        application = ShadowApplication.getInstance();
+        context = application.getApplicationContext();
+
         //set application information
-        RobolectricPackageManager rpm = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
+        ShadowPackageManager rpm = context.getPackageManager();
+//        ShadowPackageManager rpm = (ShadowPackageManager) Shadows.shadowOf(ApplicationProvider.getApplicationContext().getPackageManager());
         PackageInfo packageInfo = new PackageInfo();
         packageInfo.packageName = PACKAGE_NAME;
         packageInfo.versionName = APP_VERSION;
